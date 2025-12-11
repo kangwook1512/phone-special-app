@@ -7,6 +7,7 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
+
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -16,557 +17,669 @@
   </script>
 
   <style>
-    :root {
-      --bg: #050814;
-      --card: #111827;
-      --card-border: #1f2937;
-      --accent: #4f46e5;
-      --accent-soft: rgba(79, 70, 229, 0.25);
-      --text-main: #ffffff;
-      --text-sub: #9ca3af;
-      --price: #facc15;
-      --danger: #fb7185;
-      --good: #4ade80;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      padding: 12px;
-      background: var(--bg);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif;
+      padding: 0;
+      background: #050814;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
     }
 
-    .wrap {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
+    a {
+      color: inherit;
     }
 
-    .app-header {
-      padding: 4px 4px 10px;
+    .app {
+      min-height: 100vh;
+      padding-bottom: 80px; /* 하단 네비바만큼 여유 */
     }
 
-    .app-title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin: 0 0 4px;
+    /* =========================================
+       상단 배민 스타일 헤더
+       ========================================= */
+    .hero {
+      background: #00f5c8;
+      background: linear-gradient(180deg, #00f5c8 0%, #94fff0 100%);
+      color: #032023;
+      padding: 14px 16px 18px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
     }
 
-    .app-sub {
-      margin: 0;
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .chip {
-      display: inline-flex;
+    .hero-top {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 8px;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hero-location {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hero-badge {
+      background: rgba(0, 0, 0, 0.08);
+      padding: 2px 8px;
       border-radius: 999px;
-      background: rgba(15, 118, 110, 0.15);
-      color: #6ee7b7;
-      font-size: 11px;
+      font-size: 12px;
+    }
+
+    .hero-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .hero-sub {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .hero-cta {
       margin-top: 6px;
     }
 
-    .chip-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #6ee7b7;
-    }
-
-    /* 탭바 */
-    .tab-bar {
-      display: flex;
-      gap: 6px;
-      margin: 2px 0 10px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 100;
-    }
-
-    .tab-btn {
-      flex: 1;
-      white-space: nowrap;
-      border: 0;
-      padding: 8px 4px;
-      border-radius: 999px;
-      font-size: 13px;
-      background: transparent;
-      color: var(--text-sub);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .tab-btn.active {
-      background: transparent;
-      color: #ffffff;
-      font-weight: 700;
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .tab-btn.active::after {
-      content: "";
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: -3px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 999px;
-    }
-
-    /* 카드 리스트 */
-    .card-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 14px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
+    .hero-btn {
+      display: inline-flex;
       align-items: center;
-      margin-bottom: 4px;
       gap: 6px;
-    }
-
-    .badge {
-      font-size: 10px;
-      padding: 2px 6px;
+      background: #111827;
+      color: #f9fafb;
+      padding: 8px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      color: var(--text-sub);
-      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
     }
 
-    .badge.hot {
-      border-color: var(--price);
-      color: var(--price);
+    .hero-btn span.icon {
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    .badge.danger {
-      border-color: var(--danger);
-      color: var(--danger);
+    /* =========================================
+       메인 내용 랩
+       ========================================= */
+    .content-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 10px 16px 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 12px 4px 8px;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: #cbd5f5;
+      margin: 0 4px 10px;
+    }
+
+    /* =========================================
+       상단 카테고리 아이콘 그리드 (탭)
+       ========================================= */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .cat-item {
+      text-align: center;
+      font-size: 11px;
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+
+    .cat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111827;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.6);
+      font-size: 22px;
+    }
+
+    .cat-item.active .cat-icon {
+      background: #00f5c8;
+      color: #032023;
+      transform: translateY(-2px);
+    }
+
+    .cat-item.active .cat-label {
+      color: #00f5c8;
+      font-weight: 700;
+    }
+
+    /* =========================================
+       탭 컨텐츠
+       ========================================= */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* 카드 스타일 */
+    .card {
+      background: #111827;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.5);
+    }
+
+    .card-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
     }
 
     .card-title {
       font-size: 16px;
       font-weight: 700;
-      margin: 0;
     }
 
-    .card-price {
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+      background: #334155;
+      color: #e5e7eb;
+    }
+
+    .price-line {
+      margin: 4px 0 6px;
+      font-size: 13px;
+      color: #cbd5f5;
+    }
+
+    .price-strong {
       font-size: 24px;
       font-weight: 900;
-      color: var(--price);
-      text-shadow: 0 0 14px rgba(250, 204, 21, 0.7);
-      margin: 4px 0 2px;
+      color: #facc15;
+      text-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
+      margin-bottom: 4px;
     }
 
-    .card-price.small {
-      font-size: 20px;
-    }
-
-    .card-desc {
-      margin: 0;
-      font-size: 12px;
-      color: var(--text-sub);
-      line-height: 1.4;
-    }
-
-    .meta-row {
+    .badge-row {
+      margin-top: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 6px;
+      gap: 6px;
     }
 
-    .meta-pill {
+    .badge {
       font-size: 11px;
-      padding: 3px 7px;
+      padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(31, 41, 55, 0.9);
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+    }
+
+    .badge.highlight {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+      color: #e0f2fe;
+    }
+
+    /* 주의 문구 */
+    .notice {
+      font-size: 11px;
       color: #9ca3af;
-    }
-
-    .meta-pill.important {
-      background: rgba(79, 70, 229, 0.25);
-      color: #c7d2fe;
-      border: 1px solid rgba(79, 70, 229, 0.7);
-    }
-
-    .meta-pill.good {
-      background: rgba(34, 197, 94, 0.18);
-      color: #bbf7d0;
-      border: 1px solid rgba(34, 197, 94, 0.7);
-    }
-
-    .meta-pill.bad {
-      background: rgba(248, 113, 113, 0.14);
-      color: #fecaca;
-      border: 1px solid rgba(248, 113, 113, 0.7);
-    }
-
-    .footer-text {
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text-sub);
-      line-height: 1.4;
-    }
-
-    .footer-text strong {
-      color: #e5e7eb;
-    }
-
-    .cta-box {
       margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px dashed rgba(148, 163, 184, 0.6);
-      font-size: 11px;
-      color: var(--text-sub);
+      line-height: 1.5;
     }
 
-    .cta-title {
-      font-size: 12px;
-      font-weight: 700;
+    /* =========================================
+       하단 상담 영역
+       ========================================= */
+    .contact-section {
+      margin-top: 18px;
+    }
+
+    .contact-title {
+      font-size: 15px;
+      font-weight: 800;
       margin-bottom: 6px;
-      color: #e5e7eb;
+    }
+
+    .contact-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 10px;
     }
 
     .cta-actions {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .cta-btn {
-      flex: 1;
-      min-width: 120px;
+      background: #1e293b;
+      padding: 13px;
+      border-radius: 12px;
       text-align: center;
-      font-size: 12px;
-      padding: 7px 6px;
-      border-radius: 999px;
-      border: 0;
-      cursor: pointer;
-      background: var(--accent-soft);
-      color: #e5e7eb;
+      color: #fff;
+      font-weight: 700;
       text-decoration: none;
+      border: 1px solid #334155;
+      font-size: 14px;
     }
 
     .cta-btn.secondary {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: #0f172a;
+      border-color: #1f2937;
+    }
+
+    /* 카카오 버튼 */
+    .cta-btn.kakao {
+      background: #fee500;
+      color: #3c1e1e;
+      font-weight: 800;
+      border: none;
+    }
+
+    .cta-btn.kakao:hover {
+      filter: brightness(0.93);
+    }
+
+    /* =========================================
+       하단 고정 네비게이션 바
+       ========================================= */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 64px;
+      background: #020617;
+      border-top: 1px solid #111827;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 40;
+    }
+
+    .bottom-item {
+      flex: 1;
+      text-align: center;
+      font-size: 10px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+
+    .bottom-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .bottom-item.active {
+      color: #00f5c8;
+      font-weight: 700;
     }
 
     @media (min-width: 768px) {
-      body {
-        padding: 24px;
-      }
-
-      .app-header {
-        padding: 0 0 14px;
-      }
-
-      .app-title {
-        font-size: 28px;
-      }
-
-      .app-sub {
-        font-size: 13px;
-      }
-
-      .tab-bar {
-        margin: 8px 0 16px;
-        gap: 10px;
-      }
-
-      .tab-btn {
-        padding: 12px 10px;
-        font-size: 14px;
-      }
-
-      .card-list {
-        gap: 14px;
-      }
-
-      .card-title {
-        font-size: 18px;
-      }
-
-      .card-price {
-        font-size: 28px;
-      }
-
-      .card-desc {
-        font-size: 13px;
-      }
-
-      .footer-text {
-        font-size: 12px;
-        margin-top: 12px;
-      }
-
-      .cta-box {
-        font-size: 12px;
-        margin-top: 16px;
+      .content-wrap {
+        padding-bottom: 24px;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <!-- 상단 헤더 -->
-    <header class="app-header">
-      <h1 class="app-title">복지관 2층 휴대폰 특판</h1>
-      <p class="app-sub">SK·KT·LG / 인터넷TV 현금 최대지급 / 알뜰요금 3,300원~</p>
-      <div class="chip">
-        <span class="chip-dot"></span>
-        상담 전 미리 조건만 확인해보세요
+<div class="app">
+
+  <!-- =========================
+       상단 배민 느낌 헤더
+       ========================= -->
+  <header class="hero" id="top">
+    <div class="hero-top">
+      <div class="hero-location">
+        <span>연구소 복지관 2층</span>
+        <span>▼</span>
       </div>
-    </header>
+      <div class="hero-badge">휴대폰 성지 · 내부직원 전용 특판</div>
+    </div>
 
-    <!-- 탭 -->
-    <nav class="tab-bar">
-      <button class="tab-btn active" data-tab="skt">SKT</button>
-      <button class="tab-btn" data-tab="kt">KT</button>
-      <button class="tab-btn" data-tab="lg">LGU+</button>
-      <button class="tab-btn" data-tab="mvno">알뜰요금</button>
-      <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-    </nav>
+    <div class="hero-title">신규·기변 특가, 한 번에 비교</div>
+    <div class="hero-sub">SK·KT·LG / 알뜰요금 3,300원~ / 인터넷·TV 현금지원까지 한 번에 상담</div>
 
-    <!-- 카드 리스트 -->
-    <section id="card-list" class="card-list">
-      <!-- JS에서 자동 생성 -->
-    </section>
+    <div class="hero-cta">
+      <a href="#contact" class="hero-btn">
+        <span class="icon">상담</span>
+        <span>상담 전 미리 조건·지원금 확인하고 진행하세요</span>
+      </a>
+    </div>
+  </header>
 
-    <p class="footer-text">
-      ※ 실제 판매가는 <strong>재고·프로모션·가입조건</strong>에 따라 달라질 수 있습니다.<br />
-      정확한 조건은 복지관 2층 휴대폰 매장 방문 또는 문자/전화 상담으로 안내드립니다.
-    </p>
+  <!-- =========================
+       메인 컨텐츠
+       ========================= -->
+  <main class="content-wrap">
 
-    <div class="cta-box">
-      <div class="cta-title">상담 채널</div>
-      <div>통화/문자/카톡 중 편하신 채널로 문의 주세요.</div>
-      <div class="cta-actions">
-        <!-- 번호는 너 실제 번호로 바꿔서 쓰면 됨 -->
-        <a class="cta-btn" href="tel:0428212272">통화 상담 (예: 042-821-2272)</a>
-        <a class="cta-btn secondary" href="sms:01058391512">문자 상담 (예: 010-5839-1512)</a>
+    <!-- 카테고리 아이콘 그리드 -->
+    <div class="section-title">원하는 항목을 선택하세요</div>
+    <p class="section-sub">아이콘을 누르면 아래 특판 내용이 바뀝니다.</p>
+
+    <div class="category-grid" id="category-grid">
+      <div class="cat-item active" data-tab-target="tab-skt">
+        <div class="cat-icon">📱</div>
+        <div class="cat-label">SKT 기변</div>
+      </div>
+      <div class="cat-item" data-tab-target="tab-kt">
+        <div class="cat-icon">📲</div>
+        <div class="cat-label">KT 기변</div>
+      </div>
+      <div class="cat-item" data-tab-target="tab-lg">
+        <div class="cat-icon">📶</div>
+        <div class="cat-label">LGU+</div>
+      </div>
+      <div class="cat-item" data-tab-target="tab-mvno">
+        <div class="cat-icon">💸</div>
+        <div class="cat-label">알뜰요금</div>
+      </div>
+      <div class="cat-item" data-tab-target="tab-internet">
+        <div class="cat-icon">🌐</div>
+        <div class="cat-label">인터넷·TV</div>
       </div>
     </div>
-  </div>
 
-  <!-- 탭별 데이터 & 렌더링 -->
-  <script>
-    const PLANS = {
-      skt: [
-        {
-          badge: "이동/기변",
-          hot: true,
-          title: "SK 이동·기변 특가",
-          price: "판매가 0원",
-          desc: "109 요금제 기준 / 6개월 유지 / 기기변경 조건",
-          tags: ["기변", "109요금 6개월", "재고문의"]
-        },
-        {
-          badge: "번호이동",
-          hot: false,
-          title: "SK 번호이동 특가",
-          price: "판매가 0원 ~",
-          desc: "저가/중가/고가 요금제별 번호이동 전용 특가",
-          tags: ["번호이동", "신규가입", "재고문의"]
-        },
-        {
-          badge: "인터넷 결합",
-          hot: false,
-          title: "SK 휴대폰 + 인터넷 결합",
-          price: "패키지 상담",
-          desc: "휴대폰과 SK브로드밴드 인터넷 동시 가입 시 추가 지원 상담",
-          tags: ["결합상품", "요금절감", "가족결합"]
-        }
-      ],
-      kt: [
-        {
-          badge: "이동/기변",
-          hot: true,
-          title: "KT 이동·기변 특가",
-          price: "판매가 0원",
-          desc: "110 요금제 기준 / 6개월 유지 / 결합할인 별도",
-          tags: ["기변", "110요금 6개월", "재고문의"]
-        },
-        {
-          badge: "번호이동",
-          hot: false,
-          title: "KT 번호이동 특가",
-          price: "판매가 0원 ~",
-          desc: "프리미엄 요금제 / 중저가 요금제별 번호이동 특가",
-          tags: ["번호이동", "프리미엄 요금제", "사전문의"]
-        },
-        {
-          badge: "인터넷 결합",
-          hot: false,
-          title: "KT 휴대폰 + 인터넷 결합",
-          price: "패키지 상담",
-          desc: "KT 인터넷 동시 가입 시 추가 지원 및 요금 결합 상담",
-          tags: ["결합상품", "요금절감", "결합할인"]
-        }
-      ],
-      lg: [
-        {
-          badge: "이동/기변",
-          hot: true,
-          title: "LG 이동·기변 특가",
-          price: "판매가 0원",
-          desc: "109 요금제 기준 / 6개월 유지 / 기기변경 조건",
-          tags: ["기변", "109요금 6개월", "재고문의"]
-        },
-        {
-          badge: "번호이동",
-          hot: false,
-          title: "LG 번호이동 특가",
-          price: "판매가 0원 ~",
-          desc: "선불/후불, 효도폰/중가폰 번호이동 특가",
-          tags: ["번호이동", "효도폰 추천", "신규가입"]
-        },
-        {
-          badge: "인터넷 결합",
-          hot: false,
-          title: "LG 휴대폰 + 인터넷 결합",
-          price: "패키지 상담",
-          desc: "U+인터넷·IPTV와 함께 가입 시 추가 지원 상담",
-          tags: ["결합상품", "IPTV", "OTT 연동"]
-        }
-      ],
-      mvno: [
-        {
-          badge: "실속형",
-          hot: true,
-          title: "알뜰요금 특가",
-          price: "월 3,300원~",
-          desc: "통화/문자 위주, 데이터 소량 고객용 실속 요금제",
-          tags: ["저가요금제", "즉시개통"]
-        },
-        {
-          badge: "효도폰",
-          hot: false,
-          title: "부모님·효도폰 추천",
-          price: "월 5,000원대~",
-          desc: "통화 많이 쓰시는 부모님 대상, 통화 무제한/저렴한 요금",
-          tags: ["효도폰", "통화무제한", "번호이동 가능"]
-        },
-        {
-          badge: "데이터중심",
-          hot: false,
-          title: "데이터 전용·서브폰",
-          price: "월 1~2만원대",
-          desc: "서브폰/데이터 전용 태블릿·와이파이 공유용",
-          tags: ["데이터 중심", "eSIM 가능", "즉시 개통"]
-        }
-      ],
-      internet: [
-        {
-          badge: "SKB",
-          hot: true,
-          title: "SK 인터넷 + TV",
-          price: "현금 최대 지급",
-          desc: "3년 약정 기준, 설치 지역·결합 여부에 따라 지원금 상이",
-          tags: ["인터넷+TV", "현금지원", "결합할인"]
-        },
-        {
-          badge: "KT Olleh",
-          hot: false,
-          title: "KT 인터넷 + TV",
-          price: "현금 + 상품권",
-          desc: "통화량·채널 구성에 따라 최적 상품 안내",
-          tags: ["상품권 포함", "프리미엄 채널", "기가인터넷"]
-        },
-        {
-          badge: "LG U+",
-          hot: false,
-          title: "LG 인터넷 + IPTV",
-          price: "현금 최대 지급",
-          desc: "U+tv, OTT 연동 상담 가능",
-          tags: ["IPTV", "OTT 연동", "와이파이 공유기"]
-        }
-      ]
-    };
+    <!-- ======================
+         탭 : SKT
+         ====================== -->
+    <section class="tab-pane active" id="tab-skt" data-tab-pane>
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">SK 이동기변 특가</div>
+          <span class="card-tag">기변 특가</span>
+        </div>
 
-    function renderTab(tabKey) {
-      const list = document.getElementById("card-list");
-      list.innerHTML = "";
+        <div class="price-strong">판매가 0원</div>
+        <div class="price-line">109요금제 기준 / 6개월 유지 / 기기변경 조건</div>
 
-      const items = PLANS[tabKey] || [];
-      items.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "card";
+        <div class="badge-row">
+          <span class="badge highlight">기변</span>
+          <span class="badge">109요금 6개월 유지</span>
+          <span class="badge">재고 문의 후 진행</span>
+        </div>
+      </div>
 
-        const priceClass = item.price.length > 10 ? "card-price small" : "card-price";
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">SK 번호이동 특판</div>
+          <span class="card-tag">번호이동</span>
+        </div>
+        <div class="price-strong">지원·판매가 매일 변동</div>
+        <div class="price-line">번호이동 / 신규 조건에 따라 지원금 상이 · 상담 시 안내</div>
 
-        card.innerHTML = `
-          <div class="card-header">
-            <h2 class="card-title">${item.title}</h2>
-            <span class="badge ${item.hot ? "hot" : ""}">
-              ${item.badge}
-            </span>
-          </div>
-          <div class="${priceClass}">${item.price}</div>
-          <p class="card-desc">${item.desc}</p>
-          ${
-            item.tags && item.tags.length
-              ? `<div class="meta-row">
-                  ${item.tags
-                    .map((t, idx) => {
-                      let extraClass = "";
-                      if (idx === 0 && item.hot) extraClass = "important";
-                      return `<span class="meta-pill ${extraClass}">${t}</span>`;
-                    })
-                    .join("")}
-                 </div>`
-              : ""
-          }
-        `;
-        list.appendChild(card);
-      });
-    }
+        <div class="badge-row">
+          <span class="badge highlight">번호이동</span>
+          <span class="badge">신규·기변 동시 상담 가능</span>
+          <span class="badge">재고·조건 실시간 안내</span>
+        </div>
+      </div>
+    </section>
 
-    function setupTabs() {
-      const tabButtons = document.querySelectorAll(".tab-btn");
-      tabButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          tabButtons.forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          const key = btn.getAttribute("data-tab");
-          renderTab(key);
-        });
-      });
-      renderTab("skt");
-    }
+    <!-- ======================
+         탭 : KT
+         ====================== -->
+    <section class="tab-pane" id="tab-kt" data-tab-pane>
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">KT 이동기변 특가</div>
+          <span class="card-tag">기변 특가</span>
+        </div>
 
-    document.addEventListener("DOMContentLoaded", setupTabs);
-  </script>
+        <div class="price-strong">판매가 0원</div>
+        <div class="price-line">110요금제 기준 / 6개월 유지 / 결합할인 별도</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">기변</span>
+          <span class="badge">110요금 6개월 유지</span>
+          <span class="badge">결합·패밀리 할인 별도 안내</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">KT 휴대폰 + 인터넷 결합</div>
+          <span class="card-tag">인터넷 결합</span>
+        </div>
+
+        <div class="price-strong">패키지 상담</div>
+        <div class="price-line">KT 휴대폰, 인터넷 동시 가입 시 추가 지원 상담</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">결합상품</span>
+          <span class="badge">요금 절감 / 사은품 안내</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         탭 : LGU+
+         ====================== -->
+    <section class="tab-pane" id="tab-lg" data-tab-pane>
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">LG 이동기변 특가</div>
+          <span class="card-tag">기변 특가</span>
+        </div>
+
+        <div class="price-strong">판매가 0원</div>
+        <div class="price-line">105요금제 기준 / 6개월 유지 / 기변 조건 동일</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">기변</span>
+          <span class="badge">105요금 6개월 유지</span>
+          <span class="badge">재고 상황에 따라 모델 상이</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">LG 번호이동 특판</div>
+          <span class="card-tag">번호이동</span>
+        </div>
+        <div class="price-strong">조건별 별도 상담</div>
+        <div class="price-line">타 통신사 → LG 번호이동 / 가족결합 가능</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">번호이동</span>
+          <span class="badge">가족결합 / 인터넷 동시 상담</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         탭 : 알뜰요금
+         ====================== -->
+    <section class="tab-pane" id="tab-mvno" data-tab-pane>
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">알뜰요금제 특가</div>
+          <span class="card-tag">월 3,300원~</span>
+        </div>
+
+        <div class="price-strong">월 3,300원부터</div>
+        <div class="price-line">데이터 기본 제공 / 통화·문자 포함 상품 다양 · 즉시 개통 가능</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">최저요금</span>
+          <span class="badge">통화·데이터 맞춤 설계</span>
+          <span class="badge">유심/기기 유무에 따라 안내</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">자급제 + 알뜰요금 조합</div>
+          <span class="card-tag">실속형</span>
+        </div>
+
+        <div class="price-line">자급제 단말 보유 시 / 알뜰요금 조합으로 통신비 절감</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">요금 절감</span>
+          <span class="badge">장기 유지 시 유리</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================
+         탭 : 인터넷·TV
+         ====================== -->
+    <section class="tab-pane" id="tab-internet" data-tab-pane>
+      <div class="card">
+        <div class="card-header-line">
+          <div class="card-title">인터넷 + TV 현금지원</div>
+          <span class="card-tag">SK·KT·LG</span>
+        </div>
+
+        <div class="price-strong">현금 최대 지급</div>
+        <div class="price-line">3사 비교 후 가장 유리한 조건으로 진행 · 약정 / 설치비 / 사은품 상세 상담</div>
+
+        <div class="badge-row">
+          <span class="badge highlight">3사 비교</span>
+          <span class="badge">현금·상품권 지원 안내</span>
+          <span class="badge">휴대폰 결합 상담 가능</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 안내 문구 -->
+    <div class="notice">
+      ※ 실제 판매가는 제고·프로모션·가입조건에 따라 달라질 수 있습니다.<br />
+      정확한 조건은 복지관 2층 휴대폰 매장 방문 또는 문자/전화/오픈카톡 상담으로 안내드립니다.
+    </div>
+
+    <!-- =========================
+         하단 상담 섹션
+         ========================= -->
+    <section class="contact-section" id="contact">
+      <div class="contact-title">상담·문의 채널</div>
+      <div class="contact-sub">편한 방법으로 연락 주시면, 조건·지원금·재고까지 한 번에 안내드립니다.</div>
+
+      <div class="cta-actions">
+        <a class="cta-btn" href="tel:0428212272">통화 상담 (042-821-2272)</a>
+        <a class="cta-btn secondary" href="sms:01058391512">문자 상담 (010-5839-1512)</a>
+        <a class="cta-btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener noreferrer">오픈카톡 상담</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================
+       하단 고정 네비게이션
+       ========================= -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="bottom-item active" data-nav="home">
+      <div class="bottom-icon">🏠</div>
+      <div>홈</div>
+    </div>
+    <div class="bottom-item" data-nav="phone">
+      <div class="bottom-icon">📱</div>
+      <div>휴대폰</div>
+    </div>
+    <div class="bottom-item" data-nav="mvno">
+      <div class="bottom-icon">💸</div>
+      <div>알뜰</div>
+    </div>
+    <div class="bottom-item" data-nav="internet">
+      <div class="bottom-icon">🌐</div>
+      <div>인터넷TV</div>
+    </div>
+    <div class="bottom-item" data-nav="contact">
+      <div class="bottom-icon">💬</div>
+      <div>상담하기</div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  // 탭 변경 함수
+  function activateTab(tabId) {
+    const panes = document.querySelectorAll("[data-tab-pane]");
+    const cats = document.querySelectorAll(".cat-item");
+
+    panes.forEach(p => p.classList.remove("active"));
+    cats.forEach(c => c.classList.remove("active"));
+
+    const pane = document.getElementById(tabId);
+    const cat = document.querySelector('.cat-item[data-tab-target="' + tabId + '"]');
+
+    if (pane) pane.classList.add("active");
+    if (cat) cat.classList.add("active");
+  }
+
+  // 카테고리 클릭
+  document.querySelectorAll(".cat-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const target = item.getAttribute("data-tab-target");
+      activateTab(target);
+
+      // 휴대폰 영역으로 부드럽게 스크롤
+      document.getElementById("category-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  // 하단 네비게이션
+  document.querySelectorAll(".bottom-item").forEach(nav => {
+    nav.addEventListener("click", () => {
+      const type = nav.getAttribute("data-nav");
+
+      document.querySelectorAll(".bottom-item").forEach(n => n.classList.remove("active"));
+      nav.classList.add("active");
+
+      if (type === "home") {
+        document.getElementById("top").scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (type === "phone") {
+        // 기본은 SKT 탭
+        activateTab("tab-skt");
+        document.getElementById("category-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (type === "mvno") {
+        activateTab("tab-mvno");
+        document.getElementById("category-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (type === "internet") {
+        activateTab("tab-internet");
+        document.getElementById("category-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (type === "contact") {
+        document.getElementById("contact").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
