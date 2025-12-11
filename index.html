@@ -41,7 +41,7 @@
 
     .wrap {
       width: 100%;
-      max-width: 480px;  /* 기본: 모바일 기준 */
+      max-width: 720px; /* 모바일+PC 공통, PC에서 넓게 보이도록 */
       margin: 0 auto;
     }
 
@@ -105,14 +105,25 @@
       color: var(--text-sub);
       border: 1px solid rgba(148, 163, 184, 0.4);
       cursor: pointer;
+      position: relative;
     }
 
     .tab-btn.active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: #e5e7eb;
-      font-weight: 600;
-      box-shadow: 0 0 12px rgba(79, 70, 229, 0.6);
+      background: transparent;
+      color: #ffffff;
+      font-weight: 700;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: -3px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 999px;
     }
 
     /* 카드 리스트 */
@@ -125,9 +136,9 @@
     .card {
       background: var(--card);
       border-radius: 14px;
-      padding: 12px 12px 10px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
     }
 
     .card-header {
@@ -205,14 +216,10 @@
       color: #e5e7eb;
     }
 
-    /* ========= PC(태블릿 이상)에서 레이아웃 확장 ========= */
+    /* PC(태블릿 이상)에서 레이아웃 확장 */
     @media (min-width: 768px) {
       body {
         padding: 24px;
-      }
-
-      .wrap {
-        max-width: 960px;       /* PC에서 넓게 */
       }
 
       .app-header {
@@ -241,10 +248,6 @@
         gap: 14px;
       }
 
-      .card {
-        padding: 16px 18px 14px;
-      }
-
       .card-title {
         font-size: 18px;
       }
@@ -267,7 +270,7 @@
 
 <body>
   <div class="wrap">
-    <!-- 상단 앱 헤더 -->
+    <!-- 상단 헤더 -->
     <header class="app-header">
       <h1 class="app-title">복지관 2층 휴대폰 특판</h1>
       <p class="app-sub">SK·KT·LG / 인터넷TV 현금 최대지급 / 알뜰요금 3,300원~</p>
@@ -277,7 +280,7 @@
       </div>
     </header>
 
-    <!-- 탭 바 -->
+    <!-- 탭 -->
     <nav class="tab-bar">
       <button class="tab-btn active" data-tab="skt">SKT</button>
       <button class="tab-btn" data-tab="kt">KT</button>
@@ -288,7 +291,7 @@
 
     <!-- 카드 리스트 -->
     <section id="card-list" class="card-list">
-      <!-- JS에서 자동 카드 생성 -->
+      <!-- JS에서 자동 생성 -->
     </section>
 
     <p class="footer-text">
@@ -297,62 +300,37 @@
     </p>
   </div>
 
-  <!-- 탭별 데이터 & 렌더링 스크립트 -->
+  <!-- 탭별 데이터 & 렌더링 -->
   <script>
-    // 탭별 카드 데이터
     const PLANS = {
       skt: [
         {
-          badge: "기변 특가",
+          badge: "이동/기변",
           hot: true,
-          title: "SK 기변 특가",
+          title: "SK 이동·기변 특가",
           price: "판매가 0원",
-          desc: "109 요금제 기준, 6개월 유지 / 기기변경 조건",
-          tags: ["기기변경", "109요금 6개월", "재고문의"]
-        },
-        {
-          badge: "번호이동",
-          hot: false,
-          title: "SK 번호이동 특판",
-          price: "문의",
-          desc: "번호이동 / 신규 조건에 따라 지원금 변동",
-          tags: ["번호이동", "신규가입"]
+          desc: "109 요금제 기준 / 6개월 유지 / 기기변경 조건",
+          tags: ["기변", "109요금 6개월", "재고문의"]
         }
       ],
       kt: [
         {
-          badge: "기변 특가",
+          badge: "이동/기변",
           hot: true,
-          title: "KT 기변 특가",
+          title: "KT 이동·기변 특가",
           price: "판매가 0원",
-          desc: "110 요금제 기준, 6개월 유지 / 결합할인 별도",
-          tags: ["기기변경", "프리미엄 요금제", "결합할인"]
-        },
-        {
-          badge: "인터넷 결합",
-          hot: false,
-          title: "KT 휴대폰 + 인터넷 결합",
-          price: "패키지 상담",
-          desc: "휴대폰과 인터넷 동시 가입 시 추가 지원 상담",
-          tags: ["결합상품", "요금 절감"]
+          desc: "109 요금제 기준 / 6개월 유지 / 기기변경 조건",
+          tags: ["기변", "109요금 6개월", "재고문의"]
         }
       ],
       lg: [
         {
-          badge: "기변 특가",
+          badge: "이동/기변",
           hot: true,
-          title: "LGU+ 기변 특가",
+          title: "LG 이동·기변 특가",
           price: "판매가 0원",
-          desc: "115 요금제 기준, 6개월 유지 / 가족결합 별도 안내",
-          tags: ["기기변경", "프리미엄 요금제"]
-        },
-        {
-          badge: "번호이동 특판",
-          hot: false,
-          title: "LGU+ 번호이동 특판",
-          price: "문의",
-          desc: "타사에서 번호이동 시 이벤트/사은품 동시 안내",
-          tags: ["번호이동", "이벤트 진행"]
+          desc: "109 요금제 기준 / 6개월 유지 / 기기변경 조건",
+          tags: ["기변", "109요금 6개월", "재고문의"]
         }
       ],
       mvno: [
@@ -363,14 +341,6 @@
           price: "월 3,300원~",
           desc: "음성/데이터 소량 사용 고객용, 즉시 개통 가능",
           tags: ["저가요금제", "즉시개통"]
-        },
-        {
-          badge: "데이터 중심",
-          hot: false,
-          title: "데이터 알뜰요금제",
-          price: "월 1~2만원대",
-          desc: "영상/음악 위주 고객용, 통화/데이터 밸런스 상담",
-          tags: ["데이터중심", "가성비"]
         }
       ],
       internet: [
@@ -395,7 +365,7 @@
           hot: false,
           title: "LG 인터넷 + IPTV",
           price: "현금 최대 지급",
-          desc: "U+tv, 넷플릭스/OTT 연동 상담 가능",
+          desc: "U+tv, OTT 연동 상담 가능",
           tags: ["IPTV", "OTT 연동"]
         }
       ]
@@ -456,10 +426,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
