@@ -31,6 +31,12 @@
       --accent-mint:#e7fdf9;
       --shadow-soft:0 6px 16px rgba(15,23,42,0.08);
       --radius-card:18px;
+
+      --skt:#ff4b55;
+      --kt:#111827;
+      --lg:#b91c91;
+      --mvno:#16a34a;
+      --internet:#f97316;
     }
 
     *{
@@ -45,8 +51,10 @@
       font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
     }
 
+    /* PC에서는 넓게 / 모바일은 앱처럼 */
     .app{
-      max-width:480px;
+      width:100%;
+      max-width:100%;
       margin:0 auto;
       min-height:100vh;
       background:var(--bg-main);
@@ -54,10 +62,20 @@
       flex-direction:column;
     }
 
-    /* 상단 히어로 영역 */
+    @media (min-width:960px){
+      .app{
+        max-width:960px;
+        margin:0 auto;
+        border-radius:24px;
+        box-shadow:0 12px 30px rgba(15,23,42,0.12);
+        overflow:hidden;
+      }
+    }
+
+    /* 상단 히어로 */
     .hero{
       background:linear-gradient(180deg,var(--accent-mint) 0%,#f6ffff 100%);
-      padding:18px 18px 22px;
+      padding:18px 22px 22px;
       border-bottom-left-radius:24px;
       border-bottom-right-radius:24px;
       box-shadow:0 6px 20px rgba(15,23,42,0.08);
@@ -72,6 +90,13 @@
       font-size:12px;
       color:#334155;
       margin-bottom:12px;
+    }
+    .hero-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
     }
     .hero-chip{
       display:inline-flex;
@@ -90,6 +115,20 @@
       border-radius:50%;
       background:#22c55e;
       box-shadow:0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .hero-mini{
+      display:flex;
+      gap:6px;
+      font-size:11px;
+      color:#0f172a;
+      opacity:.9;
+    }
+    .hero-mini span{
+      padding:3px 7px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,0.08);
+      background:#ffffffb3;
     }
 
     /* 탭 바 */
@@ -130,15 +169,12 @@
       box-shadow:0 6px 14px rgba(37,99,235,0.4);
       transform:translateY(-1px);
     }
-    .tab-btn:not(.active):active{
-      transform:translateY(1px);
-    }
 
-    /* 탭 패널 */
+    /* 컨텐츠 */
     .content{
-      padding:14px 14px 80px;
-      background:var(--bg-main);
+      padding:14px 14px 90px;
       flex:1;
+      background:var(--bg-main);
     }
     .tab-panel{
       display:none;
@@ -148,17 +184,11 @@
       display:block;
     }
     @keyframes fadeSlide{
-      from{
-        opacity:0;
-        transform:translateY(8px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
     }
 
-    /* 카드 공통 */
+    /* 섹션 타이틀 */
     .section-title{
       font-size:14px;
       font-weight:700;
@@ -176,10 +206,11 @@
       box-shadow:0 0 0 4px rgba(37,99,235,0.18);
     }
 
+    /* 카드 공통 */
     .card{
       background:#ffffff;
       border-radius:var(--radius-card);
-      padding:16px 16px 13px;
+      padding:14px 14px 12px;
       margin-bottom:12px;
       border:1px solid var(--border-soft);
       box-shadow:var(--shadow-soft);
@@ -191,6 +222,12 @@
       gap:8px;
       margin-bottom:6px;
     }
+    .card-title{
+      font-size:16px;
+      font-weight:700;
+      margin:0;
+      letter-spacing:-0.02em;
+    }
     .card-tag{
       padding:3px 9px;
       border-radius:999px;
@@ -201,15 +238,6 @@
       font-weight:600;
       white-space:nowrap;
     }
-    .card-title{
-      font-size:16px;
-      font-weight:700;
-      letter-spacing:-0.02em;
-      margin:0;
-    }
-    .card-body{
-      margin-top:4px;
-    }
     .price-strong{
       font-size:24px;
       font-weight:800;
@@ -219,12 +247,21 @@
     .price-strong em{
       font-style:normal;
       font-size:15px;
-      margin-left:2px;
     }
     .price-sub{
       font-size:12px;
       color:var(--text-sub);
-      margin-bottom:10px;
+      margin-bottom:8px;
+    }
+
+    /* 네온 강조 */
+    .neon-price{
+      color:#f97316;
+      text-shadow:0 0 6px rgba(248,171,96,0.8),0 0 16px rgba(248,171,96,0.7);
+    }
+    .neon-price-skt{
+      color:#ff4b55;
+      text-shadow:0 0 6px rgba(255,75,85,.9),0 0 16px rgba(255,75,85,.6);
     }
 
     .badge-row{
@@ -250,6 +287,11 @@
       background:transparent;
       border-style:dashed;
     }
+    .badge.skt{border-color:var(--skt); color:var(--skt);}
+    .badge.kt{border-color:var(--kt); color:var(--kt);}
+    .badge.lg{border-color:var(--lg); color:var(--lg);}
+    .badge.mvno{border-color:var(--mvno); color:var(--mvno);}
+    .badge.internet{border-color:var(--internet); color:var(--internet);}
 
     .card-note{
       margin-top:10px;
@@ -260,28 +302,98 @@
       line-height:1.4;
     }
 
-    /* 알뜰 / 인터넷 강조 카드 */
-    .card.emph{
-      border:1px solid #f97316;
-      box-shadow:0 8px 18px rgba(248,171,96,0.35);
+    /* 통신사 로고 느낌 라인 */
+    .carrier-row{
+      display:flex;
+      gap:6px;
+      margin-top:4px;
+      flex-wrap:wrap;
+      font-size:10px;
     }
-    .card.emph .price-strong{
-      color:#ea580c;
+    .carrier-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:3px 8px;
+      border-radius:999px;
+      color:#ffffff;
+      font-weight:600;
+    }
+    .carrier-pill span{
+      font-size:11px;
+    }
+    .carrier-pill.skt{background:var(--skt);}
+    .carrier-pill.kt{background:var(--kt);}
+    .carrier-pill.lg{background:var(--lg);}
+    .carrier-pill.mvno{background:var(--mvno);}
+    .carrier-pill.internet{background:var(--internet);}
+
+    /* SKT 기변 이미지 블럭 (CSS 가짜 디바이스) */
+    .device-visual{
+      margin-top:8px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .device-phone{
+      width:64px;
+      height:88px;
+      border-radius:18px;
+      background:linear-gradient(145deg,#111827,#4b5563);
+      position:relative;
+      box-shadow:0 8px 18px rgba(15,23,42,0.45);
+    }
+    .device-phone::before{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      top:10px;
+      bottom:10px;
+      border-radius:14px;
+      background:radial-gradient(circle at 20% 20%,#f97316,#fde68a 40%,#0ea5e9 80%);
+      opacity:.9;
+    }
+    .device-phone::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:6px;
+      width:32px;
+      height:3px;
+      border-radius:999px;
+      background:rgba(15,23,42,0.7);
+    }
+    .device-text{
+      font-size:11px;
+      color:#4b5563;
+      line-height:1.4;
+    }
+    .device-text strong{
+      display:block;
+      font-size:12px;
+      color:#111827;
     }
 
-    /* 하단 고객문의 영역 */
+    /* 하단 상담 영역 */
     .bottom-area{
       position:sticky;
       bottom:0;
       left:0;right:0;
       background:var(--bg-soft);
       border-top:1px solid var(--border-soft);
-      padding:8px 10px 10px;
+      padding:10px 12px;
       box-shadow:0 -4px 12px rgba(15,23,42,0.06);
     }
     .bottom-inner{
-      max-width:480px;
+      max-width:100%;
       margin:0 auto;
+    }
+    @media(min-width:960px){
+      .bottom-inner{
+        max-width:960px;
+      }
     }
     .bottom-text{
       font-size:11px;
@@ -307,19 +419,11 @@
       gap:6px;
       text-decoration:none;
       box-shadow:0 4px 10px rgba(15,23,42,0.04);
-      transition:background .18s ease, transform .15s ease, box-shadow .18s ease;
+      transition:.18s ease;
     }
     .btn-contact svg{
-      width:15px;
-      height:15px;
-      stroke-width:1.7;
+      width:15px;height:15px;stroke-width:1.7;
     }
-    .btn-contact:active{
-      transform:translateY(1px);
-      box-shadow:0 1px 4px rgba(15,23,42,0.2);
-    }
-
-    /* 카카오 버튼 */
     .btn-kakao{
       background:#fee500;
       border-color:#facc15;
@@ -327,13 +431,9 @@
       box-shadow:0 6px 16px rgba(180,149,0,0.55);
     }
     .btn-kakao svg{
-      width:15px;
-      height:15px;
-      fill:#111827;
       stroke:none;
+      fill:#111827;
     }
-
-    /* 최하단 안내 문구 */
     .footer-disclaimer{
       margin-top:8px;
       font-size:10px;
@@ -348,57 +448,49 @@
   </style>
 </head>
 <body>
+
 <div class="app">
 
-  <!-- 상단 안내 -->
+  <!-- 히어로 -->
   <header class="hero">
     <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
     <div class="hero-sub">
-      SK·KT·LG / 인터넷TV 현금 최대지원 / 알뜰요금 3,300원~  
+      SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~
     </div>
-    <div class="hero-chip">
-      <span class="hero-chip-dot"></span>
-      <span>상담 전에 미리 조건만 확인해보세요</span>
+    <div class="hero-row">
+      <div class="hero-chip">
+        <span class="hero-chip-dot"></span>
+        <span>상담 전에 미리 조건만 확인해보세요</span>
+      </div>
+      <div class="hero-mini">
+        <span>내부직원 전용</span>
+        <span>복지관 2층 휴대폰 매장</span>
+      </div>
     </div>
   </header>
 
-  <!-- 탭 버튼 -->
+  <!-- 탭 버튼 (순서: SKT / KT / LGU+ / 인터넷·TV / 알뜰요금) -->
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="skt">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="7" y="3" width="10" height="18" rx="2"></rect>
-        <circle cx="12" cy="17" r="1.2"></circle>
-      </svg>
+      <svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><circle cx="12" cy="17" r="1.2"/></svg>
       <span>SKT</span>
     </button>
     <button class="tab-btn" data-tab="kt">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="4" y="5" width="16" height="14" rx="2"></rect>
-        <path d="M9 9h6M9 13h3.5"></path>
-      </svg>
+      <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M9 9h6M9 13h3.5"/></svg>
       <span>KT</span>
     </button>
     <button class="tab-btn" data-tab="lg">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M9.5 11.5v4M12 9.5a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z"></path>
-      </svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.5 11.5v4M12 9.5a1.2 1.2 0 1 1 0-2.4"/></svg>
       <span>LGU+</span>
     </button>
-    <button class="tab-btn" data-tab="mvno">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="3" y="7" width="18" height="12" rx="2"></rect>
-        <path d="M7 10h3M7 13h5M15.5 13.5a2 2 0 1 0 0-4"></path>
-      </svg>
-      <span>알뜰요금</span>
-    </button>
     <button class="tab-btn" data-tab="internet">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M4.6 9h14.8M4.6 15h14.8M12 4a12 12 0 0 1 3.3 8 12 12 0 0 1-3.3 8
-                 M12 4a12 12 0 0 0-3.3 8 12 12 0 0 0 3.3 8"></path>
-      </svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M4.6 9h14.8M4.6 15h14.8M12 4a12 12 0 0 1 3.3 8 12 12 0 0 1-3.3 8
+      M12 4a12 12 0 0 0-3.3 8 12 12 0 0 0 3.3 8"/></svg>
       <span>인터넷·TV</span>
+    </button>
+    <button class="tab-btn" data-tab="mvno">
+      <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 10h3M7 13h5M15.5 13.5a2 2 0 1 0 0-4"/></svg>
+      <span>알뜰요금</span>
     </button>
   </nav>
 
@@ -409,56 +501,70 @@
     <section class="tab-panel active" data-tab-panel="skt">
       <div class="section-title"><span class="section-dot"></span>SKT 특판</div>
 
+      <!-- SK 기변 메인 카드 (네온 + 디바이스 블록) -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">SK 기변 특가</h2>
+          <h2 class="card-title">SK 기변 특가 (대표)</h2>
           <div class="card-tag">기변 특가</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">판매가 0원 <em>~</em></p>
-          <p class="price-sub">109 요금제 기준, 6개월 유지 / 기기변경 조건</p>
-          <div class="badge-row">
-            <span class="badge blue">SK 기변</span>
-            <span class="badge">109 요금제 6개월</span>
-            <span class="badge outline">재고 / 기변 가능여부 문의</span>
+        <div class="carrier-row">
+          <div class="carrier-pill skt"><span>SKT</span></div>
+        </div>
+
+        <p class="price-strong neon-price-skt">대표 모델 판매가 0원 <em>~</em></p>
+        <p class="price-sub">109 요금제 기준 / 6개월 유지 / 기기변경 조건 (모델·재고에 따라 상이)</p>
+
+        <div class="device-visual">
+          <div class="device-phone"></div>
+          <div class="device-text">
+            <strong>Galaxy / iPhone 최신모델 특판</strong>
+            예: 플래그십·폴드·플러스 라인업 위주<br>
+            정확한 모델명·색상은 재고 확인 후 안내
           </div>
+        </div>
+
+        <div class="badge-row" style="margin-top:8px;">
+          <span class="badge skt">SK 기변</span>
+          <span class="badge blue">109요금 6개월</span>
+          <span class="badge outline">재고·조건 개별 안내</span>
         </div>
       </div>
 
+      <!-- SK 기변 서브 카드 -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">SK 효도폰 / 실속형 기변</h2>
+          <div class="card-tag">효도폰</div>
+        </div>
+        <p class="price-strong">중저가 모델 특가</p>
+        <p class="price-sub">부모님, 세컨폰, 업무용 회선 등 실속형 모델 위주</p>
+
+        <div class="badge-row">
+          <span class="badge skt">SKT 기변</span>
+          <span class="badge">저가·중저가 모델</span>
+          <span class="badge outline">현재 사용 요금제 기준 상담</span>
+        </div>
+      </div>
+
+      <!-- SK 번호이동 -->
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">SK 번호이동 특판</h2>
           <div class="card-tag">번호이동</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">지원 한도 내 최대 할인</p>
-          <p class="price-sub">번호이동 / 신규 조건에 따라 지원금 변동</p>
-          <div class="badge-row">
-            <span class="badge blue">번호이동</span>
-            <span class="badge">신규/타사 → SK</span>
-            <span class="badge outline">조건별 견적 안내</span>
-          </div>
-        </div>
-      </div>
+        <p class="price-strong">추가 지원 가능</p>
+        <p class="price-sub">타사에서 SKT로 번호이동 시, 유지기간·요금제에 따라 추가지원</p>
 
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">SK 휴대폰 + 인터넷 결합</h2>
-          <div class="card-tag">결합 상담</div>
+        <div class="badge-row">
+          <span class="badge skt">번호이동</span>
+          <span class="badge">신규/타사 → SK</span>
+          <span class="badge outline">상세 조건 매장 안내</span>
         </div>
-        <div class="card-body">
-          <p class="price-strong">결합할인 + 현금지원</p>
-          <p class="price-sub">기존 SK 인터넷 / TV 보유 시 추가 할인 여부 상담</p>
-          <div class="badge-row">
-            <span class="badge blue">휴대폰 + 인터넷</span>
-            <span class="badge">가족 결합 / 온가족플랜</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="card-note">
-        ※ 실제 판매가는 재고·프로모션·가입조건에 따라 달라질 수 있습니다.<br>
-        정확한 조건은 방문 시 또는 문자/카카오 상담으로 안내드립니다.
+        <div class="card-note">
+          ※ SKT는 같은 조건이라도 <strong>프로모션·재고</strong>에 따라 지원금이 달라질 수 있습니다.<br>
+          최근 통신요금 청구서나 캡쳐를 보내주시면 가장 유리한 조건으로 비교해드립니다.
+        </div>
       </div>
     </section>
 
@@ -471,14 +577,17 @@
           <h2 class="card-title">KT 기변 특가</h2>
           <div class="card-tag">기변 특가</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">판매가 0원 <em>~</em></p>
-          <p class="price-sub">110 요금제 기준, 6개월 유지 / 결합할인 별도</p>
-          <div class="badge-row">
-            <span class="badge blue">KT 기변</span>
-            <span class="badge">110 요금제 6개월</span>
-            <span class="badge outline">기기 / 약정 조건 상담</span>
-          </div>
+        <div class="carrier-row">
+          <div class="carrier-pill kt"><span>KT</span></div>
+        </div>
+
+        <p class="price-strong">대표 모델 판매가 0원 <em>~</em></p>
+        <p class="price-sub">110 요금제 기준 / 6개월 유지 / 결합할인 별도 안내</p>
+
+        <div class="badge-row">
+          <span class="badge kt">KT 기변</span>
+          <span class="badge">110요금 6개월</span>
+          <span class="badge outline">결합·패밀리 상담</span>
         </div>
       </div>
 
@@ -487,35 +596,14 @@
           <h2 class="card-title">KT 번호이동 특판</h2>
           <div class="card-tag">번호이동</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">번호이동 추가 지원</p>
-          <p class="price-sub">타사 사용 기간/요금제에 따라 조건 달라짐</p>
-          <div class="badge-row">
-            <span class="badge blue">번호이동</span>
-            <span class="badge">장기/우수고객 우대</span>
-            <span class="badge outline">개별 견적 안내</span>
-          </div>
-        </div>
-      </div>
+        <p class="price-strong">번호이동 추가 지원</p>
+        <p class="price-sub">장기/우수고객 여부, 기존 요금제에 따라 조건 상이</p>
 
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">KT 휴대폰 + 인터넷 결합</h2>
-          <div class="card-tag">인터넷 결합</div>
+        <div class="badge-row">
+          <span class="badge kt">번호이동</span>
+          <span class="badge">프리미엄 요금제</span>
+          <span class="badge outline">개별 견적 안내</span>
         </div>
-        <div class="card-body">
-          <p class="price-strong">패키지 상담</p>
-          <p class="price-sub">휴대폰과 KT 인터넷·TV 동시 가입 시 추가 지원 상담</p>
-          <div class="badge-row">
-            <span class="badge blue">결합상품</span>
-            <span class="badge">요금 절감 / 현금 지원</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ KT 특판 조건은 시기·재고·요금제에 따라 수시로 변동됩니다.<br>
-        방문 전 상담을 통해 본인에게 가장 유리한 조건으로 안내해드립니다.
       </div>
     </section>
 
@@ -528,97 +616,40 @@
           <h2 class="card-title">LG 기변 특가</h2>
           <div class="card-tag">기변 특가</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">판매가 0원 <em>~</em></p>
-          <p class="price-sub">프리미엄 요금제 기준 / 6개월 유지 / 기기변경 조건</p>
-          <div class="badge-row">
-            <span class="badge blue">LG 기변</span>
-            <span class="badge">프리미엄 요금제</span>
-            <span class="badge outline">세부 조건 매장 상담</span>
-          </div>
+        <div class="carrier-row">
+          <div class="carrier-pill lg"><span>LG U+</span></div>
+        </div>
+
+        <p class="price-strong">대표 모델 판매가 0원 <em>~</em></p>
+        <p class="price-sub">프리미엄/중가 요금제 기준, 6개월 유지</p>
+
+        <div class="badge-row">
+          <span class="badge lg">LG 기변</span>
+          <span class="badge">프리미엄 요금제</span>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">LG 번호이동·신규</h2>
+          <h2 class="card-title">LG 번호이동 / 신규</h2>
           <div class="card-tag">번호이동</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">번호이동 / 신규 문의</p>
-          <p class="price-sub">상황에 따라 LG 신규/번호이동 조건이 더 유리한 경우 안내</p>
-          <div class="badge-row">
-            <span class="badge blue">번호이동</span>
-            <span class="badge">신규/가족 회선</span>
-            <span class="badge outline">할인/사은품 구조 설명</span>
-          </div>
-        </div>
-      </div>
+        <p class="price-strong">번호이동·신규 특판</p>
+        <p class="price-sub">효도폰·중저가폰 위주 조건도 별도 상담 가능</p>
 
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">LG 인터넷 + TV 결합</h2>
-          <div class="card-tag">결합 상담</div>
+        <div class="badge-row">
+          <span class="badge lg">번호이동</span>
+          <span class="badge">신규/가족회선</span>
         </div>
-        <div class="card-body">
-          <p class="price-strong">결합할인 + 현금 최대 지원</p>
-          <p class="price-sub">LG 인터넷 / IPTV 신규 또는 통신사 이동 시 별도 특판 진행</p>
-          <div class="badge-row">
-            <span class="badge blue">인터넷 + TV</span>
-            <span class="badge">3년 약정 / 셋탑 포함</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="card-note">
-        ※ LGU+는 지역·건물 상황(광랜/기가 가능 여부)에 따라 설치 및 요금이 달라집니다.<br>
-        주소 알려주시면 설치 가능 여부 먼저 조회해드립니다.
+        <div class="card-note">
+          ※ LGU+는 건물·층·방 구조에 따라 품질·설치 가능여부가 달라질 수 있습니다.<br>
+          주소를 알려주시면 인터넷/TV까지 함께 조회해드립니다.
+        </div>
       </div>
     </section>
 
-    <!-- 알뜰 요금 -->
-    <section class="tab-panel" data-tab-panel="mvno">
-      <div class="section-title"><span class="section-dot"></span>알뜰요금 안내</div>
-
-      <div class="card emph">
-        <div class="card-header">
-          <h2 class="card-title">알뜰요금 최저 3,300원~</h2>
-          <div class="card-tag">요금 절감</div>
-        </div>
-        <div class="card-body">
-          <p class="price-strong">월 3,300원대 저가 요금제</p>
-          <p class="price-sub">통화/데이터 사용량에 맞춰 SK·KT·LG 망 알뜰요금제 추천</p>
-          <div class="badge-row">
-            <span class="badge blue">저가 요금제</span>
-            <span class="badge">무약정 / 약정 선택형</span>
-            <span class="badge outline">요금만 줄이고 싶을 때</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">부모님 / 서브폰 요금제</h2>
-          <div class="card-tag">효도폰 / 서브폰</div>
-        </div>
-        <div class="card-body">
-          <p class="price-strong">통화 위주 / 데이터 소량</p>
-          <p class="price-sub">어르신·학생·서브폰에 맞는 실속형 요금제로 월 비용 절감</p>
-          <div class="badge-row">
-            <span class="badge blue">부모님용</span>
-            <span class="badge">학생 / 서브폰</span>
-            <span class="badge outline">현재 요금과 비교 안내</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ 알뜰요금제는 통화량·데이터 사용 패턴에 따라 추천 상품이 달라집니다.<br>
-        최근 1~2개월 휴대폰 요금/사용량 사진을 보내주시면 가장 효율적인 상품으로 안내해드립니다.
-      </div>
-    </section>
-
-    <!-- 인터넷 / TV -->
+    <!-- 인터넷/TV -->
     <section class="tab-panel" data-tab-panel="internet">
       <div class="section-title"><span class="section-dot"></span>인터넷 · TV 현금 특판</div>
 
@@ -627,13 +658,16 @@
           <h2 class="card-title">SK 인터넷 + TV</h2>
           <div class="card-tag">현금 최대</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">현금 최대 83만원대</p>
-          <p class="price-sub">약정 3년 / 요금제·채널구성에 따라 지원금 차등</p>
-          <div class="badge-row">
-            <span class="badge blue">기가라이트 / 패밀리</span>
-            <span class="badge">휴대폰 결합 시 추가할인</span>
-          </div>
+        <div class="carrier-row">
+          <div class="carrier-pill internet"><span>SKB</span></div>
+        </div>
+
+        <p class="price-strong neon-price">현금 최대 83만원대</p>
+        <p class="price-sub">3년 약정 / 채널 구성, 기가/라이트 여부에 따라 지원금 차등</p>
+
+        <div class="badge-row">
+          <span class="badge internet">기가라이트 / 패밀리</span>
+          <span class="badge">휴대폰 결합 할인</span>
         </div>
       </div>
 
@@ -642,72 +676,128 @@
           <h2 class="card-title">KT 인터넷 + TV</h2>
           <div class="card-tag">현금 + 상품권</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">현금 + 상품권 최대</p>
-          <p class="price-sub">프리미엄 채널 / 기가지니 셋탑 등 구성에 따라 별도 안내</p>
-          <div class="badge-row">
-            <span class="badge blue">기가 / 올레TV</span>
-            <span class="badge">휴대폰 3~5회선 결합 가능</span>
-          </div>
+        <div class="carrier-row">
+          <div class="carrier-pill internet"><span>KT</span></div>
+        </div>
+
+        <p class="price-strong">현금 + 상품권 구성</p>
+        <p class="price-sub">기가인터넷 / 프리미엄 채널, 기가지니 셋탑 등 옵션 선택 가능</p>
+
+        <div class="badge-row">
+          <span class="badge internet">KT 올레TV</span>
+          <span class="badge">휴대폰 3~5회선 결합</span>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">LG 인터넷 + TV</h2>
+          <h2 class="card-title">LG 인터넷 + IPTV</h2>
           <div class="card-tag">현금 지원</div>
         </div>
-        <div class="card-body">
-          <p class="price-strong">현금 최대 76만원대</p>
-          <p class="price-sub">U+tv / 넷플릭스·OTT 결합 상품 상담</p>
-          <div class="badge-row">
-            <span class="badge blue">인터넷 + OTT</span>
-            <span class="badge">결합할인 / 사은품 구조 설명</span>
-          </div>
+        <div class="carrier-row">
+          <div class="carrier-pill internet"><span>LG</span></div>
+        </div>
+
+        <p class="price-strong">현금 최대 76만원대</p>
+        <p class="price-sub">U+tv / 넷플릭스·OTT 결합 상품, 와이파이 공유기 포함 구성 상담</p>
+
+        <div class="badge-row">
+          <span class="badge internet">IPTV + OTT</span>
+          <span class="badge">3년 약정 / 설치비 별도</span>
+        </div>
+
+        <div class="card-note">
+          ※ 인터넷·TV는 주소지에 따라 설치 가능 여부와 속도가 달라집니다.<br>
+          건물·호수만 알려주시면 3사 비교 후 가장 좋은 조건으로 안내해드립니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 알뜰요금 -->
+    <section class="tab-panel" data-tab-panel="mvno">
+      <div class="section-title"><span class="section-dot"></span>알뜰 요금 특가</div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">알뜰요금 최저 3,300원</h2>
+          <div class="card-tag">가성비</div>
+        </div>
+        <div class="carrier-row">
+          <div class="carrier-pill mvno"><span>SKT/KT/LG 망</span></div>
+        </div>
+
+        <p class="price-strong">월 3,300원대 저가 요금제</p>
+        <p class="price-sub">통화·데이터 사용량에 맞춘 저가/실속형 요금제 추천</p>
+
+        <div class="badge-row">
+          <span class="badge mvno">저가 요금</span>
+          <span class="badge">무약정 / 약정 선택형</span>
+          <span class="badge outline">요금만 낮추고 싶을 때</span>
         </div>
       </div>
 
-      <div class="card-note">
-        ※ 인터넷·TV는 주소지에 따라 설치 가능 여부 및 속도가 달라집니다.<br>
-        건물/호수만 알려주시면 3사 비교 후 가장 조건 좋은 곳으로 안내해드립니다.
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">부모님 / 서브폰 / 태블릿 요금제</h2>
+          <div class="card-tag">효도폰·서브폰</div>
+        </div>
+        <p class="price-strong">통화 위주 / 데이터 소량</p>
+        <p class="price-sub">부모님, 학생, 서브폰·태블릿에 맞는 요금 구조로 비용 절감</p>
+
+        <div class="badge-row">
+          <span class="badge mvno">부모님용</span>
+          <span class="badge mvno">학생·서브폰</span>
+          <span class="badge outline">현재 요금과 비교 안내</span>
+        </div>
+
+        <div class="card-note">
+          ※ 최근 1~2개월 휴대폰 요금 청구서나 캡쳐를 보내주시면<br>
+          실제 사용량에 맞는 상품으로 다시 계산해드립니다.
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- 하단 연락처 / 카카오 버튼 -->
+  <!-- 하단 상담 영역 -->
   <div class="bottom-area">
     <div class="bottom-inner">
       <div class="bottom-text">
-        상담/예약은 통화가 어려우시면 문자 또는 카카오톡으로 남겨주셔도 됩니다.
+        통화가 어려우시면 문자나 카카오톡으로 남겨주셔도 됩니다.
       </div>
+
       <div class="bottom-buttons">
+
         <!-- 전화 -->
-        <a href="tel:042-821-2272" class="btn-contact">
+        <a href="tel:0428212272" class="btn-contact">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M6.5 5.5 9 4l3 3-1.7 2.1a11 11 0 0 0 4.6 4.6L17 12l3 3-1.5 2.5a2 2 0 0 1-2.1.9 16 16 0 0 1-9.3-4.8A16 16 0 0 1 5.6 7.6a2 2 0 0 1 .9-2.1Z"/>
+            <path d="M6.5 5.5 9 4l3 3-1.7 2.1a11 11 0 0 0 4.6 4.6L17 12l3 3-1.5 2.5a2 2 0 0 1-2.1.9 16 16 0 0 1-9.3-4.8A16 16 0 0 1 5.6 7.6a2 2 0 0 1 .9-2.1Z"></path>
           </svg>
-          <span>통화 상담 042-821-2272</span>
+          통화
         </a>
+
         <!-- 문자 -->
-        <a href="sms:010-5839-1512" class="btn-contact">
+        <a href="sms:01058391512" class="btn-contact">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="3" y="5" width="18" height="14" rx="2"></rect>
             <path d="M5 8.5 11.2 12a1 1 0 0 0 1 0L19 8.5"></path>
           </svg>
-          <span>문자 상담 010-5839-1512</span>
+          문자
         </a>
+
         <!-- 카카오톡 -->
-        <a href="https://open.kakao.com/o/s729bI5h" target="_blank" class="btn-contact btn-kakao">
+        <a href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener noreferrer" class="btn-contact btn-kakao">
           <svg viewBox="0 0 24 24">
             <path d="M12 4C7.6 4 4 6.9 4 10.4 4 12.8 5.6 14.9 8.2 16L7.5 19c-.1.4.3.8.7.6l3.7-2
                      c.4 0 .7.1 1.1.1 4.4 0 8-2.9 8-6.4C21 6.9 16.4 4 12 4z"/>
           </svg>
-          <span>카카오톡 오픈채팅</span>
+          카카오톡
         </a>
+
       </div>
+
       <div class="footer-disclaimer">
-        ※ 위 조건은 이해를 돕기 위한 예시이며, 실제 판매가는 통신사 프로모션·제휴카드·재고 등에 따라 달라질 수 있습니다.
+        ※ 위 조건은 이해를 돕기 위한 예시이며, 실제 판매가는 통신사 프로모션·재고·가입조건 등에 따라 달라질 수 있습니다.
       </div>
     </div>
   </div>
@@ -715,7 +805,6 @@
 </div>
 
 <script>
-  // 탭 전환 스크립트
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels  = document.querySelectorAll('.tab-panel');
 
@@ -729,7 +818,6 @@
       tabPanels.forEach(panel => {
         if(panel.getAttribute('data-tab-panel') === target){
           panel.classList.add('active');
-          // 패널 열릴 때 살짝 스크롤 위로
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }else{
           panel.classList.remove('active');
@@ -738,5 +826,6 @@
     });
   });
 </script>
+
 </body>
 </html>
