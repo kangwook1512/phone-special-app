@@ -122,7 +122,7 @@
     }
 
     /* 컨텐츠/패널 */
-    .content{padding:14px 14px 140px} /* 하단 상태바 여유 */
+    .content{padding:14px 14px 34px}
     .tab-panel{display:none}
     .tab-panel.active{display:block}
     .section-title{
@@ -137,7 +137,7 @@
       box-shadow:0 0 0 7px rgba(14,165,233,0.16);
     }
 
-    /* 카드: 최대 튀는 디자인 */
+    /* 카드: 대안2(카드 자체가 간판) */
     .card{
       position:relative;
       border-radius:var(--radius);
@@ -281,82 +281,11 @@
       box-shadow:0 18px 30px rgba(180,149,0,0.28);
     }
 
-    /* 하단 상태 안내 바 (성지 간판) */
-    .statusbar{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      z-index:50;
-
-      background:rgba(255,255,255,0.93);
-      backdrop-filter:saturate(200%) blur(12px);
-      border-top:1px solid rgba(15,23,42,0.10);
-      box-shadow:0 -18px 40px rgba(15,23,42,0.14);
-
-      padding:12px 14px 14px;
-    }
-    .status-inner{
-      max-width:1100px;
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .status-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .status-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-    .status-dot{
-      width:12px; height:12px; border-radius:50%;
-      background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
-      box-shadow:0 0 0 8px rgba(14,165,233,0.18);
-      flex:0 0 auto;
-    }
-    .status-current{
-      font-size:20px;
-      font-weight:1000;
-      letter-spacing:-0.05em;
-      line-height:1.1;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      max-width:70vw;
-    }
-    .status-hours{
-      font-size:15px;
-      font-weight:1000;
-      color:#0f172a;
-      background:#f1f5f9;
-      border:1px solid rgba(15,23,42,0.10);
-      padding:10px 12px;
-      border-radius:999px;
-      box-shadow:0 12px 22px rgba(15,23,42,0.08);
-      white-space:nowrap;
-    }
-    .status-sub{
-      font-size:14px;
-      font-weight:1000;
-      color:#334155;
-      letter-spacing:-0.02em;
-      line-height:1.25;
-    }
-
     @media(max-width:420px){
       .hero-title{font-size:28px}
       .card-title{font-size:28px}
       .price{font-size:42px}
       .subtext{font-size:18px}
-      .status-current{font-size:19px}
-      .status-hours{font-size:14px}
-      .status-sub{font-size:13px}
     }
   </style>
 </head>
@@ -406,134 +335,12 @@
     </main>
   </div>
 
-  <!-- 하단 상태바 -->
-  <div class="statusbar">
-    <div class="status-inner">
-      <div class="status-top">
-        <div class="status-left">
-          <span class="status-dot" id="statusDot"></span>
-          <div class="status-current" id="statusCurrent">현재: SKT 기변 특가 진행중</div>
-        </div>
-        <div class="status-hours" id="statusHours">상담시간 09:30 ~ 18:30</div>
-      </div>
-      <div class="status-sub" id="statusSub">
-        조건은 <b>각 카드 기준</b> · 통화/문자/오픈카톡 즉시
-      </div>
-    </div>
-  </div>
-
   <script>
-    /* =========================
-       네가 앞으로 만지는 것 2개
-       1) 오늘 집중 탭 1줄 변경
-       2) data.csv 내용 채우기
-    ========================= */
-
-    // ✅ 오늘 집중 탭: "skt" | "kt" | "lg" | "internet" | "mvno"
-    const FOCUS_TODAY = "skt";
-
     // 연락처(고정)
     const OPEN_KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
     const CALL_TEL = "0428212272";
     const SMS_NUM  = "01058391512";
     const CSV_URL  = "data.csv";
-
-    // 상담 가능 시간 (원하면 여기만 바꾸면 끝)
-    const BUSINESS = {
-      openHour: 9, openMin: 30,
-      closeHour: 18, closeMin: 30,
-      weekendOpen: false
-    };
-
-    // 탭별 간판 문구 (집중/일반)
-    const TAB_SIGN = {
-      skt: {
-        focusedMain: "🔥 오늘은 SKT 집중",
-        main: "현재: SKT 기변 특가 진행중",
-        sub: "SKT 조건은 카드 기준 · 기변/이동 재고 변동"
-      },
-      kt: {
-        focusedMain: "🔥 오늘은 KT 집중",
-        main: "현재: KT 이동/기변 특가 진행중",
-        sub: "KT 조건은 카드 기준 · 요금제/유지기간 확인"
-      },
-      lg: {
-        focusedMain: "🔥 오늘은 LGU+ 집중",
-        main: "현재: LGU+ 특가 진행중",
-        sub: "LGU+ 조건은 카드 기준 · 재고/색상 변동"
-      },
-      internet: {
-        focusedMain: "🔥 오늘은 인터넷·TV 집중",
-        main: "현재: 인터넷·TV 현금 특가",
-        sub: "설치/주소지에 따라 지원금 변동 (카드 기준)"
-      },
-      mvno: {
-        focusedMain: "🔥 오늘은 알뜰요금 집중",
-        main: "현재: 알뜰요금 초저가 진행중",
-        sub: "사용량 맞춤 추천 · 즉시개통 가능 (카드 기준)"
-      }
-    };
-
-    // 상태바 요소
-    const statusCurrent = document.getElementById("statusCurrent");
-    const statusSub = document.getElementById("statusSub");
-    const statusHours = document.getElementById("statusHours");
-    const statusDot = document.getElementById("statusDot");
-
-    const DOT_COLOR = {
-      skt: "var(--skt)",
-      kt: "var(--kt)",
-      lg: "var(--lg)",
-      internet: "var(--internet)",
-      mvno: "var(--mvno)"
-    };
-
-    function pad2(n){ return String(n).padStart(2,"0"); }
-
-    function isBusinessOpen(now){
-      const day = now.getDay(); // 0=일 6=토
-      const isWeekend = (day === 0 || day === 6);
-      if(isWeekend && !BUSINESS.weekendOpen) return false;
-
-      const open = new Date(now);
-      open.setHours(BUSINESS.openHour, BUSINESS.openMin, 0, 0);
-
-      const close = new Date(now);
-      close.setHours(BUSINESS.closeHour, BUSINESS.closeMin, 0, 0);
-
-      return now >= open && now <= close;
-    }
-
-    function updateStatusBar(tabKey){
-      const now = new Date();
-      const openText = `상담시간 ${pad2(BUSINESS.openHour)}:${pad2(BUSINESS.openMin)} ~ ${pad2(BUSINESS.closeHour)}:${pad2(BUSINESS.closeMin)}`;
-      const sign = TAB_SIGN[tabKey] || { focusedMain:"🔥 오늘은 특가 집중", main:"현재: 특가 진행중", sub:"조건은 카드 기준" };
-
-      const openNow = isBusinessOpen(now);
-      const isFocus = (tabKey === FOCUS_TODAY);
-
-      // 메인(간판)
-      statusCurrent.textContent = isFocus ? sign.focusedMain : sign.main;
-
-      // 점 색상(탭별)
-      statusDot.style.background = DOT_COLOR[tabKey] || "linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%)";
-
-      // 집중이면 더 빡세게
-      if(isFocus){
-        statusDot.style.boxShadow = "0 0 0 10px rgba(255,59,74,0.18), 0 0 22px rgba(255,59,74,0.32)";
-      }else{
-        statusDot.style.boxShadow = "0 0 0 8px rgba(14,165,233,0.18)";
-      }
-
-      // 보조 문구(시간 자동)
-      if(openNow){
-        statusSub.innerHTML = `${sign.sub} · <b>통화/문자/오픈카톡 즉시</b>`;
-        statusHours.textContent = openText + " · 상담가능";
-      }else{
-        statusSub.innerHTML = `${sign.sub} · 지금은 <b>카톡/문자</b> 남겨주면 순차 답변`;
-        statusHours.textContent = openText + " · 상담시간 외";
-      }
-    }
 
     /* ===== 탭 전환 ===== */
     const tabButtons = document.querySelectorAll(".tab-btn");
@@ -543,9 +350,7 @@
       tabButtons.forEach(b => b.classList.toggle("active", b.dataset.tab === tabKey));
       panels.forEach(p => p.classList.toggle("active", p.dataset.panel === tabKey));
       window.scrollTo({ top: 0, behavior: "smooth" });
-      updateStatusBar(tabKey);
     }
-
     tabButtons.forEach(btn => btn.addEventListener("click", () => activateTab(btn.dataset.tab)));
 
     /* ===== CSV 파싱 ===== */
@@ -671,15 +476,8 @@
       `;
     });
 
-    // 초기 탭(SK) + 상태바
+    // 초기 탭(SK)
     activateTab("skt");
-
-    // 시간 자동 갱신 (1분마다)
-    setInterval(() => {
-      const activeBtn = document.querySelector(".tab-btn.active");
-      const tabKey = activeBtn ? activeBtn.dataset.tab : "skt";
-      updateStatusBar(tabKey);
-    }, 60 * 1000);
   </script>
 </body>
 </html>
