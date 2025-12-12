@@ -1,1128 +1,270 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>복지관 2층 휴대폰 특판 안내</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>복지관 2층 휴대폰 특판 안내</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json" />
+<link rel="manifest" href="manifest.json" />
 
-  <!-- Google tag (gtag.js) : GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-36QKYC2X2Q"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-36QKYC2X2Q');
-  </script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-36QKYC2X20"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-36QKYC2X20');
+</script>
 
-  <!-- service worker 등록 (이 부분은 건드리지 마세요) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .catch(err => console.log('SW 등록 실패:', err));
-      });
-    }
-  </script>
+<!-- Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+</script>
 
-  <style>
-    /* ===== 공통 색상/레이아웃 (수정 비추천) ===== */
-    :root{
-      --bg-main:#ffffff;
-      --bg-soft:#f8fafc;
-      --border-soft:#e2e8f0;
-      --text-main:#0f172a;
-      --text-sub:#475569;
-      --blue:#2563eb;
-      --blue-soft:#dbeafe;
-      --blue-strong:#1d4ed8;
-      --accent-mint:#e7fdf9;
-      --shadow-soft:0 6px 16px rgba(15,23,42,0.08);
-      --radius-card:18px;
+<style>
+/* ===== 기본 변수 ===== */
+:root{
+  --bg:#ffffff;
+  --text:#020617;
+  --sub:#334155;
+  --border:#e2e8f0;
+  --radius:18px;
 
-      --skt:#ff4b55;
-      --kt:#111827;
-      --lg:#b91c91;
-      --mvno:#16a34a;
-      --internet:#f97316;
-    }
+  --blue:#2563eb;
+  --skt:#ff4b55;
+  --kt:#111827;
+  --lg:#b91c91;
+  --internet:#f97316;
+  --mvno:#16a34a;
+}
 
-    *{ box-sizing:border-box; }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
+  color:var(--text);
+}
 
-    body{
-      margin:0;
-      padding:0;
-      background:var(--bg-main);
-      color:var(--text-main);
-      font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
-    }
+.app{
+  max-width:960px;
+  margin:0 auto;
+  min-height:100vh;
+  background:#fff;
+}
 
-    .app{
-      width:100%;
-      max-width:100%;
-      margin:0 auto;
-      min-height:100vh;
-      background:var(--bg-main);
-      display:flex;
-      flex-direction:column;
-    }
-    @media (min-width:960px){
-      .app{
-        max-width:960px;
-        margin:0 auto;
-        border-radius:24px;
-        box-shadow:0 12px 30px rgba(15,23,42,0.12);
-        overflow:hidden;
-      }
-    }
+/* ===== 상단 ===== */
+.hero{
+  padding:22px;
+  background:linear-gradient(180deg,#ecfeff,#ffffff);
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  margin:0 0 6px;
+  font-size:22px;
+  font-weight:900;
+}
+.hero p{
+  margin:0;
+  font-size:12px;
+  color:#475569;
+}
 
-    /* 상단 히어로 */
-    .hero{
-      background:linear-gradient(180deg,var(--accent-mint) 0%,#f6ffff 100%);
-      padding:18px 22px 22px;
-      border-bottom-left-radius:24px;
-      border-bottom-right-radius:24px;
-      box-shadow:0 6px 20px rgba(15,23,42,0.08);
-    }
-    .hero-title{
-      font-size:22px;
-      font-weight:800;
-      letter-spacing:-0.03em;
-      margin:0 0 6px;
-    }
-    .hero-sub{
-      font-size:12px;
-      color:#334155;
-      margin-bottom:12px;
-    }
-    .hero-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .hero-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#0f172a;
-      color:#e5f3ff;
-      font-size:11px;
-      box-shadow:0 8px 18px rgba(15,23,42,0.35);
-    }
-    .hero-chip-dot{
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      background:#22c55e;
-      box-shadow:0 0 0 4px rgba(34,197,94,0.35);
-    }
-    .hero-mini{
-      display:flex;
-      gap:6px;
-      font-size:11px;
-      color:#0f172a;
-      opacity:.9;
-    }
-    .hero-mini span{
-      padding:3px 7px;
-      border-radius:999px;
-      border:1px solid rgba(15,23,42,0.08);
-      background:#ffffffb3;
-    }
+/* ===== 탭 ===== */
+.tab-bar{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:10;
+}
+.tab-btn{
+  flex:1;
+  border:none;
+  border-radius:999px;
+  padding:14px 6px;
+  font-size:15px;
+  font-weight:800;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+.tab-btn.active{
+  background:var(--blue);
+  color:#fff;
+  box-shadow:0 0 14px rgba(0,0,0,.3);
+}
 
-    /* 탭 바 */
-    .tab-bar{
-      display:flex;
-      padding:8px 10px 0;
-      gap:8px;
-      background:var(--bg-main);
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-    .tab-btn{
-      flex:1;
-      border:none;
-      outline:none;
-      border-radius:999px;
-      padding:10px 4px;
-      font-size:13px;
-      font-weight:600;
-      background:#e5e7eb;
-      color:#4b5563;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      cursor:pointer;
-      transition:background .2s ease, color .2s ease, box-shadow .2s ease, transform .18s ease;
-    }
-    .tab-btn svg{
-      width:16px;
-      height:16px;
-      stroke-width:1.6;
-    }
-    .tab-btn.active{
-      background:var(--blue);
-      color:#f9fafb;
-      box-shadow:0 6px 14px rgba(37,99,235,0.4);
-      transform:translateY(-1px);
-    }
+/* ===== 컨텐츠 ===== */
+.content{padding:14px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-    /* 컨텐츠 */
-    .content{
-      padding:14px 14px 90px;
-      flex:1;
-      background:var(--bg-main);
-    }
-    .tab-panel{
-      display:none;
-      animation:fadeSlide .28s ease forwards;
-    }
-    .tab-panel.active{
-      display:block;
-    }
-    @keyframes fadeSlide{
-      from{opacity:0; transform:translateY(8px);}
-      to{opacity:1; transform:translateY(0);}
-    }
+/* ===== 카드 ===== */
+.card{
+  position:relative;
+  background:#fff;
+  border-radius:var(--radius);
+  border:2px solid rgba(0,0,0,.08);
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+}
+.card-title{
+  font-size:22px;
+  font-weight:900;
+  margin:0 0 6px;
+}
+.price-strong{
+  font-size:32px;
+  font-weight:900;
+  margin:6px 0;
+}
+.price-strong.free{color:#16a34a;text-shadow:0 0 18px rgba(22,163,74,.6)}
+.price-strong.minus{color:#dc2626;text-shadow:0 0 18px rgba(220,38,38,.6)}
+.price-strong.cash{color:#f97316;text-shadow:0 0 18px rgba(249,115,22,.6)}
+.price-sub{
+  font-size:15px;
+  font-weight:700;
+  color:#1e293b;
+}
 
-    .section-title{
-      font-size:14px;
-      font-weight:700;
-      color:#64748b;
-      margin:4px 2px 10px;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .section-dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--blue);
-      box-shadow:0 0 0 4px rgba(37,99,235,0.18);
-    }
+/* ===== 배지 ===== */
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badge{
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  border:2px solid currentColor;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+.badge.skt{color:var(--skt)}
+.badge.kt{color:var(--kt)}
+.badge.lg{color:var(--lg)}
+.badge.internet{color:var(--internet)}
+.badge.mvno{color:var(--mvno)}
 
-    /* 카드 기본 */
-    .card{
-      background:#ffffff;
-      border-radius:var(--radius-card);
-      padding:14px 14px 12px;
-      margin-bottom:12px;
-      border:1px solid var(--border-soft);
-      box-shadow:var(--shadow-soft);
-    }
-    .card-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:8px;
-      margin-bottom:6px;
-    }
-    .card-title{
-      font-size:16px;
-      font-weight:700;
-      margin:0;
-      letter-spacing:-0.02em;
-    }
-    .card-tag{
-      padding:3px 9px;
-      border-radius:999px;
-      background:#eff6ff;
-      border:1px solid var(--blue-soft);
-      color:var(--blue-strong);
-      font-size:11px;
-      font-weight:600;
-      white-space:nowrap;
-    }
-    .price-strong{
-      font-size:20px;
-      font-weight:800;
-      color:var(--blue);
-      margin:2px 0 4px;
-    }
-    .price-sub{
-      font-size:12px;
-      color:var(--text-sub);
-      margin-bottom:8px;
-    }
+/* ===== 오늘 특가 ===== */
+@keyframes pulse{
+  0%{box-shadow:0 0 0 rgba(0,0,0,0)}
+  50%{box-shadow:0 0 32px rgba(37,99,235,.7)}
+  100%{box-shadow:0 0 0 rgba(0,0,0,0)}
+}
+.card.today{
+  animation:pulse 1.6s infinite;
+}
+.card.today::before{
+  content:"🔥 오늘 특가";
+  position:absolute;
+  top:-12px;
+  right:16px;
+  background:linear-gradient(135deg,#ff7a18,#ff3d00);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  box-shadow:0 0 22px rgba(255,61,0,.7);
+}
 
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-    }
-    .badge{
-      font-size:11px;
-      padding:5px 9px;
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      background:#f9fafb;
-      color:#1f2937;
-    }
-    .badge.blue{
-      background:#dbeafe;
-      border-color:#bfdbfe;
-      color:#1d4ed8;
-      font-weight:600;
-    }
-    .badge.outline{
-      background:transparent;
-      border-style:dashed;
-    }
-    .badge.skt{border-color:var(--skt); color:var(--skt);}
-    .badge.kt{border-color:var(--kt); color:var(--kt);}
-    .badge.lg{border-color:var(--lg); color:var(--lg);}
-    .badge.mvno{border-color:var(--mvno); color:var(--mvno);}
-    .badge.internet{border-color:var(--internet); color:var(--internet);}
-
-    /* 이미지 슬롯 (사진 쓸 때만 사용) */
-    .card-img{
-      margin:6px 0 8px;
-      border-radius:12px;
-      overflow:hidden;
-    }
-    .card-img img{
-      width:100%;
-      display:block;
-      border-radius:12px;
-    }
-
-    .card-note{
-      margin-top:10px;
-      padding-top:8px;
-      border-top:1px dashed #e2e8f0;
-      font-size:11px;
-      color:#94a3b8;
-      line-height:1.4;
-    }
-
-    /* 통신사 pill */
-    .carrier-row{
-      display:flex;
-      gap:6px;
-      margin-bottom:4px;
-      flex-wrap:wrap;
-      font-size:10px;
-    }
-    .carrier-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-      padding:3px 8px;
-      border-radius:999px;
-      color:#ffffff;
-      font-weight:600;
-      font-size:11px;
-    }
-    .carrier-pill.skt{background:var(--skt);}
-    .carrier-pill.kt{background:var(--kt);}
-    .carrier-pill.lg{background:var(--lg);}
-    .carrier-pill.mvno{background:var(--mvno);}
-    .carrier-pill.internet{background:var(--internet);}
-
-    /* 하단 상담 영역 */
-    .bottom-area{
-      position:sticky;
-      bottom:0;
-      left:0;right:0;
-      background:var(--bg-soft);
-      border-top:1px solid var(--border-soft);
-      padding:10px 12px;
-      box-shadow:0 -4px 12px rgba(15,23,42,0.06);
-    }
-    .bottom-inner{
-      max-width:100%;
-      margin:0 auto;
-    }
-    @media(min-width:960px){
-      .bottom-inner{ max-width:960px; }
-    }
-    .bottom-text{
-      font-size:11px;
-      color:#64748b;
-      margin-bottom:6px;
-    }
-    .bottom-buttons{
-      display:flex;
-      gap:6px;
-    }
-    .btn-contact{
-      flex:1;
-      border-radius:999px;
-      border:1px solid #cbd5e1;
-      background:#ffffff;
-      padding:8px 6px;
-      font-size:12px;
-      font-weight:600;
-      color:#0f172a;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      text-decoration:none;
-      box-shadow:0 4px 10px rgba(15,23,42,0.04);
-      transition:.18s ease;
-    }
-    .btn-contact svg{
-      width:15px;height:15px;stroke-width:1.7;
-    }
-    .btn-kakao{
-      background:#fee500;
-      border-color:#facc15;
-      color:#111827;
-      box-shadow:0 6px 16px rgba(180,149,0,0.55);
-    }
-    .btn-kakao svg{
-      stroke:none;
-      fill:#111827;
-    }
-    .footer-disclaimer{
-      margin-top:8px;
-      font-size:10px;
-      color:#9ca3af;
-      line-height:1.4;
-    }
-
-    @media (max-width:360px){
-      .hero-title{font-size:20px;}
-      .price-strong{font-size:18px;}
-    }
-  </style>
+/* ===== 하단 ===== */
+.bottom{
+  position:sticky;
+  bottom:0;
+  background:#f8fafc;
+  border-top:1px solid var(--border);
+  padding:10px;
+}
+.bottom a{
+  display:inline-block;
+  width:32%;
+  text-align:center;
+  padding:10px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:800;
+  background:#fff;
+  border:1px solid var(--border);
+}
+.bottom .kakao{
+  background:#fee500;
+  border:none;
+}
+</style>
 </head>
-<body>
 
+<body>
 <div class="app">
 
-  <!-- ===== 상단 안내 ===== -->
-  <header class="hero">
-    <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
-    <div class="hero-sub">
-      SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~
-    </div>
-    <div class="hero-row">
-      <div class="hero-chip">
-        <span class="hero-chip-dot"></span>
-        <span>상담 전에 미리 조건만 확인해보세요</span>
-      </div>
-      <div class="hero-mini">
-        <span>내부직원 전용</span>
-        <span>복지관 2층 휴대폰 매장</span>
-      </div>
-    </div>
-  </header>
+<header class="hero">
+  <h1>복지관 2층 휴대폰 특판</h1>
+  <p>SK · KT · LG · 인터넷 · 알뜰요금</p>
+</header>
 
-  <!-- ===== 탭 버튼 (순서: SKT / KT / LG / 인터넷·TV / 알뜰요금) ===== -->
-  <nav class="tab-bar">
-    <button class="tab-btn active" data-tab="skt">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="7" y="3" width="10" height="18" rx="2"></rect>
-        <circle cx="12" cy="17" r="1.2"></circle>
-      </svg>
-      <span>SKT</span>
-    </button>
-    <button class="tab-btn" data-tab="kt">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="4" y="5" width="16" height="14" rx="2"></rect>
-        <path d="M9 9h6M9 13h3.5"></path>
-      </svg>
-      <span>KT</span>
-    </button>
-    <button class="tab-btn" data-tab="lg">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M9.5 11.5v4M12 9.5a1.2 1.2 0 1 1 0-2.4"></path>
-      </svg>
-      <span>LGU+</span>
-    </button>
-    <button class="tab-btn" data-tab="internet">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M4.6 9h14.8M4.6 15h14.8M12 4a12 12 0 0 1 3.3 8 12 12 0 0 1-3.3 8
-                 M12 4a12 12 0 0 0-3.3 8 12 12 0 0 0 3.3 8"></path>
-      </svg>
-      <span>인터넷·TV</span>
-    </button>
-    <button class="tab-btn" data-tab="mvno">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="3" y="7" width="18" height="12" rx="2"></rect>
-        <path d="M7 10h3M7 13h5M15.5 13.5a2 2 0 1 0 0-4"></path>
-      </svg>
-      <span>알뜰요금</span>
-    </button>
-  </nav>
+<nav class="tab-bar">
+  <button class="tab-btn active" data-tab="skt">SKT</button>
+  <button class="tab-btn" data-tab="kt">KT</button>
+  <button class="tab-btn" data-tab="lg">LGU+</button>
+  <button class="tab-btn" data-tab="internet">인터넷</button>
+  <button class="tab-btn" data-tab="mvno">알뜰</button>
+</nav>
 
-  <!-- ===== 컨텐츠 영역 ===== -->
-  <main class="content">
+<main class="content">
 
-    <!-- ================= SKT 탭 ================= -->
-    <section class="tab-panel active" data-tab-panel="skt">
-      <div class="section-title">
-        <span class="section-dot"></span>SKT 특판
-      </div>
-
-      <!-- ★★★ SKT 카드 1 ★★★ -->
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">S25</h2>
-          <div class="card-tag">[태그 예) 기기변경]</div>
-        </div>
-
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-
-        <p class="price-strong">[판매가 0원]</p>
-        <p class="price-sub">[109요금제 기준 / 6개월 유지 / 기기변경 조건 (재고·모델별 상이]</p>
-
-        <div class="badge-row">
-          <span class="badge skt">[배지1) SK 기변]</span>
-          <span class="badge">[배지2) 109요금 개통]</span>
-          <span class="badge outline">[배지3) 부가 없음]</span>
-        </div>
-
-        <!-- 이미지 쓰고 싶으면 이 블록 주석 해제하고 파일명만 바꿔서 사용 -->
-        <!--
-        <div class="card-img">
-          <img src="images/2Y.PNG" alt="SKT 특판 이미지 1">
-        </div>
-        -->
-      </div>
-
-      <!-- ★★★ SKT 카드 2 ★★★ -->
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">아이폰17</h2>
-          <div class="card-tag">[태그 예) 기기변경]</div>
-        </div>
-
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-
-        <p class="price-strong">[판매가 39만원]</p>
-        <p class="price-sub">[109요금제 기준 / 6개월 유지 / 기기변경 조건 (재고·모델별 상이]</p>
-
-        <div class="badge-row">
-          <span class="badge skt">[배지1]SK 기변</span>
-          <span class="badge">[배지2]109 요금 개통</span>
-          <span class="badge outline">[배지3]부가 없음</span>
-        </div>
-      </div>
-
-      <!-- ★★★ SKT 카드 3~6 (슬롯) ★★★ -->
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge skt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge skt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge skt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge skt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ SKT 영역은 카드 6개 슬롯이 준비되어 있습니다.  
-        제목을 실제 내용으로 바꾼 카드만 화면에 보입니다.
-      </div>
-    </section>
-
-    <!-- ================= KT 탭 ================= -->
-    <section class="tab-panel" data-tab-panel="kt">
-      <div class="section-title">
-        <span class="section-dot"></span>KT 특판
-      </div>
-
-      <!-- KT 카드 1 -->
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">S25</h2>
-          <div class="card-tag">[예) 기기변경]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[판매가 -6만원]</p>
-        <p class="price-sub">[110요금제 기준 / 6개월 유지 / 기기변경 조건]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]KT 기변</span>
-          <span class="badge">[배지2]110요금 개통</span>
-          <span class="badge outline">[배지3]부가 있음</span>
-        </div>
-      </div>
-
-      <!-- KT 카드 2 -->
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">플립5 512</h2>
-          <div class="card-tag">[태그]기기변경</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[판매가 -25만원]</p>
-        <p class="price-sub">[90요금제 기준 / 6개월 유지 / 번호이동 조건]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]TKT 이동</span>
-          <span class="badge">[배지2] 90요금 개통</span>
-          <span class="badge outline">[배지3] 부가 있음</span>
-        </div>
-      </div>
-
-      <!-- KT 카드 3~6 슬롯 -->
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="kt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill kt"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge kt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ KT 영역도 카드 6개 슬롯이 준비되어 있습니다.
-      </div>
-    </section>
-
-    <!-- ================= LGU+ 탭 ================= -->
-    <section class="tab-panel" data-tab-panel="lg">
-      <div class="section-title">
-        <span class="section-dot"></span>LGU+ 특판
-      </div>
-
-      <!-- LG 카드 1~6 (슬롯) -->
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) LG 기변]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="lg">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill lg"><span>LG U+</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge lg">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ LGU+ 영역도 카드 6개 슬롯.
-      </div>
-    </section>
-
-    <!-- ================= 인터넷·TV 탭 ================= -->
-    <section class="tab-panel" data-tab-panel="internet">
-      <div class="section-title">
-        <span class="section-dot"></span>인터넷 · TV 현금 특판
-      </div>
-
-      <!-- 인터넷 카드 1~6 -->
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) SK 인터넷]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>SKB</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구 예) 현금 최대 83만원대]</p>
-        <p class="price-sub">[설명 예) 약정/채널/기가 여부에 따라 변동]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) KT 인터넷]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>KT</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) LG 인터넷]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>LG</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>인터넷</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>인터넷</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="internet">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill internet"><span>인터넷</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge internet">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ 인터넷·TV 영역 카드 6개 슬롯.
-      </div>
-    </section>
-
-    <!-- ================= 알뜰요금 탭 ================= -->
-    <section class="tab-panel" data-tab-panel="mvno">
-      <div class="section-title">
-        <span class="section-dot"></span>알뜰 요금 특가
-      </div>
-
-      <!-- 알뜰 카드 1~6 -->
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) 최저 3,300원]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구 예) 월 3,300원~]</p>
-        <p class="price-sub">[설명 예) 통화/데이터 사용량 맞춤]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[예) 부모님/서브폰]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card card-slot" data-carrier="mvno">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-        <div class="carrier-row">
-          <div class="carrier-pill mvno"><span>알뜰</span></div>
-        </div>
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-        <div class="badge-row">
-          <span class="badge mvno">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <div class="card-note">
-        ※ 알뜰요금 영역 카드 6개 슬롯.  
-        사용 안 하는 카드는 제목을 그대로 "사용안함"으로 두면 자동으로 숨겨집니다.
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ===== 하단 상담 영역 ===== -->
-  <div class="bottom-area">
-    <div class="bottom-inner">
-      <div class="bottom-text">
-        통화가 어려우시면 문자나 카카오톡으로 남겨주셔도 됩니다.
-      </div>
-      <div class="bottom-buttons">
-        <a href="tel:0428212272" class="btn-contact">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M6.5 5.5 9 4l3 3-1.7 2.1a11 11 0 0 0 4.6 4.6L17 12l3 3-1.5 2.5a2 2 0 0 1-2.1.9 16 16 0 0 1-9.3-4.8A16 16 0 0 1 5.6 7.6a2 2 0 0 1 .9-2.1Z"></path>
-          </svg>
-          통화
-        </a>
-        <a href="sms:01058391512" class="btn-contact">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-            <path d="M5 8.5 11.2 12a1 1 0 0 0 1 0L19 8.5"></path>
-          </svg>
-          문자
-        </a>
-        <a href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener noreferrer" class="btn-contact btn-kakao">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 4C7.6 4 4 6.9 4 10.4 4 12.8 5.6 14.9 8.2 16L7.5 19c-.1.4.3.8.7.6l3.7-2
-                     c.4 0 .7.1 1.1.1 4.4 0 8-2.9 8-6.4C21 6.9 16.4 4 12 4z"/>
-          </svg>
-          카카오톡
-        </a>
-      </div>
-      <div class="footer-disclaimer">
-        ※ 위 조건은 이해를 돕기 위한 예시이며, 실제 판매가는 통신사 프로모션·재고·가입조건 등에 따라 달라질 수 있습니다.
-      </div>
+<section class="tab-panel active" data-tab-panel="skt">
+  <div class="card card-slot today" data-carrier="skt">
+    <h2 class="card-title">S25</h2>
+    <p class="price-strong free">판매가 0원</p>
+    <p class="price-sub">109요금 / 6개월 / 기기변경</p>
+    <div class="badge-row">
+      <span class="badge skt">SK 기변</span>
+      <span class="badge">109요금</span>
+      <span class="badge">부가 없음</span>
     </div>
   </div>
+</section>
+
+<section class="tab-panel" data-tab-panel="kt"></section>
+<section class="tab-panel" data-tab-panel="lg"></section>
+<section class="tab-panel" data-tab-panel="internet"></section>
+<section class="tab-panel" data-tab-panel="mvno"></section>
+
+</main>
+
+<div class="bottom">
+  <a href="tel:0428212272">통화</a>
+  <a href="sms:01058391512">문자</a>
+  <a href="https://open.kakao.com/o/s729bI5h" class="kakao">카카오톡</a>
+</div>
 
 </div>
 
 <script>
-  // 탭 전환 (이 부분은 건드리지 마세요)
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabPanels  = document.querySelectorAll('.tab-panel');
-
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-tab');
-
-      tabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      tabPanels.forEach(panel => {
-        if(panel.getAttribute('data-tab-panel') === target){
-          panel.classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }else{
-          panel.classList.remove('active');
-        }
-      });
+/* 탭 */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p=>{
+      p.classList.toggle('active',p.dataset.tabPanel===btn.dataset.tab);
     });
-  });
+  }
+});
 
-  // ★ 카드 자동 숨기기 로직
-  // - .card-slot 안의 .card-title 텍스트가
-  //   빈 문자열이거나 "사용안함"이면 해당 카드를 화면에서 숨김
-  document.querySelectorAll('.card-slot').forEach(card => {
-    const titleEl = card.querySelector('.card-title');
-    if(!titleEl) return;
-    const t = (titleEl.textContent || '').trim();
-    if(t === '' || t === '사용안함'){
-      card.style.display = 'none';
-    }
-  });
+/* 사용안함 카드 숨김 */
+document.querySelectorAll('.card-slot').forEach(card=>{
+  const t=card.querySelector('.card-title');
+  if(!t||t.textContent.trim()==='사용안함'){
+    card.style.display='none';
+  }
+});
 </script>
 
 </body>
