@@ -1,526 +1,731 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<title>복지관 2층 휴대폰 특판 안내</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>복지관 2층 휴대폰 특판 안내</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link rel="manifest" href="manifest.json" />
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
 
-<!-- (선택) Google Analytics: 측정ID로 바꾸기 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
+  <!-- ✅ Google Analytics (GA4) -->
+  <!-- ※ 측정ID만 바뀌면 아래 G-XXXXXXXXXX 부분만 교체 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-360KYCC2X0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-360KYCC2X0');
+  </script>
 
-<!-- service worker -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-  });
-}
-</script>
+  <!-- service worker 등록 (이 부분은 건드리지 마세요) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .catch(err => console.log('SW 등록 실패:', err));
+      });
+    }
+  </script>
 
-<style>
-:root{
-  --bg:#ffffff;
-  --text:#020617;
-  --sub:#334155;
-  --border:#e2e8f0;
-  --radius:18px;
+  <style>
+    :root{
+      --bg:#ffffff;
+      --bgSoft:#f6f8fb;
+      --card:#ffffff;
+      --border:#e5e7eb;
+      --text:#0f172a;
+      --sub:#475569;
 
-  --blue:#2563eb;
+      --primary:#2563eb;
+      --primarySoft:#dbeafe;
 
-  --skt:#ff4b55;
-  --kt:#111827;
-  --lg:#b91c91;
-  --internet:#f97316;
-  --mvno:#16a34a;
-}
+      --skt:#ff4b55;
+      --kt:#111827;
+      --lg:#b91c91;
+      --mvno:#16a34a;
+      --internet:#f97316;
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
-  color:var(--text);
-}
+      --shadow:0 10px 24px rgba(15,23,42,.08);
+      --radius:18px;
+    }
 
-.app{
-  max-width:960px;
-  margin:0 auto;
-  min-height:100vh;
-  background:#fff;
-}
-@media (min-width:960px){
-  .app{
-    border-radius:24px;
-    box-shadow:0 12px 30px rgba(15,23,42,0.12);
-    overflow:hidden;
-    margin:18px auto;
-  }
-}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:var(--bgSoft);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+    }
 
-/* 상단 */
-.hero{
-  padding:22px;
-  background:linear-gradient(180deg,#ecfeff,#ffffff);
-  border-bottom:1px solid var(--border);
-}
-.hero h1{
-  margin:0 0 6px;
-  font-size:22px;
-  font-weight:900;
-  letter-spacing:-0.03em;
-}
-.hero p{
-  margin:0;
-  font-size:12px;
-  color:#475569;
-}
+    /* ✅ PC에서 “모바일처럼 작아지는” 문제 방지: 넓게 보이게 */
+    .app{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      min-height:100vh;
+      background:var(--bg);
+      box-shadow:var(--shadow);
+    }
+    @media (max-width:1200px){
+      .app{ box-shadow:none; }
+    }
 
-/* 탭 */
-.tab-bar{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  position:sticky;
-  top:0;
-  background:#fff;
-  z-index:10;
-  border-bottom:1px solid rgba(0,0,0,0.04);
-}
-.tab-btn{
-  flex:1;
-  border:none;
-  border-radius:999px;
-  padding:14px 6px;
-  font-size:15px;
-  font-weight:900;
-  background:#e5e7eb;
-  color:#111827;
-  cursor:pointer;
-  transition:.15s ease;
-}
-.tab-btn.active{
-  background:var(--blue);
-  color:#fff;
-  box-shadow:
-    0 0 14px rgba(0,0,0,.22),
-    0 8px 20px rgba(0,0,0,.22);
-}
+    /* 상단 */
+    .hero{
+      background:linear-gradient(180deg,#e7fdf9 0%, #ffffff 75%);
+      padding:20px 22px 16px;
+      border-bottom:1px solid var(--border);
+    }
+    .hero-title{
+      margin:0 0 8px;
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-0.03em;
+    }
+    .hero-sub{
+      margin:0 0 10px;
+      color:#334155;
+      font-size:14px;
+      font-weight:600;
+    }
+    .hero-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .hero-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#0f172a;
+      color:#e5f3ff;
+      font-size:12px;
+      font-weight:700;
+      box-shadow:0 10px 22px rgba(15,23,42,.28);
+    }
+    .hero-dot{
+      width:7px;height:7px;border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 0 5px rgba(34,197,94,.25);
+    }
+    .hero-mini{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .hero-mini span{
+      font-size:12px;
+      padding:5px 10px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,.08);
+      background:rgba(255,255,255,.85);
+      color:#0f172a;
+      font-weight:700;
+    }
 
-/* 컨텐츠 */
-.content{padding:14px 14px 96px}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-.section-title{
-  font-size:14px;
-  font-weight:900;
-  color:#64748b;
-  margin:4px 2px 10px;
-}
+    /* 탭 */
+    .tab-bar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+      padding:10px 12px;
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .tab-btn{
+      flex:1;
+      min-width:140px;
+      border:1px solid var(--border);
+      background:#f3f4f6;
+      color:#334155;
+      border-radius:999px;
+      padding:12px 12px;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .tab-btn.active{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+      box-shadow:0 10px 20px rgba(37,99,235,.24);
+      transform:translateY(-1px);
+    }
+    .tab-btn .pill{
+      font-size:11px;
+      font-weight:900;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.25);
+    }
 
-/* 카드(성지 느낌) */
-.card{
-  position:relative;
-  background:#fff;
-  border-radius:var(--radius);
-  border:2px solid rgba(0,0,0,.08);
-  padding:16px;
-  margin-bottom:14px;
-  box-shadow:
-    0 12px 28px rgba(15,23,42,0.18),
-    0 0 0 1px rgba(37,99,235,0.06);
-}
+    /* 컨텐츠 */
+    .content{
+      padding:16px 16px 110px;
+      background:var(--bgSoft);
+    }
 
-.card[data-carrier="skt"]{ border-color:rgba(255,75,85,0.55); box-shadow:0 12px 28px rgba(255,75,85,0.18); }
-.card[data-carrier="kt"]{  border-color:rgba(17,24,39,0.45);  box-shadow:0 12px 28px rgba(17,24,39,0.16); }
-.card[data-carrier="lg"]{  border-color:rgba(185,28,145,0.50); box-shadow:0 12px 28px rgba(185,28,145,0.16); }
-.card[data-carrier="internet"]{ border-color:rgba(249,115,22,0.55); box-shadow:0 12px 28px rgba(249,115,22,0.16); }
-.card[data-carrier="mvno"]{ border-color:rgba(22,163,74,0.55); box-shadow:0 12px 28px rgba(22,163,74,0.16); }
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:8px 2px 12px;
+      font-size:16px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .section-dot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--primary);
+      box-shadow:0 0 0 6px rgba(37,99,235,.15);
+    }
 
-.card-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-}
-.card-title{
-  font-size:22px;
-  font-weight:900;
-  margin:0 0 6px;
-  letter-spacing:-0.04em;
-}
-.card-tag{
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-  color:#0f172a;
-  background:rgba(148,163,184,0.18);
-  border:1px solid rgba(148,163,184,0.35);
-  white-space:nowrap;
-}
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
 
-.price-strong{
-  font-size:32px;
-  font-weight:900;
-  margin:6px 0;
-  letter-spacing:-0.03em;
-}
-.price-strong.free{
-  color:#16a34a;
-  text-shadow:0 0 6px rgba(22,163,74,.55), 0 0 16px rgba(22,163,74,.35), 0 0 28px rgba(22,163,74,.25);
-}
-.price-strong.minus{
-  color:#dc2626;
-  text-shadow:0 0 6px rgba(220,38,38,.55), 0 0 16px rgba(220,38,38,.35), 0 0 28px rgba(220,38,38,.25);
-}
-.price-strong.cash{
-  color:#f97316;
-  text-shadow:0 0 6px rgba(249,115,22,.55), 0 0 16px rgba(249,115,22,.35), 0 0 28px rgba(249,115,22,.25);
-}
-.price-strong.normal{
-  color:var(--blue);
-  text-shadow:0 0 8px rgba(37,99,235,0.25);
-}
+    /* 카드 */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(1, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (min-width:860px){
+      .grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    }
+    @media (min-width:1180px){
+      .grid{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+    }
 
-.price-sub{
-  font-size:15px;
-  font-weight:800;
-  color:#1e293b;
-  line-height:1.5;
-}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px 16px 14px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
 
-/* 배지 */
-.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{
-  padding:8px 14px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:900;
-  border:2px solid #cbd5e1;
-  background:#fff;
-  box-shadow:0 4px 12px rgba(15,23,42,.10);
-}
-.badge.skt{border-color:var(--skt); color:var(--skt);}
-.badge.kt{border-color:var(--kt); color:var(--kt);}
-.badge.lg{border-color:var(--lg); color:var(--lg);}
-.badge.internet{border-color:var(--internet); color:var(--internet);}
-.badge.mvno{border-color:var(--mvno); color:var(--mvno);}
+    /* 🔥 오늘특가 강조 */
+    .card.today{
+      border-color:#f59e0b;
+      box-shadow:0 16px 32px rgba(245,158,11,.18);
+    }
+    .today-badge{
+      position:absolute;
+      top:12px;
+      right:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff7ed;
+      border:1px solid #fed7aa;
+      color:#9a3412;
+      font-weight:900;
+      font-size:12px;
+    }
 
-/* 오늘 특가 */
-@keyframes pulse{
-  0%{ box-shadow:0 0 0 rgba(0,0,0,0); }
-  50%{ box-shadow:0 0 34px rgba(37,99,235,.65); }
-  100%{ box-shadow:0 0 0 rgba(0,0,0,0); }
-}
-.card.today{ animation:pulse 1.6s infinite; }
-.card.today::before{
-  content:"🔥 오늘 특가";
-  position:absolute;
-  top:-12px;
-  right:16px;
-  background:linear-gradient(135deg,#ff7a18,#ff3d00);
-  color:#fff;
-  padding:6px 14px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-  box-shadow:0 0 22px rgba(255,61,0,.65);
-}
+    .carrier-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 10px;
+      border-radius:999px;
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      margin-bottom:10px;
+    }
+    .carrier-pill.skt{ background:var(--skt); }
+    .carrier-pill.kt{ background:var(--kt); }
+    .carrier-pill.lg{ background:var(--lg); }
+    .carrier-pill.mvno{ background:var(--mvno); }
+    .carrier-pill.internet{ background:var(--internet); }
 
-/* 하단 */
-.bottom{
-  position:sticky;
-  bottom:0;
-  background:#f8fafc;
-  border-top:1px solid var(--border);
-  padding:10px;
-}
-.bottom .row{display:flex; gap:8px;}
-.bottom a{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  border-radius:999px;
-  text-decoration:none;
-  font-weight:900;
-  background:#fff;
-  border:1px solid var(--border);
-  color:#111827;
-}
-.bottom .kakao{
-  background:#fee500;
-  border:none;
-}
+    /* ✅ 글씨 크게 (요청사항) */
+    .card-title{
+      margin:0 0 8px;
+      font-size:22px;
+      font-weight:1000;
+      letter-spacing:-0.03em;
+      line-height:1.15;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--primarySoft);
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-weight:900;
+      font-size:12px;
+      width:fit-content;
+    }
 
-/* 탭별 테마 자동 */
-.app.theme-skt { --blue: var(--skt); }
-.app.theme-kt  { --blue: var(--kt); }
-.app.theme-lg  { --blue: var(--lg); }
-.app.theme-internet { --blue: var(--internet); }
-.app.theme-mvno { --blue: var(--mvno); }
-</style>
+    .price{
+      margin:2px 0 8px;
+      font-size:28px;
+      font-weight:1000;
+      color:var(--primary);
+      letter-spacing:-0.03em;
+      text-shadow:0 10px 26px rgba(37,99,235,.18);
+    }
+    .sub{
+      margin:0 0 12px;
+      color:var(--sub);
+      font-size:14px;
+      font-weight:700;
+      line-height:1.35;
+    }
+
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      color:#111827;
+      font-size:13px;
+      font-weight:900;
+    }
+    .badge.outline{
+      background:transparent;
+      border-style:dashed;
+      color:#334155;
+    }
+
+    /* 하단 상담 */
+    .bottom{
+      position:sticky;
+      bottom:0;
+      z-index:20;
+      background:rgba(255,255,255,.95);
+      backdrop-filter:saturate(140%) blur(8px);
+      border-top:1px solid var(--border);
+      padding:12px 12px;
+    }
+    .bottom-inner{
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .bottom-text{
+      font-size:12px;
+      font-weight:800;
+      color:#334155;
+      margin-bottom:10px;
+    }
+    .bottom-buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      flex:1;
+      min-width:180px;
+      text-decoration:none;
+      border-radius:999px;
+      padding:12px 12px;
+      border:1px solid #cbd5e1;
+      background:#ffffff;
+      color:#0f172a;
+      font-size:14px;
+      font-weight:1000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      box-shadow:0 10px 22px rgba(15,23,42,.06);
+    }
+    .btn.kakao{
+      background:#fee500;
+      border-color:#facc15;
+      color:#111827;
+      box-shadow:0 16px 28px rgba(180,149,0,.22);
+    }
+    .disclaimer{
+      margin-top:10px;
+      font-size:11px;
+      color:#64748b;
+      font-weight:700;
+      line-height:1.35;
+    }
+
+    .empty{
+      background:#ffffff;
+      border:1px dashed #cbd5e1;
+      border-radius:var(--radius);
+      padding:14px;
+      color:#64748b;
+      font-weight:900;
+      box-shadow:0 10px 22px rgba(15,23,42,.04);
+    }
+  </style>
 </head>
 
 <body>
-<div class="app theme-skt">
+  <div class="app">
+    <header class="hero">
+      <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
+      <p class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</p>
+      <div class="hero-row">
+        <div class="hero-chip"><span class="hero-dot"></span>상담 전에 미리 조건만 확인해보세요</div>
+        <div class="hero-mini"><span>내부직원 전용</span><span>복지관 2층 휴대폰 매장</span></div>
+      </div>
+    </header>
 
-<header class="hero">
-  <h1>복지관 2층 휴대폰 특판 안내</h1>
-  <p>특판/인터넷/알뜰 운영용 (각 탭 10개 슬롯, 안쓰면 “사용안함”)</p>
-</header>
+    <!-- ✅ 탭 순서: SKT / KT / LGU+ / 인터넷·TV / 알뜰요금 -->
+    <nav class="tab-bar" aria-label="통신사 탭">
+      <button class="tab-btn active" data-tab="skt"><span>SKT</span><span class="pill" id="count-skt">0</span></button>
+      <button class="tab-btn" data-tab="kt"><span>KT</span><span class="pill" id="count-kt">0</span></button>
+      <button class="tab-btn" data-tab="lg"><span>LGU+</span><span class="pill" id="count-lg">0</span></button>
+      <button class="tab-btn" data-tab="internet"><span>인터넷·TV</span><span class="pill" id="count-internet">0</span></button>
+      <button class="tab-btn" data-tab="mvno"><span>알뜰요금</span><span class="pill" id="count-mvno">0</span></button>
+    </nav>
 
-<nav class="tab-bar">
-  <button class="tab-btn active" data-tab="skt">SKT</button>
-  <button class="tab-btn" data-tab="kt">KT</button>
-  <button class="tab-btn" data-tab="lg">LGU+</button>
-  <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-  <button class="tab-btn" data-tab="mvno">알뜰요금</button>
-</nav>
+    <main class="content">
+      <section class="tab-panel active" data-tab-panel="skt">
+        <div class="section-title"><span class="section-dot"></span>SKT 특판</div>
+        <div class="grid" id="grid-skt"></div>
+      </section>
 
-<main class="content">
-  <section class="tab-panel active" data-tab-panel="skt">
-    <div class="section-title">SKT 특판 (10개 슬롯)</div>
-    <div id="list-skt"></div>
-  </section>
+      <section class="tab-panel" data-tab-panel="kt">
+        <div class="section-title"><span class="section-dot"></span>KT 특판</div>
+        <div class="grid" id="grid-kt"></div>
+      </section>
 
-  <section class="tab-panel" data-tab-panel="kt">
-    <div class="section-title">KT 특판 (10개 슬롯)</div>
-    <div id="list-kt"></div>
-  </section>
+      <section class="tab-panel" data-tab-panel="lg">
+        <div class="section-title"><span class="section-dot"></span>LGU+ 특판</div>
+        <div class="grid" id="grid-lg"></div>
+      </section>
 
-  <section class="tab-panel" data-tab-panel="lg">
-    <div class="section-title">LGU+ 특판 (10개 슬롯)</div>
-    <div id="list-lg"></div>
-  </section>
+      <section class="tab-panel" data-tab-panel="internet">
+        <div class="section-title"><span class="section-dot"></span>인터넷 · TV 현금 특판</div>
+        <div class="grid" id="grid-internet"></div>
+      </section>
 
-  <section class="tab-panel" data-tab-panel="internet">
-    <div class="section-title">인터넷·TV (10개 슬롯)</div>
-    <div id="list-internet"></div>
-  </section>
+      <section class="tab-panel" data-tab-panel="mvno">
+        <div class="section-title"><span class="section-dot"></span>알뜰 요금 특가</div>
+        <div class="grid" id="grid-mvno"></div>
+      </section>
+    </main>
 
-  <section class="tab-panel" data-tab-panel="mvno">
-    <div class="section-title">알뜰요금 (10개 슬롯)</div>
-    <div id="list-mvno"></div>
-  </section>
-</main>
-
-<div class="bottom">
-  <div class="row">
-    <a href="tel:0428212272">통화</a>
-    <a href="sms:01058391512">문자</a>
-    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener noreferrer">카카오톡</a>
-  </div>
-</div>
-
-</div>
-
-<script>
-/* ==============================
-   ✅ [여기만 수정] 데이터 구역
-   - title이 "" 또는 "사용안함"이면 자동 숨김
-   - priceType: "free" | "minus" | "cash" | "normal"
-   - today: true면 🔥 오늘특가 + 펄스
-   - tag: 오른쪽 작은 라벨 (예: 기기변경/번호이동/인터넷/알뜰)
-================================ */
-
-function makeEmpty10(carrier){
-  return Array.from({length:10}, (_,i)=>({
-    carrier,
-    title: "사용안함",
-    tag: "",
-    price: "",
-    priceType: "normal",
-    sub: "",
-    badges: ["", "", ""],
-    today: false
-  }));
-}
-
-const DATA = {
-  skt: (() => {
-    const arr = makeEmpty10("skt");
-    arr[0] = {
-      carrier:"skt",
-      title:"아이폰17",
-      tag:"기기변경",
-      price:"판매가 0원",
-      priceType:"free",
-      sub:"109요금 / 6개월 유지 / 기기변경 조건",
-      badges:["SK 기변","109요금 6개월","재고문의"],
-      today:true
-    };
-    arr[1] = {
-      carrier:"skt",
-      title:"S25",
-      tag:"번호이동",
-      price:"판매가 -25만원",
-      priceType:"minus",
-      sub:"109요금 / 6개월 유지 / 번호이동 조건",
-      badges:["SK 이동","109요금 6개월","부가별도"],
-      today:false
-    };
-    return arr;
-  })(),
-
-  kt: (() => {
-    const arr = makeEmpty10("kt");
-    // 예시 1개만
-    arr[0] = {
-      carrier:"kt",
-      title:"사용안함",
-      tag:"기기변경",
-      price:"판매가 0원",
-      priceType:"free",
-      sub:"110요금 / 6개월 유지 / 기기변경",
-      badges:["KT 기변","110요금 6개월","재고문의"],
-      today:false
-    };
-    return arr;
-  })(),
-
-  lg: (() => {
-    const arr = makeEmpty10("lg");
-    return arr;
-  })(),
-
-  internet: (() => {
-    const arr = makeEmpty10("internet");
-    arr[0] = {
-      carrier:"internet",
-      title:"사용안함",
-      tag:"현금지원",
-      price:"현금 최대 83만원",
-      priceType:"cash",
-      sub:"3년약정 / 상품·지역·설치환경에 따라 변동",
-      badges:["현금지급","3년약정","설치비별도"],
-      today:false
-    };
-    return arr;
-  })(),
-
-  mvno: (() => {
-    const arr = makeEmpty10("mvno");
-    arr[0] = {
-      carrier:"mvno",
-      title:"사용안함",
-      tag:"최저요금",
-      price:"월 3,300원~",
-      priceType:"cash",
-      sub:"사용량 맞춤 / 즉시개통 가능 (유심/가입비 정책 상이)",
-      badges:["무약정","즉시개통","상담추천"],
-      today:false
-    };
-    return arr;
-  })()
-};
-
-/* ==============================
-   렌더링 (건드리지 마세요)
-================================ */
-function badgeClassByCarrier(c){
-  if(c==="skt") return "skt";
-  if(c==="kt") return "kt";
-  if(c==="lg") return "lg";
-  if(c==="internet") return "internet";
-  return "mvno";
-}
-
-function renderList(containerId, items){
-  const root = document.getElementById(containerId);
-  if(!root) return;
-  root.innerHTML = "";
-
-  items.forEach(item => {
-    const title = (item.title || "").trim();
-    if(title === "" || title === "사용안함") return;
-
-    const card = document.createElement("div");
-    card.className = "card card-slot" + (item.today ? " today" : "");
-    card.setAttribute("data-carrier", item.carrier);
-
-    const tagText = (item.tag || "").trim();
-    const priceType = (item.priceType || "normal").trim();
-
-    card.innerHTML = `
-      <div class="card-head">
-        <div>
-          <h2 class="card-title">${escapeHtml(title)}</h2>
+    <footer class="bottom">
+      <div class="bottom-inner">
+        <div class="bottom-text">통화가 어려우시면 문자나 카카오톡으로 남겨주셔도 됩니다.</div>
+        <div class="bottom-buttons">
+          <a class="btn" href="tel:0428212272">📞 통화</a>
+          <a class="btn" href="sms:01058391512">✉️ 문자</a>
+          <a class="btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener noreferrer">💬 오픈카톡</a>
         </div>
-        ${tagText ? `<div class="card-tag">${escapeHtml(tagText)}</div>` : `<div style="width:1px"></div>`}
+        <div class="disclaimer">
+          ※ 위 조건은 이해를 돕기 위한 안내이며, 실제 판매가는 통신사 프로모션·재고·가입조건 등에 따라 달라질 수 있습니다.
+        </div>
       </div>
+    </footer>
+  </div>
 
-      <p class="price-strong ${escapeHtml(priceType)}">${escapeHtml(item.price || "")}</p>
-      <p class="price-sub">${escapeHtml(item.sub || "")}</p>
+  <script>
+    /* =========================
+       1) 탭 전환
+    ========================= */
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels  = document.querySelectorAll('.tab-panel');
 
-      <div class="badge-row">
-        ${(item.badges || []).filter(Boolean).slice(0,3).map(b => `
-          <span class="badge ${badgeClassByCarrier(item.carrier)}">${escapeHtml(b)}</span>
-        `).join("")}
-      </div>
-    `;
-    root.appendChild(card);
-  });
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
 
-  // 아무것도 없으면 안내 문구
-  if(root.children.length === 0){
-    const empty = document.createElement("div");
-    empty.style.color = "#64748b";
-    empty.style.fontWeight = "800";
-    empty.style.padding = "10px 2px";
-    empty.textContent = "현재 등록된 특판이 없습니다. (슬롯 title을 채우면 자동 표시)";
-    root.appendChild(empty);
-  }
-}
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#39;");
-}
+        tabPanels.forEach(panel => {
+          panel.classList.toggle('active', panel.getAttribute('data-tab-panel') === target);
+        });
 
-renderList("list-skt", DATA.skt);
-renderList("list-kt", DATA.kt);
-renderList("list-lg", DATA.lg);
-renderList("list-internet", DATA.internet);
-renderList("list-mvno", DATA.mvno);
-
-/* 탭 전환 + 테마 */
-const appEl = document.querySelector('.app');
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabPanels  = document.querySelectorAll('.tab-panel');
-
-function setTheme(tab){
-  appEl.classList.remove('theme-skt','theme-kt','theme-lg','theme-internet','theme-mvno');
-  appEl.classList.add('theme-' + tab);
-}
-
-tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const target = btn.getAttribute('data-tab');
-
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    tabPanels.forEach(panel => {
-      panel.classList.toggle('active', panel.getAttribute('data-tab-panel') === target);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
 
-    setTheme(target);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-});
-</script>
+    /* =========================
+       2) CSV 로딩 + 렌더링
+       - 파일명: data.csv (루트)
+       - 컬럼: carrier,title,tag,price,priceType,sub,badge1,badge2,badge3,today
+       - today=TRUE 이면 맨 위 + 오늘특가 강조
+    ========================= */
 
+    const grids = {
+      skt: document.getElementById('grid-skt'),
+      kt: document.getElementById('grid-kt'),
+      lg: document.getElementById('grid-lg'),
+      internet: document.getElementById('grid-internet'),
+      mvno: document.getElementById('grid-mvno')
+    };
+
+    const counts = {
+      skt: document.getElementById('count-skt'),
+      kt: document.getElementById('count-kt'),
+      lg: document.getElementById('count-lg'),
+      internet: document.getElementById('count-internet'),
+      mvno: document.getElementById('count-mvno')
+    };
+
+    function normalizeCarrier(v){
+      const s = (v || '').trim().toLowerCase();
+      if(s === 'skt') return 'skt';
+      if(s === 'kt') return 'kt';
+      if(s === 'lg' || s === 'lgu' || s === 'lgu+' || s === 'lguplus' || s === 'lguplus') return 'lg';
+      if(s === 'internet' || s === 'tv' || s === 'iptv') return 'internet';
+      if(s === 'mvno' || s === 'al뜰' || s === '알뜰') return 'mvno';
+      return s;
+    }
+
+    function isTrue(v){
+      const s = (v || '').trim().toLowerCase();
+      return (s === 'true' || s === '1' || s === 'y' || s === 'yes');
+    }
+
+    function formatPrice(price, priceType){
+      const p = (price || '').toString().trim();
+      const t = (priceType || '').toString().trim().toLowerCase();
+
+      // minus: "5" -> "판매가 -5만원", "25만원" -> "판매가 -25만원"
+      if(t === 'minus'){
+        let num = p;
+        // "만원" 포함이면 제거해서 다시 붙임
+        num = num.replace(/만원/g,'').replace(/\s/g,'');
+        // 이미 "-" 있으면 그대로
+        if(num.startsWith('-')) num = num.slice(1);
+        if(num === '') return '판매가 문의';
+        return `판매가 -${num}만원`;
+      }
+
+      // free: 그대로 표시 (예: "39만원", "0원")
+      // 사용자가 이미 "39만원" 넣으면 그대로, 숫자만이면 "만원" 붙여도 되지만 안전하게 그대로 둠
+      return `판매가 ${p || '문의'}`;
+    }
+
+    function carrierLabel(c){
+      if(c === 'skt') return 'SKT';
+      if(c === 'kt') return 'KT';
+      if(c === 'lg') return 'LGU+';
+      if(c === 'internet') return '인터넷·TV';
+      if(c === 'mvno') return '알뜰요금';
+      return c;
+    }
+
+    function makeBadge(text, carrier){
+      if(!text) return null;
+      const s = text.toString().trim();
+      if(!s) return null;
+      const span = document.createElement('span');
+      span.className = 'badge';
+      span.textContent = s;
+      return span;
+    }
+
+    function makeCard(row){
+      const carrier = row.carrier;
+      const title = (row.title || '').trim();
+      if(!title) return null;
+
+      const card = document.createElement('div');
+      card.className = 'card' + (row.today ? ' today' : '');
+
+      if(row.today){
+        const tb = document.createElement('div');
+        tb.className = 'today-badge';
+        tb.textContent = '🔥 오늘특가';
+        card.appendChild(tb);
+      }
+
+      const pill = document.createElement('div');
+      pill.className = `carrier-pill ${carrier}`;
+      pill.textContent = carrierLabel(carrier);
+      card.appendChild(pill);
+
+      const h2 = document.createElement('h2');
+      h2.className = 'card-title';
+      h2.textContent = title;
+      card.appendChild(h2);
+
+      if(row.tag){
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.textContent = row.tag.trim();
+        card.appendChild(tag);
+      }
+
+      const price = document.createElement('div');
+      price.className = 'price';
+      price.textContent = formatPrice(row.price, row.priceType);
+      card.appendChild(price);
+
+      if(row.sub){
+        const sub = document.createElement('p');
+        sub.className = 'sub';
+        sub.textContent = row.sub.trim();
+        card.appendChild(sub);
+      }
+
+      const badges = document.createElement('div');
+      badges.className = 'badges';
+
+      const b1 = makeBadge(row.badge1, carrier);
+      const b2 = makeBadge(row.badge2, carrier);
+      const b3 = makeBadge(row.badge3, carrier);
+
+      if(b1) badges.appendChild(b1);
+      if(b2) badges.appendChild(b2);
+      if(b3) badges.appendChild(b3);
+
+      // 배지 하나도 없으면 기본 안내 1개 넣기(보기 예쁘게)
+      if(!badges.children.length){
+        const d = document.createElement('span');
+        d.className = 'badge outline';
+        d.textContent = '조건/재고 문의';
+        badges.appendChild(d);
+      }
+
+      card.appendChild(badges);
+      return card;
+    }
+
+    function parseCSV(text){
+      // 간단 CSV 파서(따옴표 포함도 어느 정도 대응)
+      const lines = text.replace(/\r/g,'').split('\n').filter(l => l.trim() !== '');
+      if(lines.length < 2) return [];
+      const headers = splitCSVLine(lines[0]).map(h => h.trim());
+      const rows = [];
+
+      for(let i=1;i<lines.length;i++){
+        const cols = splitCSVLine(lines[i]);
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = (cols[idx] ?? '').trim());
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    function splitCSVLine(line){
+      const out = [];
+      let cur = '';
+      let inQ = false;
+      for(let i=0;i<line.length;i++){
+        const ch = line[i];
+        if(ch === '"'){
+          if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+          else inQ = !inQ;
+        }else if(ch === ',' && !inQ){
+          out.push(cur);
+          cur = '';
+        }else{
+          cur += ch;
+        }
+      }
+      out.push(cur);
+      return out;
+    }
+
+    function renderEmpty(carrier){
+      const box = document.createElement('div');
+      box.className = 'empty';
+      box.textContent = '아직 등록된 특판이 없습니다. (data.csv에 한 줄 추가하면 바로 반영됩니다)';
+      grids[carrier].appendChild(box);
+    }
+
+    async function loadAndRender(){
+      // 초기화
+      Object.keys(grids).forEach(k => grids[k].innerHTML = '');
+
+      let csvText = '';
+      try{
+        const res = await fetch('data.csv', { cache: 'no-store' });
+        if(!res.ok) throw new Error('data.csv 로드 실패');
+        csvText = await res.text();
+      }catch(e){
+        Object.keys(grids).forEach(k => {
+          grids[k].innerHTML = '';
+          const box = document.createElement('div');
+          box.className = 'empty';
+          box.textContent = 'data.csv를 찾지 못했습니다. (파일명이 data.csv인지, 루트에 있는지 확인)';
+          grids[k].appendChild(box);
+          counts[k].textContent = '0';
+        });
+        return;
+      }
+
+      const raw = parseCSV(csvText);
+
+      // row 정규화
+      const items = raw.map(r => {
+        const carrier = normalizeCarrier(r.carrier);
+        return {
+          carrier,
+          title: r.title || '',
+          tag: r.tag || '',
+          price: r.price || '',
+          priceType: r.priceType || '',
+          sub: r.sub || '',
+          badge1: r.badge1 || '',
+          badge2: r.badge2 || '',
+          badge3: r.badge3 || '',
+          today: isTrue(r.today)
+        };
+      }).filter(x => grids[x.carrier]); // 지원 carrier만
+
+      // 정렬: today TRUE 우선, 그 다음 title 가나다(대충)
+      items.sort((a,b) => {
+        if(a.today !== b.today) return a.today ? -1 : 1;
+        return (a.title || '').localeCompare((b.title || ''), 'ko');
+      });
+
+      // 렌더
+      const counter = { skt:0, kt:0, lg:0, internet:0, mvno:0 };
+
+      for(const it of items){
+        const card = makeCard(it);
+        if(!card) continue;
+        grids[it.carrier].appendChild(card);
+        counter[it.carrier]++;
+      }
+
+      // 비어있으면 빈 안내
+      Object.keys(grids).forEach(k => {
+        counts[k].textContent = String(counter[k]);
+        if(counter[k] === 0) renderEmpty(k);
+      });
+    }
+
+    loadAndRender();
+  </script>
 </body>
 </html>
