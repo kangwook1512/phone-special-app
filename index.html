@@ -32,7 +32,7 @@ body{
   border-radius:999px;
   border:none;
   background:#e5e7eb;
-  font-weight:800;
+  font-weight:900;
   font-size:14px;
   cursor:pointer;
 }
@@ -41,42 +41,40 @@ body{
   color:#fff;
 }
 
-/* ===== 패널 분리 (중요) ===== */
+/* ===== 패널 분리 ===== */
 .panel{display:none}
 .panel.active{display:block}
 
-/* ===== 카드 ===== */
+/* ===== 카드 (최대 강조) ===== */
 .card{
-  background:#fff;
-  border-radius:22px;
-  padding:18px;
-  margin-bottom:14px;
-  box-shadow:0 12px 28px rgba(0,0,0,.12);
+  background:#ffffff;
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:16px;
   border:2px solid #e5e7eb;
-  transition:.18s ease;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.14),
+    inset 0 0 0 1px rgba(255,255,255,.6);
+  transition:.2s ease;
 }
 .card:hover{
   transform:translateY(-2px);
-  box-shadow:0 18px 36px rgba(0,0,0,.18);
-}
-
-/* 상단 고정 카드 */
-.card.pin{
-  border:3px solid #2563eb;
-  box-shadow:0 0 0 4px rgba(37,99,235,.15),0 18px 36px rgba(0,0,0,.2);
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
 }
 
 /* ===== 텍스트 극대화 ===== */
 .title{
   font-size:26px;
   font-weight:1000;
+  letter-spacing:-0.02em;
   margin-bottom:6px;
 }
 .price{
   font-size:36px;
   font-weight:1000;
   color:#2563eb;
-  margin:6px 0;
+  margin:8px 0;
+  text-shadow:0 10px 24px rgba(37,99,235,.25);
 }
 .sub{
   font-size:15px;
@@ -93,29 +91,35 @@ body{
 }
 .badge{
   font-size:12px;
-  padding:6px 10px;
+  padding:6px 12px;
   border-radius:999px;
   background:#f1f5f9;
-  font-weight:700;
+  font-weight:800;
 }
 
 /* ===== 문의 버튼 ===== */
 .actions{
-  margin-top:14px;
+  margin-top:16px;
   display:flex;
   gap:8px;
 }
 .btn{
   flex:1;
   text-align:center;
-  padding:12px;
+  padding:14px;
   border-radius:999px;
-  font-size:14px;
-  font-weight:900;
+  font-size:15px;
+  font-weight:1000;
   text-decoration:none;
 }
-.btn-call{background:#111;color:#fff}
-.btn-kakao{background:#fee500;color:#111}
+.btn-call{
+  background:#111;
+  color:#fff;
+}
+.btn-kakao{
+  background:#fee500;
+  color:#111;
+}
 </style>
 </head>
 
@@ -134,7 +138,7 @@ body{
 <!-- ===== SKT ===== -->
 <div class="panel active" data-panel="skt">
 
-  <div class="card pin">
+  <div class="card">
     <div class="title">아이폰17</div>
     <div class="price">39만원</div>
     <div class="sub">기기변경 · 109요금 6개월</div>
@@ -153,7 +157,7 @@ body{
 <!-- ===== KT ===== -->
 <div class="panel" data-panel="kt">
 
-  <div class="card pin">
+  <div class="card">
     <div class="title">S25</div>
     <div class="price">-6만원</div>
     <div class="sub">번호이동 · 110요금 6개월</div>
@@ -190,10 +194,10 @@ body{
 <!-- ===== 인터넷 ===== -->
 <div class="panel" data-panel="internet">
 
-  <div class="card pin">
+  <div class="card">
     <div class="title">SK 인터넷 + TV</div>
     <div class="price">현금 83만원</div>
-    <div class="sub">기가 / 결합 기준</div>
+    <div class="sub">기가 · 결합 기준</div>
     <div class="actions">
       <a class="btn btn-kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡문의</a>
     </div>
