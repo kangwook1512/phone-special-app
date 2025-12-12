@@ -8,6 +8,15 @@
   <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json" />
 
+  <!-- Google tag (gtag.js) : GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-36QKYC2X2Q"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-36QKYC2X2Q');
+  </script>
+
   <!-- service worker 등록 (이 부분은 건드리지 마세요) -->
   <script>
     if ('serviceWorker' in navigator) {
@@ -459,13 +468,11 @@
         <span class="section-dot"></span>SKT 특판
       </div>
 
-      <!-- ★★★ SKT 카드 1 ★★★
-           - 제목(h2.card-title)이 빈칸이거나 "사용안함"이면 이 카드 전체가 자동으로 숨겨집니다.
-           - [여기: ...] 부분만 수정하세요. -->
+      <!-- ★★★ SKT 카드 1 ★★★ -->
       <div class="card card-slot" data-carrier="skt">
         <div class="card-header">
           <h2 class="card-title">S25</h2>
-          <div class="card-tag">[태그 예) 기기변경</div>
+          <div class="card-tag">[태그 예) 기기변경]</div>
         </div>
 
         <div class="carrier-row">
@@ -510,28 +517,7 @@
         </div>
       </div>
 
-      <!-- ★★★ SKT 카드 3 ★★★ -->
-      <div class="card card-slot" data-carrier="skt">
-        <div class="card-header">
-          <h2 class="card-title">사용안함</h2>
-          <div class="card-tag">[태그]</div>
-        </div>
-
-        <div class="carrier-row">
-          <div class="carrier-pill skt"><span>SKT</span></div>
-        </div>
-
-        <p class="price-strong">[굵은 문구]</p>
-        <p class="price-sub">[설명]</p>
-
-        <div class="badge-row">
-          <span class="badge skt">[배지1]</span>
-          <span class="badge">[배지2]</span>
-          <span class="badge outline">[배지3]</span>
-        </div>
-      </div>
-
-      <!-- ★★★ SKT 카드 4 ★★★ -->
+      <!-- ★★★ SKT 카드 3~6 (슬롯) ★★★ -->
       <div class="card card-slot" data-carrier="skt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -549,7 +535,6 @@
         </div>
       </div>
 
-      <!-- ★★★ SKT 카드 5 ★★★ -->
       <div class="card card-slot" data-carrier="skt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -567,7 +552,23 @@
         </div>
       </div>
 
-      <!-- ★★★ SKT 카드 6 ★★★ -->
+      <div class="card card-slot" data-carrier="skt">
+        <div class="card-header">
+          <h2 class="card-title">사용안함</h2>
+          <div class="card-tag">[태그]</div>
+        </div>
+        <div class="carrier-row">
+          <div class="carrier-pill skt"><span>SKT</span></div>
+        </div>
+        <p class="price-strong">[굵은 문구]</p>
+        <p class="price-sub">[설명]</p>
+        <div class="badge-row">
+          <span class="badge skt">[배지1]</span>
+          <span class="badge">[배지2]</span>
+          <span class="badge outline">[배지3]</span>
+        </div>
+      </div>
+
       <div class="card card-slot" data-carrier="skt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -633,7 +634,7 @@
         </div>
       </div>
 
-      <!-- KT 카드 3 -->
+      <!-- KT 카드 3~6 슬롯 -->
       <div class="card card-slot" data-carrier="kt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -651,7 +652,6 @@
         </div>
       </div>
 
-      <!-- KT 카드 4 -->
       <div class="card card-slot" data-carrier="kt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -669,7 +669,6 @@
         </div>
       </div>
 
-      <!-- KT 카드 5 -->
       <div class="card card-slot" data-carrier="kt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -687,7 +686,6 @@
         </div>
       </div>
 
-      <!-- KT 카드 6 -->
       <div class="card card-slot" data-carrier="kt">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -716,7 +714,7 @@
         <span class="section-dot"></span>LGU+ 특판
       </div>
 
-      <!-- LG 카드 1~6 (구조 동일, carrier-pill lg / badge lg 사용) -->
+      <!-- LG 카드 1~6 (슬롯) -->
       <div class="card card-slot" data-carrier="lg">
         <div class="card-header">
           <h2 class="card-title">사용안함</h2>
@@ -1129,10 +1127,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
