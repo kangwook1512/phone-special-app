@@ -4,22 +4,8 @@
   <meta charset="UTF-8" />
   <title>복지관 2층 휴대폰 특판 안내</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json" />
 
-  <!-- GA 붙일 거면 여기에 (head 안) -->
-  <!-- 예:
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXX');
-  </script>
-  -->
-
-  <!-- service worker 등록 (이 부분은 건드리지 마세요) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -31,34 +17,35 @@
 
   <style>
     :root{
-      --bg-main:#ffffff;
-      --bg-soft:#f3fbff;
-      --border-soft:#e2e8f0;
-      --text-main:#0b1220;
-      --text-sub:#334155;
+      --bg:#f4fbff;
+      --ink:#0b1220;
+      --sub:#334155;
+      --border:rgba(15,23,42,0.10);
+
+      --skt:#ff3b4a;
+      --kt:#111827;
+      --lg:#c026d3;
+      --internet:#f97316;
+      --mvno:#16a34a;
 
       --blue:#0ea5e9;
-      --blue-strong:#0284c7;
-      --shadow-soft:0 10px 24px rgba(2, 132, 199, 0.12);
-      --radius-card:20px;
-
-      --skt:#ff4b55;
-      --kt:#111827;
-      --lg:#b91c91;
-      --mvno:#16a34a;
-      --internet:#f97316;
+      --blue2:#2563eb;
 
       --kakao:#fee500;
       --kakao-border:#facc15;
+
+      --radius:24px;
     }
 
-    *{ box-sizing:border-box; }
-
+    *{box-sizing:border-box}
     body{
       margin:0;
-      background:linear-gradient(180deg, #eafcff 0%, #ffffff 45%, #ffffff 100%);
-      color:var(--text-main);
       font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 450px at 10% 0%, rgba(14,165,233,0.18) 0%, rgba(14,165,233,0) 55%),
+        radial-gradient(900px 420px at 95% 22%, rgba(34,197,94,0.12) 0%, rgba(34,197,94,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 35%, #ffffff 100%);
     }
 
     .app{
@@ -67,167 +54,168 @@
       display:flex;
       flex-direction:column;
     }
-    @media (min-width:1100px){
+    @media(min-width:1100px){
       .app{
         max-width:1100px;
         margin:18px auto;
-        border-radius:26px;
+        border-radius:28px;
         overflow:hidden;
-        box-shadow:0 20px 50px rgba(15,23,42,0.12);
         background:#fff;
+        box-shadow:0 26px 60px rgba(15,23,42,0.14);
       }
     }
 
-    /* 상단 히어로 */
+    /* 헤더 */
     .hero{
-      padding:18px 20px 18px;
+      padding:18px 18px 16px;
       background:
-        radial-gradient(1100px 380px at 10% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
-        radial-gradient(900px 340px at 95% 30%, rgba(34,197,94,0.16) 0%, rgba(34,197,94,0) 60%),
-        linear-gradient(180deg, #ffffff 0%, #f2fbff 100%);
-      border-bottom:1px solid var(--border-soft);
-    }
-    .hero-top{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      justify-content:space-between;
-      flex-wrap:wrap;
+        radial-gradient(1000px 420px at 15% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, #f0fbff 100%);
+      border-bottom:1px solid rgba(15,23,42,0.08);
     }
     .hero-title{
       margin:0;
       font-size:30px;
-      font-weight:900;
-      letter-spacing:-0.04em;
-      line-height:1.12;
+      font-weight:1000;
+      letter-spacing:-0.05em;
+      line-height:1.08;
     }
     .hero-sub{
-      margin:6px 0 0;
+      margin:7px 0 0;
       font-size:14px;
-      color:var(--text-sub);
-      font-weight:700;
+      font-weight:900;
+      color:var(--sub);
     }
-    .hero-badges{
+    .hero-row{
+      margin-top:12px;
       display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
       align-items:center;
-      justify-content:flex-end;
-    }
-    .pill{
-      font-size:12px;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(2,132,199,0.18);
-      background:rgba(255,255,255,0.9);
-      box-shadow:0 10px 18px rgba(2,132,199,0.08);
-      color:#0b1220;
-      white-space:nowrap;
+      justify-content:space-between;
     }
     .chip{
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      padding:8px 12px;
+      gap:10px;
+      padding:10px 12px;
       border-radius:999px;
       background:#0b1220;
       color:#e6f7ff;
       font-size:12px;
-      font-weight:800;
-      box-shadow:0 14px 26px rgba(15,23,42,0.22);
-      white-space:nowrap;
+      font-weight:1000;
+      box-shadow:0 16px 30px rgba(15,23,42,0.24);
     }
     .dot{
-      width:8px;height:8px;border-radius:50%;
+      width:9px;height:9px;border-radius:50%;
       background:#22c55e;
-      box-shadow:0 0 0 5px rgba(34,197,94,0.28);
+      box-shadow:0 0 0 6px rgba(34,197,94,0.28);
+    }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:1000;
+      border:1px solid rgba(2,132,199,0.18);
+      background:rgba(255,255,255,0.9);
+      box-shadow:0 10px 18px rgba(2,132,199,0.10);
+      white-space:nowrap;
     }
 
-    /* 탭 바 */
+    /* 탭 */
     .tab-bar{
-      position:sticky;
-      top:0;
-      z-index:20;
-      padding:10px 12px 12px;
-      background:rgba(255,255,255,0.95);
+      position:sticky; top:0; z-index:30;
+      background:rgba(255,255,255,0.94);
       backdrop-filter:saturate(180%) blur(10px);
-      border-bottom:1px solid var(--border-soft);
+      border-bottom:1px solid rgba(15,23,42,0.08);
+      padding:10px 12px 12px;
     }
-    .tabs{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-    }
+    .tabs{display:flex;gap:10px}
     .tab-btn{
       flex:1;
       border:none;
-      border-radius:999px;
+      cursor:pointer;
       padding:14px 10px;
+      border-radius:999px;
       font-size:15px;
-      font-weight:900;
+      font-weight:1000;
       letter-spacing:-0.02em;
       background:#ffffff;
       color:#0b1220;
       border:1px solid rgba(15,23,42,0.10);
-      box-shadow:0 10px 20px rgba(15,23,42,0.06);
-      cursor:pointer;
+      box-shadow:0 12px 22px rgba(15,23,42,0.08);
       transition:.18s ease;
     }
     .tab-btn.active{
-      background:linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-      color:#ffffff;
+      background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+      color:#fff;
       border-color:rgba(14,165,233,0.35);
-      box-shadow:0 16px 28px rgba(37,99,235,0.22);
+      box-shadow:0 18px 30px rgba(37,99,235,0.22);
       transform:translateY(-1px);
     }
 
-    /* 컨텐츠 */
-    .content{
-      padding:14px 14px 88px;
-      background:linear-gradient(180deg, #f7feff 0%, #ffffff 30%, #ffffff 100%);
-      flex:1;
-    }
-    .tab-panel{ display:none; }
-    .tab-panel.active{ display:block; }
-
+    /* 컨텐츠/패널 */
+    .content{padding:14px 14px 92px}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
     .section-title{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:10px 2px 12px;
-      font-size:16px;
-      font-weight:900;
-      color:#0b1220;
+      display:flex;align-items:center;gap:10px;
+      margin:10px 2px 14px;
+      font-size:17px;
+      font-weight:1000;
     }
     .section-dot{
       width:12px;height:12px;border-radius:50%;
-      background:linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-      box-shadow:0 0 0 6px rgba(14,165,233,0.16);
+      background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
+      box-shadow:0 0 0 7px rgba(14,165,233,0.16);
     }
 
-    /* 카드 */
+    /* 카드: 최대 튀는 디자인 */
     .card{
-      border-radius:var(--radius-card);
-      border:1px solid rgba(2,132,199,0.20);
-      background:
-        radial-gradient(900px 260px at 25% 0%, rgba(14,165,233,0.20) 0%, rgba(14,165,233,0) 55%),
-        radial-gradient(900px 280px at 90% 35%, rgba(34,197,94,0.14) 0%, rgba(34,197,94,0) 58%),
-        linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
-      box-shadow:0 18px 36px rgba(2,132,199,0.14);
-      padding:16px 16px 14px;
-      margin-bottom:14px;
-      overflow:hidden;
       position:relative;
+      border-radius:var(--radius);
+      padding:18px 18px 16px;
+      margin-bottom:16px;
+      overflow:hidden;
+
+      background:
+        radial-gradient(1200px 320px at 18% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 58%),
+        radial-gradient(1200px 360px at 90% 40%, rgba(34,197,94,0.14) 0%, rgba(34,197,94,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
+
+      border:1px solid rgba(2,132,199,0.22);
+      box-shadow:
+        0 22px 44px rgba(2,132,199,0.16),
+        0 10px 18px rgba(15,23,42,0.08);
+      transform:translateZ(0);
     }
+
+    /* 상단 네온 라인: 통신사별 색상 */
     .card::before{
       content:"";
-      position:absolute;
-      left:0; top:0;
-      height:5px;
-      width:100%;
-      background:linear-gradient(90deg, rgba(255,75,85,0.0) 0%, rgba(14,165,233,0.0) 0%);
+      position:absolute;left:0;top:0;width:100%;height:7px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.0) 100%);
+      filter:drop-shadow(0 0 10px rgba(14,165,233,0.35));
+    }
+    .card[data-carrier="skt"]::before{
+      background:linear-gradient(90deg, rgba(255,59,74,0) 0%, rgba(255,59,74,1) 18%, rgba(255,59,74,1) 82%, rgba(255,59,74,0) 100%);
+      filter:drop-shadow(0 0 12px rgba(255,59,74,0.50));
+    }
+    .card[data-carrier="kt"]::before{
+      background:linear-gradient(90deg, rgba(17,24,39,0) 0%, rgba(17,24,39,1) 18%, rgba(17,24,39,1) 82%, rgba(17,24,39,0) 100%);
+      filter:drop-shadow(0 0 12px rgba(17,24,39,0.35));
+    }
+    .card[data-carrier="lg"]::before{
+      background:linear-gradient(90deg, rgba(192,38,211,0) 0%, rgba(192,38,211,1) 18%, rgba(192,38,211,1) 82%, rgba(192,38,211,0) 100%);
+      filter:drop-shadow(0 0 12px rgba(192,38,211,0.45));
+    }
+    .card[data-carrier="internet"]::before{
+      background:linear-gradient(90deg, rgba(249,115,22,0) 0%, rgba(249,115,22,1) 18%, rgba(249,115,22,1) 82%, rgba(249,115,22,0) 100%);
+      filter:drop-shadow(0 0 12px rgba(249,115,22,0.42));
+    }
+    .card[data-carrier="mvno"]::before{
+      background:linear-gradient(90deg, rgba(22,163,74,0) 0%, rgba(22,163,74,1) 18%, rgba(22,163,74,1) 82%, rgba(22,163,74,0) 100%);
+      filter:drop-shadow(0 0 12px rgba(22,163,74,0.40));
     }
 
     .card-header{
@@ -235,124 +223,126 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:8px;
+      margin-bottom:10px;
     }
+
+    /* 제목/태그: 최대로 큼 */
     .card-title{
       margin:0;
-      font-size:28px;   /* 글씨 크게 */
+      font-size:28px;
       font-weight:1000;
-      letter-spacing:-0.04em;
+      letter-spacing:-0.05em;
       line-height:1.06;
     }
     .card-tag{
-      padding:8px 12px;
+      padding:10px 12px;
       border-radius:999px;
-      font-size:13px;
-      font-weight:900;
-      background:#eaf5ff;
+      font-size:14px;
+      font-weight:1000;
+      background:rgba(14,165,233,0.12);
       color:#075985;
       border:1px solid rgba(2,132,199,0.20);
       white-space:nowrap;
+      box-shadow:0 10px 18px rgba(2,132,199,0.08);
     }
 
+    /* 가격: 최대 임팩트 */
     .price{
-      font-size:40px; /* 가격 최대로 튀게 */
+      font-size:44px;
       font-weight:1000;
-      letter-spacing:-0.04em;
-      margin:8px 0 6px;
+      letter-spacing:-0.06em;
       line-height:1.0;
+      margin:10px 0 8px;
       color:#0b1220;
-      text-shadow:0 10px 18px rgba(2,132,199,0.12);
-    }
-    .sub{
-      font-size:18px;
-      font-weight:900;
-      color:#0f172a;
-      opacity:0.92;
-      margin:0 0 12px;
+      text-shadow:0 12px 22px rgba(2,132,199,0.14);
     }
 
+    /* 조건: 크게 */
+    .sub{
+      margin:0 0 14px;
+      font-size:18px;
+      font-weight:1000;
+      color:#0f172a;
+      opacity:0.95;
+      letter-spacing:-0.02em;
+    }
+
+    /* 배지: 큼 + 단단 */
     .badge-row{
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:12px;
+      gap:10px;
+      margin-bottom:14px;
     }
     .badge{
       font-size:14px;
-      font-weight:900;
-      padding:9px 12px;
+      font-weight:1000;
+      padding:10px 12px;
       border-radius:999px;
       background:#ffffff;
       border:1px solid rgba(15,23,42,0.14);
-      box-shadow:0 10px 18px rgba(15,23,42,0.06);
-      color:#0b1220;
+      box-shadow:0 12px 20px rgba(15,23,42,0.08);
     }
 
-    /* 버튼 */
+    /* 버튼: 크게 + 강함 */
     .actions{
       display:flex;
       gap:10px;
-      margin-top:4px;
+      margin-top:2px;
     }
     .btn{
       flex:1;
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
+      padding:16px 12px;
+      border-radius:18px;
       text-decoration:none;
-      border-radius:16px;
-      padding:14px 10px;
       font-size:16px;
       font-weight:1000;
       border:1px solid rgba(15,23,42,0.12);
       background:#0b1220;
       color:#ffffff;
-      box-shadow:0 14px 26px rgba(15,23,42,0.18);
-      transition:.18s ease;
+      box-shadow:0 18px 30px rgba(15,23,42,0.20);
+      transition:.15s ease;
     }
-    .btn:active{ transform:scale(0.99); }
-
+    .btn:active{transform:scale(0.99)}
     .btn.kakao{
       background:var(--kakao);
       border-color:var(--kakao-border);
       color:#111827;
-      box-shadow:0 14px 26px rgba(180,149,0,0.30);
+      box-shadow:0 18px 30px rgba(180,149,0,0.28);
     }
 
-    /* 하단 상담바 */
+    /* 하단바 */
     .bottom-area{
       position:sticky;
       bottom:0;
       background:rgba(255,255,255,0.96);
       backdrop-filter:saturate(180%) blur(10px);
-      border-top:1px solid var(--border-soft);
+      border-top:1px solid rgba(15,23,42,0.08);
       padding:10px 12px;
-      box-shadow:0 -10px 30px rgba(15,23,42,0.08);
+      box-shadow:0 -14px 34px rgba(15,23,42,0.12);
     }
     .bottom-text{
       font-size:13px;
-      font-weight:800;
-      color:#0f172a;
+      font-weight:1000;
       margin:0 0 8px;
+      color:#0f172a;
     }
-    .bottom-buttons{
-      display:flex;
-      gap:10px;
-    }
+    .bottom-buttons{display:flex;gap:10px}
     .btn-mini{
       flex:1;
       text-align:center;
       text-decoration:none;
       border-radius:999px;
-      padding:12px 10px;
+      padding:13px 10px;
       font-size:15px;
       font-weight:1000;
       border:1px solid rgba(15,23,42,0.12);
       background:#ffffff;
       color:#0b1220;
-      box-shadow:0 10px 18px rgba(15,23,42,0.06);
+      box-shadow:0 12px 20px rgba(15,23,42,0.08);
     }
     .btn-mini.kakao{
       background:var(--kakao);
@@ -361,11 +351,12 @@
     }
 
     /* 모바일에서 더 크게 */
-    @media (max-width:420px){
-      .hero-title{ font-size:26px; }
-      .card-title{ font-size:26px; }
-      .price{ font-size:38px; }
-      .sub{ font-size:17px; }
+    @media(max-width:420px){
+      .hero-title{font-size:26px}
+      .card-title{font-size:26px}
+      .price{font-size:40px}
+      .sub{font-size:17px}
+      .btn{font-size:16px}
     }
   </style>
 </head>
@@ -373,20 +364,15 @@
 
 <div class="app">
   <header class="hero">
-    <div class="hero-top">
-      <div>
-        <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
-        <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
-      </div>
-      <div class="hero-badges">
-        <span class="chip"><span class="dot"></span>상담 전에 조건만 빠르게 확인</span>
-        <span class="pill">내부직원 전용</span>
-        <span class="pill">복지관 2층 휴대폰 매장</span>
-      </div>
+    <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
+    <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
+    <div class="hero-row">
+      <span class="chip"><span class="dot"></span>상담 전에 조건만 빠르게 확인</span>
+      <span class="pill">내부직원 전용</span>
+      <span class="pill">복지관 2층 휴대폰 매장</span>
     </div>
   </header>
 
-  <!-- 탭: SKT / KT / LG / 인터넷TV / 알뜰요금 -->
   <div class="tab-bar">
     <div class="tabs">
       <button class="tab-btn active" data-tab="skt">SKT</button>
@@ -398,7 +384,6 @@
   </div>
 
   <main class="content">
-
     <section class="tab-panel active" data-panel="skt">
       <div class="section-title"><span class="section-dot"></span>SKT 특판</div>
       <div id="list-skt"></div>
@@ -423,7 +408,6 @@
       <div class="section-title"><span class="section-dot"></span>알뜰요금 특가</div>
       <div id="list-mvno"></div>
     </section>
-
   </main>
 
   <div class="bottom-area">
@@ -438,9 +422,9 @@
 
 <script>
   const OPEN_KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
-  const CSV_URL = "data.csv"; // 루트에 data.csv
+  const CSV_URL = "data.csv";
 
-  // 1) 탭 전환 로직 (패널을 분리해서 보여줌)
+  // 탭 전환
   const tabButtons = document.querySelectorAll(".tab-btn");
   const panels = document.querySelectorAll(".tab-panel");
 
@@ -449,18 +433,32 @@
     panels.forEach(p => p.classList.toggle("active", p.dataset.panel === tabKey));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  tabButtons.forEach(btn => btn.addEventListener("click", () => activateTab(btn.dataset.tab)));
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => activateTab(btn.dataset.tab));
-  });
+  // CSV 파싱
+  function splitCSVLine(line){
+    const out = [];
+    let cur = "";
+    let inQ = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = !inQ;
+      } else if(ch === "," && !inQ){
+        out.push(cur); cur = "";
+      } else cur += ch;
+    }
+    out.push(cur);
+    return out;
+  }
 
-  // 2) CSV 파서 (간단/안전)
   function parseCSV(text){
-    const lines = text.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
+    const lines = text.replace(/\r/g,"").split("\n").filter(l => l.trim() !== "");
     if(lines.length < 2) return [];
     const headers = splitCSVLine(lines[0]).map(h => h.trim());
     const rows = [];
-    for(let i=1; i<lines.length; i++){
+    for(let i=1;i<lines.length;i++){
       const cols = splitCSVLine(lines[i]);
       const obj = {};
       headers.forEach((h, idx) => obj[h] = (cols[idx] ?? "").trim());
@@ -469,30 +467,20 @@
     return rows;
   }
 
-  // CSV 라인 split (따옴표 지원)
-  function splitCSVLine(line){
-    const out = [];
-    let cur = "";
-    let inQ = false;
-    for(let i=0; i<line.length; i++){
-      const ch = line[i];
-      if(ch === '"'){
-        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
-        else inQ = !inQ;
-      } else if(ch === "," && !inQ){
-        out.push(cur);
-        cur = "";
-      } else {
-        cur += ch;
-      }
-    }
-    out.push(cur);
-    return out;
+  function escapeHTML(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 
-  // 3) 카드 HTML 생성 (today / pin 등 로직 없음)
   function renderCard(item){
+    const carrier = (item.carrier || "").trim().toLowerCase();
     const title = item.title || "";
+    if(!title.trim()) return "";
+
     const tag = item.tag || "";
     const price = item.price || "";
     const sub = item.sub || "";
@@ -500,11 +488,8 @@
     const b2 = item.badge2 || "";
     const b3 = item.badge3 || "";
 
-    // 제목 없으면 아예 렌더 안함
-    if(!title.trim()) return "";
-
     return `
-      <article class="card">
+      <article class="card" data-carrier="${escapeHTML(carrier)}">
         <div class="card-header">
           <h2 class="card-title">${escapeHTML(title)}</h2>
           ${tag.trim() ? `<div class="card-tag">${escapeHTML(tag)}</div>` : ``}
@@ -527,63 +512,48 @@
     `;
   }
 
-  function escapeHTML(s){
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  // 4) carrier별로 분배해서 각 탭 리스트에 넣기
   async function loadData(){
-    const res = await fetch(CSV_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("data.csv를 불러오지 못했습니다. (404/권한/경로 확인)");
+    const res = await fetch(CSV_URL, { cache:"no-store" });
+    if(!res.ok) throw new Error("data.csv 로드 실패 (경로/파일명/커밋 확인)");
+
     const text = await res.text();
     const items = parseCSV(text);
 
-    const buckets = {
-      skt: [],
-      kt: [],
-      lg: [],
-      internet: [],
-      mvno: []
-    };
+    const buckets = { skt:[], kt:[], lg:[], internet:[], mvno:[] };
 
     items.forEach(it => {
       const c = (it.carrier || "").trim().toLowerCase();
       if(buckets[c]) buckets[c].push(it);
     });
 
-    // 렌더
+    const emptyMsg = (t)=>`<div style="padding:10px;font-weight:1000;color:#334155;">${t}</div>`;
+
     document.getElementById("list-skt").innerHTML =
-      buckets.skt.map(renderCard).join("") || `<div style="padding:10px;font-weight:900;color:#334155;">등록된 SKT 특판이 없습니다.</div>`;
+      buckets.skt.map(renderCard).join("") || emptyMsg("등록된 SKT 특판이 없습니다.");
 
     document.getElementById("list-kt").innerHTML =
-      buckets.kt.map(renderCard).join("") || `<div style="padding:10px;font-weight:900;color:#334155;">등록된 KT 특판이 없습니다.</div>`;
+      buckets.kt.map(renderCard).join("") || emptyMsg("등록된 KT 특판이 없습니다.");
 
     document.getElementById("list-lg").innerHTML =
-      buckets.lg.map(renderCard).join("") || `<div style="padding:10px;font-weight:900;color:#334155;">등록된 LGU+ 특판이 없습니다.</div>`;
+      buckets.lg.map(renderCard).join("") || emptyMsg("등록된 LGU+ 특판이 없습니다.");
 
     document.getElementById("list-internet").innerHTML =
-      buckets.internet.map(renderCard).join("") || `<div style="padding:10px;font-weight:900;color:#334155;">등록된 인터넷·TV 특판이 없습니다.</div>`;
+      buckets.internet.map(renderCard).join("") || emptyMsg("등록된 인터넷·TV 특판이 없습니다.");
 
     document.getElementById("list-mvno").innerHTML =
-      buckets.mvno.map(renderCard).join("") || `<div style="padding:10px;font-weight:900;color:#334155;">등록된 알뜰요금 특판이 없습니다.</div>`;
+      buckets.mvno.map(renderCard).join("") || emptyMsg("등록된 알뜰요금 특판이 없습니다.");
   }
 
   loadData().catch(err => {
     console.error(err);
-    // 에러는 화면에 크게 보여주기
     document.querySelector(".content").innerHTML = `
       <div style="padding:18px;border:2px solid #fecaca;background:#fff1f2;border-radius:18px;">
         <div style="font-weight:1000;font-size:18px;margin-bottom:6px;">데이터 로딩 실패</div>
-        <div style="font-weight:900;color:#7f1d1d;line-height:1.4;">
+        <div style="font-weight:1000;color:#7f1d1d;line-height:1.5;">
           data.csv를 읽지 못했습니다.<br/>
-          1) data.csv가 repo 루트에 있는지<br/>
-          2) 파일명이 정확히 data.csv인지 (대소문자 포함)<br/>
-          3) GitHub Pages 반영(Commit) 되었는지 확인하세요.
+          1) repo 루트에 data.csv가 있는지<br/>
+          2) 파일명이 정확히 data.csv인지<br/>
+          3) Commit 후 GitHub Pages 반영됐는지 확인하세요.
         </div>
       </div>
     `;
