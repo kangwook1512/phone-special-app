@@ -4,41 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>복지관 2층 휴대폰 특판 안내 | SK·KT·LG · 인터넷TV · 알뜰요금</title>
+  <title>복지관 2층 휴대폰 특판 안내</title>
   <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. SK·KT·LG 휴대폰 특판, 인터넷·TV 현금 지원, 알뜰요금 3,300원~ 실시간 안내." />
   <link rel="canonical" href="https://a2272a.github.io/" />
   <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="복지관 2층 휴대폰, 휴대폰 특판, 알뜰요금 3300원, 휴대폰 성지, 인터넷 TV 현금지원, 액정필름 무료교체" />
 
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#ef4444"/>
+  <meta name="theme-color" content="#111827"/>
 
   <style>
     :root{
-      --bg1:#0b1220;
-      --bg2:#111827;
-
       --ink:#0b1220;
       --sub:#334155;
+      --muted:#64748b;
 
-      --white:#ffffff;
+      --bg:#f7fbff;
+      --card:#ffffff;
       --line:rgba(15,23,42,0.10);
 
       --hot:#ef4444;
       --hot2:#f97316;
+
       --blue:#2563eb;
       --blue2:#0ea5e9;
 
       --kakao:#fee500;
       --kakaoBorder:#facc15;
 
-      --shadow: 0 18px 40px rgba(15,23,42,0.16);
-      --shadow2: 0 10px 22px rgba(15,23,42,0.12);
-
-      --minus:#ef4444;
-      --cash:#f59e0b;
-
-      --radius:24px;
+      --shadow: 0 14px 30px rgba(15,23,42,0.10);
+      --shadow2: 0 8px 18px rgba(15,23,42,0.09);
+      --radius:22px;
     }
 
     *{box-sizing:border-box}
@@ -47,9 +42,9 @@
       font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(1200px 520px at 10% 0%, rgba(239,68,68,0.16) 0%, rgba(239,68,68,0) 55%),
-        radial-gradient(900px 460px at 95% 20%, rgba(14,165,233,0.14) 0%, rgba(14,165,233,0) 60%),
-        linear-gradient(180deg, #fff 0%, #f8fafc 45%, #fff 100%);
+        radial-gradient(1200px 520px at 10% 0%, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0) 55%),
+        radial-gradient(900px 460px at 95% 20%, rgba(14,165,233,0.10) 0%, rgba(14,165,233,0) 60%),
+        linear-gradient(180deg, #fff 0%, var(--bg) 45%, #fff 100%);
     }
 
     .app{
@@ -57,7 +52,6 @@
       min-height:100vh;
       display:flex;
       flex-direction:column;
-      padding-bottom:100px; /* bottom bar */
     }
     @media(min-width:1100px){
       .app{
@@ -70,186 +64,201 @@
       }
     }
 
-    /* ====== 홈쇼핑형 상단 (강력한 배너) ====== */
+    /* =========================
+       ✅ 모바일 최우선: 헤더(간판) 최대한 작게
+       ========================= */
     .top{
       position:sticky;
       top:0;
       z-index:300;
-      padding:14px 14px 12px;
-      background:
-        linear-gradient(135deg, #0b1220 0%, #111827 55%, #0b1220 100%);
+      padding:10px 12px 10px;
+      background: linear-gradient(135deg, #0b1220 0%, #111827 55%, #0b1220 100%);
       color:#fff;
       border-bottom:1px solid rgba(255,255,255,0.10);
+    }
+    .top.shrink{
+      padding:6px 12px 6px;
     }
     .topline{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      flex-wrap:wrap;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:1000;
-      background:rgba(255,255,255,0.10);
-      border:1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(8px);
-      white-space:nowrap;
-    }
-    .pill.hot{
-      background:linear-gradient(135deg, rgba(239,68,68,1) 0%, rgba(249,115,22,1) 100%);
-      border:none;
-      color:#fff;
-      box-shadow:0 10px 24px rgba(239,68,68,0.28);
     }
     .brand{
       display:flex;
-      flex-direction:column;
-      gap:6px;
-      margin-top:10px;
-    }
-    .brand h1{
-      margin:0;
-      font-size:30px;
-      font-weight:1000;
-      letter-spacing:-0.06em;
-      line-height:1.05;
-    }
-    .brand .sub{
-      font-weight:900;
-      color:rgba(255,255,255,0.86);
-      line-height:1.25;
-      font-size:14px;
-    }
-
-    /* 이벤트 배너(액정필름/알뜰요금 강조) */
-    .promo{
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius:18px;
-      background:
-        linear-gradient(135deg, rgba(254,229,0,1) 0%, rgba(253,224,71,1) 60%, rgba(255,255,255,0.9) 100%);
-      color:#0b1220;
-      display:flex;
       align-items:center;
-      justify-content:space-between;
       gap:10px;
-      flex-wrap:wrap;
-      box-shadow:0 14px 30px rgba(250,204,21,0.18);
+      min-width:0;
     }
-    .promo strong{
-      font-size:15px;
+    .logo{
+      width:30px; height:30px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(239,68,68,1), rgba(14,165,233,1));
+      box-shadow:0 10px 22px rgba(0,0,0,0.25);
+      flex:0 0 auto;
+    }
+    .titlewrap{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .title{
+      margin:0;
+      font-size:18px;
       font-weight:1000;
-    }
-    .promo small{
-      font-weight:900;
-      opacity:0.9;
-    }
-    .promo a{
-      text-decoration:none;
-      font-weight:1000;
-      padding:10px 12px;
-      border-radius:14px;
-      background:var(--kakao);
-      border:1px solid var(--kakaoBorder);
-      color:#0b1220;
-      box-shadow:0 10px 18px rgba(15,23,42,0.12);
+      letter-spacing:-0.04em;
+      line-height:1.05;
       white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
+    .top.shrink .title{ font-size:16px; }
 
-    /* ====== 카테고리(인트라넷용: 무조건 “한 눈에” 다 보이게) ====== */
-    .catbar{
-      padding:12px 12px 6px;
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      position:sticky;
-      top:176px; /* top 높이에 맞춰 고정 */
-      z-index:250;
+    .subtitle{
+      font-size:12px;
+      font-weight:900;
+      color:rgba(255,255,255,0.82);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    /* top 높이는 기기마다 조금 달라서, 아래 JS에서 top 보정도 해주지만
-       일단 기본값으로 충분히 동작함 */
-    .cats{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media(min-width:560px){
-      .cats{ grid-template-columns: repeat(3, 1fr); }
-    }
-    @media(min-width:920px){
-      .cats{ grid-template-columns: repeat(6, 1fr); }
-    }
+    .top.shrink .subtitle{ display:none; } /* 스크롤하면 서브 숨겨서 공간 확보 */
 
-    .cat{
-      border:none;
-      cursor:pointer;
-      padding:12px 10px;
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 10px;
       border-radius:999px;
       font-weight:1000;
+      font-size:12px;
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .chip.hot{
+      background:linear-gradient(135deg, rgba(239,68,68,1) 0%, rgba(249,115,22,1) 100%);
+      border:none;
+      box-shadow:0 10px 24px rgba(239,68,68,0.20);
+    }
+    .top.shrink .chip{ padding:6px 9px; }
+
+    /* =========================
+       ✅ 카테고리(한 눈에, 하지만 답답하지 않게)
+       ========================= */
+    .catbar{
+      position:sticky;
+      top:58px;          /* 헤더 높이 고려(대략) */
+      z-index:250;
+      background:rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px) saturate(180%);
+      border-bottom:1px solid var(--line);
+      padding:8px 10px;
+    }
+    .cats{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:2px;
+    }
+    .cats::-webkit-scrollbar{ display:none; }
+
+    .cat{
+      flex:0 0 auto;
+      border:none;
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:1000;
+      font-size:13px;
       background:#fff;
       color:#0b1220;
       border:1px solid rgba(15,23,42,0.12);
       box-shadow: var(--shadow2);
       white-space:nowrap;
-      position:relative;
-      overflow:hidden;
-    }
-    .cat::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg, rgba(239,68,68,0.0), rgba(14,165,233,0.0));
-      opacity:0;
-      transition: opacity .15s ease;
     }
     .cat.active{
       color:#fff;
       border-color: rgba(239,68,68,0.35);
       background: linear-gradient(135deg, rgba(239,68,68,1) 0%, rgba(249,115,22,1) 55%, rgba(14,165,233,1) 100%);
-      box-shadow:0 20px 30px rgba(239,68,68,0.18);
+      box-shadow:0 14px 24px rgba(239,68,68,0.16);
     }
-    .cat.active::before{ opacity:1; }
-
     .cat.film{
       border-color: rgba(250,204,21,0.65);
     }
     .cat.film.active{
-      background: linear-gradient(135deg, rgba(254,229,0,1) 0%, rgba(253,224,71,1) 55%, rgba(255,255,255,1) 100%);
+      background: linear-gradient(135deg, rgba(254,229,0,1) 0%, rgba(253,224,71,1) 60%, rgba(255,255,255,1) 100%);
       color:#0b1220;
       border-color: rgba(250,204,21,0.9);
-      box-shadow:0 20px 30px rgba(250,204,21,0.18);
+      box-shadow:0 14px 24px rgba(250,204,21,0.16);
     }
 
-    /* ====== 본문/카드 ====== */
-    .content{ padding:14px 14px 34px; }
+    .content{ padding:12px 12px 22px; }
     .tab-panel{ display:none; }
     .tab-panel.active{ display:block; }
+
+    /* =========================
+       ✅ “전부 추가”: 첫 화면 TOP3 특가(홈쇼핑 핵심)
+       ========================= */
+    .hero-deals{
+      margin: 10px 0 12px;
+      background: linear-gradient(135deg, rgba(239,68,68,0.10) 0%, rgba(14,165,233,0.10) 100%);
+      border:1px solid rgba(15,23,42,0.10);
+      border-radius: var(--radius);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .hero-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .hero-title{
+      font-weight:1000;
+      letter-spacing:-0.04em;
+      font-size:16px;
+    }
+    .hero-badge{
+      font-size:12px;
+      font-weight:1000;
+      padding:7px 10px;
+      border-radius:999px;
+      background:linear-gradient(135deg, rgba(239,68,68,1), rgba(249,115,22,1));
+      color:#fff;
+      box-shadow:0 10px 18px rgba(239,68,68,0.18);
+      white-space:nowrap;
+    }
 
     .grid{
       display:grid;
       grid-template-columns:1fr;
-      gap:14px;
+      gap:12px;
     }
     @media(min-width:720px){ .grid{ grid-template-columns:1fr 1fr; } }
     @media(min-width:1020px){ .grid{ grid-template-columns:1fr 1fr 1fr; } }
 
+    /* =========================
+       ✅ 카드(모바일 보기 편하게: 높이 줄이고 가격은 더 크게)
+       ========================= */
     .card{
-      background:#fff;
+      background:var(--card);
       border:1px solid rgba(15,23,42,0.10);
-      border-radius:26px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
     }
     .bar{
-      height:8px;
+      height:7px;
       background:linear-gradient(90deg, rgba(239,68,68,1) 0%, rgba(249,115,22,1) 60%, rgba(14,165,233,1) 100%);
     }
-    .card-body{ padding:16px 16px 14px; }
+    .card-body{ padding:14px 14px 12px; }
 
     .row1{
       display:flex;
@@ -257,75 +266,94 @@
       justify-content:space-between;
       gap:10px;
     }
-    .title{
+    .c-title{
       margin:0;
-      font-size:22px;
+      font-size:18px;
       font-weight:1000;
       letter-spacing:-0.04em;
       line-height:1.1;
     }
     .tag{
-      font-size:13px;
+      font-size:12px;
       font-weight:1000;
-      padding:8px 10px;
+      padding:7px 9px;
       border-radius:999px;
       border:1px solid rgba(15,23,42,0.12);
       background:#f1f5f9;
       color:#0b1220;
       white-space:nowrap;
+      flex:0 0 auto;
     }
 
-    /* 홈쇼핑 느낌: 가격 “압도” */
     .row2{
-      margin-top:12px;
+      margin-top:10px;
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
-      gap:14px;
+      gap:12px;
     }
     .price{
-      font-size:54px;
+      font-size:52px;
       font-weight:1000;
       letter-spacing:-0.06em;
-      line-height:0.95;
+      line-height:0.92;
       margin:0;
-    }
-    .price-sub{
-      margin-top:6px;
-      font-size:12px;
-      font-weight:1000;
-      color:#64748b;
     }
     .sub{
       text-align:right;
       font-weight:1000;
-      font-size:15px;
+      font-size:13px;
       line-height:1.2;
       color:#0f172a;
+    }
+
+    /* ✅ “판매가” 같은 문구는 작게/정리 */
+    .price-sub{
+      margin-top:6px;
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
     }
 
     .badges{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
-      margin-top:12px;
+      margin-top:10px;
     }
     .badge{
       font-size:12px;
       font-weight:1000;
-      padding:8px 10px;
+      padding:7px 9px;
       border-radius:12px;
       border:1px solid rgba(15,23,42,0.12);
       background:#fff;
       color:#0f172a;
     }
 
-    /* priceType 강조 */
-    .pt-minus .price{ color: var(--minus); }
-    .pt-cash  .price{ color: var(--cash); }
+    /* ✅ 초특가 스티커(0원/마이너스 자동) */
+    .sticker{
+      position:absolute;
+      top:10px; left:10px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:1000;
+      color:#fff;
+      background:linear-gradient(135deg, rgba(239,68,68,1), rgba(249,115,22,1));
+      box-shadow:0 12px 22px rgba(239,68,68,0.22);
+      border:1px solid rgba(255,255,255,0.20);
+    }
+    .sticker.blue{
+      background:linear-gradient(135deg, rgba(37,99,235,1), rgba(14,165,233,1));
+      box-shadow:0 12px 22px rgba(37,99,235,0.18);
+    }
+
+    .pt-minus .price{ color: var(--hot); }
+    .pt-cash  .price{ color: #f59e0b; }
 
     .empty{
-      padding:18px;
+      padding:16px;
       border:1px dashed rgba(15,23,42,0.20);
       border-radius:18px;
       color:#475569;
@@ -333,16 +361,10 @@
       font-weight:1000;
     }
 
-    /* 액정필름 카드(전용) */
+    /* 액정필름 탭 전용 카드 */
     .film-card{ border:1px solid rgba(250,204,21,0.65); }
     .film-card .bar{
       background:linear-gradient(90deg, rgba(254,229,0,1) 0%, rgba(253,224,71,1) 80%);
-    }
-    .film-cta{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
     }
     .btn{
       display:inline-flex;
@@ -362,105 +384,36 @@
       border-color:var(--kakaoBorder);
     }
 
-    /* ====== 하단 문의바 ====== */
-    .bottom-bar{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      z-index:500;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(10px) saturate(180%);
-      border-top:1px solid rgba(15,23,42,0.10);
-      padding:10px 10px 12px;
-    }
-    @media(min-width:1100px){
-      .bottom-bar{
-        left:50%;
-        transform:translateX(-50%);
-        max-width:1100px;
-        border-bottom-left-radius:28px;
-        border-bottom-right-radius:28px;
-      }
-    }
-    .actions{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:10px;
-      align-items:center;
-    }
-    .act{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding:14px 10px;
-      border-radius:16px;
-      border:1px solid rgba(15,23,42,0.10);
-      background:#fff;
-      box-shadow: var(--shadow2);
-      font-weight:1000;
-      color:#0b1220;
-      text-decoration:none;
-      user-select:none;
-    }
-    .act.primary{
-      background:linear-gradient(135deg, rgba(239,68,68,1) 0%, rgba(249,115,22,1) 55%, rgba(14,165,233,1) 100%);
-      color:#fff;
-      border-color: rgba(239,68,68,0.30);
-    }
-    .act.kakao{
-      background:var(--kakao);
-      color:#0b1220;
-      border-color:var(--kakaoBorder);
-    }
-    .mini-row{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:8px;
+    /* 방문표시는 아주 작게(방해 X) */
+    .footnote{
+      margin-top:12px;
       font-size:12px;
-      color:#64748b;
-      font-weight:1000;
-      padding:0 2px;
+      font-weight:900;
+      color:var(--muted);
+      text-align:center;
     }
-    .admin-link{ display:none; } /* 방문자 화면에서 관리자 노출 금지 */
-
-    /* 카톡 버튼 반짝 */
-    @keyframes pulse {
-      0%{ transform:scale(1); box-shadow:0 0 0 rgba(250,204,21,0); }
-      40%{ transform:scale(1.04); box-shadow:0 0 22px rgba(250,204,21,0.55); }
-      100%{ transform:scale(1); box-shadow:0 0 0 rgba(250,204,21,0); }
-    }
-    .spark{ animation:pulse .9s ease-in-out 0s 2; }
   </style>
 </head>
 
 <body>
   <div class="app">
 
-    <!-- 상단 홈쇼핑형 배너 -->
-    <header class="top">
+    <!-- ✅ 간판(작게) -->
+    <header class="top" id="topbar">
       <div class="topline">
-        <div class="pill hot">🔥 특판 진행중</div>
-        <div class="pill">📍 복지관 2층</div>
-        <div class="pill">📌 SK·KT·LG</div>
-      </div>
-
-      <div class="brand">
-        <h1>복지관 2층 휴대폰 특판 안내</h1>
-        <div class="sub">인터넷·TV / 알뜰요금제 / 액정필름무료교체까지 한 번에</div>
-      </div>
-
-      <div class="promo">
-        <div>
-          <strong>액정필름 무료교체</strong>
-          <small>카톡 주문 후 매장 방문 추천</small>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="titlewrap">
+            <h1 class="title">복지관 2층 휴대폰 특판 안내</h1>
+            <div class="subtitle">SK·KT·LG / 인터넷·TV / 알뜰요금제 / 액정필름무료교체</div>
+          </div>
         </div>
-        <a href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡으로 주문하기</a>
+        <div class="chip hot">🔥 특판</div>
       </div>
     </header>
 
-    <!-- 카테고리(한눈에 다 보이게) -->
-    <div class="catbar" id="catbar">
+    <!-- ✅ 카테고리 (가로 스크롤: 높이 최소화) -->
+    <div class="catbar">
       <div class="cats">
         <button class="cat active" data-tab="skt">SKT</button>
         <button class="cat" data-tab="kt">KT</button>
@@ -472,30 +425,36 @@
     </div>
 
     <main class="content">
+
+      <!-- ✅ 전부 추가: 첫 화면 TOP3 특가(전체에서 자동 선별) -->
+      <section class="hero-deals" id="heroDeals" style="display:none;">
+        <div class="hero-row">
+          <div class="hero-title">오늘 핵심 특가 TOP 3</div>
+          <div class="hero-badge">지금 확인</div>
+        </div>
+        <div class="grid" id="heroGrid"></div>
+      </section>
+
       <section class="tab-panel active" data-panel="skt"><div id="list-skt" class="grid"></div></section>
       <section class="tab-panel" data-panel="kt"><div id="list-kt" class="grid"></div></section>
       <section class="tab-panel" data-panel="lg"><div id="list-lg" class="grid"></div></section>
       <section class="tab-panel" data-panel="internet"><div id="list-internet" class="grid"></div></section>
       <section class="tab-panel" data-panel="mvno"><div id="list-mvno" class="grid"></div></section>
       <section class="tab-panel" data-panel="film"><div id="list-film" class="grid"></div></section>
+
+      <div class="footnote" id="visitText">방문: -</div>
     </main>
   </div>
 
-  <!-- 하단 고정 문의바 -->
-  <div class="bottom-bar">
-    <div class="actions">
-      <a class="act primary" href="tel:042-821-2272">📞 전화 042-821-2272</a>
-      <a class="act" href="sms:010-5839-1512?body=복지관2층%20휴대폰%20특판%20문의드립니다.%0A(기종/%20통신사/%20번호이동or기변)%20:%20">✉️ 문자 010-5839-1512</a>
-      <a class="act kakao" id="kakaoBtn" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">💬 카톡 문의</a>
-    </div>
-    <div class="mini-row">
-      <span id="visitText">방문: -</span>
-      <span class="admin-link"><a href="/admin.html" target="_blank" rel="noopener">관리자페이지</a></span>
-    </div>
-  </div>
-
   <script>
-    // ===== 탭 전환 =====
+    // ✅ 스크롤 시 헤더 더 작게(모바일 공간 확보)
+    const topbar = document.getElementById("topbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 18) topbar.classList.add("shrink");
+      else topbar.classList.remove("shrink");
+    });
+
+    // 탭 전환
     const cats = document.querySelectorAll(".cat");
     const panels = document.querySelectorAll(".tab-panel");
     cats.forEach(b => b.onclick = () => {
@@ -503,21 +462,11 @@
       panels.forEach(p => p.classList.remove("active"));
       b.classList.add("active");
       document.querySelector(`[data-panel="${b.dataset.tab}"]`).classList.add("active");
+      b.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
       window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // 액정필름 탭 누르면 카톡 버튼 반짝
-      if (b.dataset.tab === "film") {
-        const kakao = document.getElementById("kakaoBtn");
-        if (kakao) {
-          kakao.classList.remove("spark");
-          void kakao.offsetWidth;
-          kakao.classList.add("spark");
-          setTimeout(()=>kakao.classList.remove("spark"), 1800);
-        }
-      }
     });
 
-    // ===== 방문 카운트(현재는 "이 기기"만) =====
+    // 방문 카운트(현재는 "이 기기"만 / 방해 안 되게 작게)
     const visitText = document.getElementById("visitText");
     (function visitorCount(){
       const key="visit_count_local";
@@ -526,7 +475,7 @@
       visitText.textContent = "이 기기 방문: " + n;
     })();
 
-    // ===== CSV 파서(안정형) =====
+    // CSV 파서(안정형)
     function parseCSV(text){
       const rows = [];
       let row = [], cur = "", inQ = false;
@@ -569,31 +518,83 @@
       if (p !== "free" && p !== "minus" && p !== "cash") return "free";
       return p;
     }
+
+    // "판매가" 같은 문구 제거해서 덜 지저분하게
+    function cleanPriceText(s){
+      return (s||"")
+        .replace(/판매가\s*/g, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
+
     function extractBigPrice(priceText){
       const raw = (priceText||"").trim();
       const m = raw.match(/-?\d[\d,]*/);
       return m ? m[0] : raw;
     }
 
+    function isZeroOrMinus(r){
+      const ptype = normalizePriceType(r.priceType);
+      const big = extractBigPrice(r.price);
+      const n = Number(String(big).replace(/,/g,""));
+      if (ptype === "minus") return true;
+      if (!isNaN(n) && n <= 0) return true;
+      // 혹시 문자열에 "0원" 포함된 경우
+      if ((r.price||"").includes("0원")) return true;
+      return false;
+    }
+
+    // TOP3 특가 선정(홈쇼핑 느낌)
+    function scoreRow(r){
+      // minus(최우선) > 0원 > 낮은 금액 > 기타
+      const ptype = normalizePriceType(r.priceType);
+      const big = extractBigPrice(r.price);
+      const n = Number(String(big).replace(/,/g,""));
+      let score = 0;
+
+      if (ptype === "minus") score += 1000000;
+      if (!isNaN(n)) {
+        if (n <= 0) score += 900000;
+        score += Math.max(0, 500000 - Math.min(500000, n)); // 낮을수록 점수↑
+      } else {
+        score += 1000;
+      }
+
+      // 인터넷/알뜰은 “가격 비교” 성격이라 TOP3에는 보통 제외(원하면 바꿔줌)
+      if (r.carrier === "internet" || r.carrier === "mvno") score -= 200000;
+
+      return score;
+    }
+
+    function stickerHTML(r){
+      if (normalizePriceType(r.priceType) === "minus") return `<div class="sticker">초특가</div>`;
+      const big = extractBigPrice(r.price);
+      const n = Number(String(big).replace(/,/g,""));
+      if (!isNaN(n) && n === 0) return `<div class="sticker blue">0원</div>`;
+      if (!isNaN(n) && n < 0) return `<div class="sticker">마이너스</div>`;
+      return "";
+    }
+
     function cardHTML(r){
       const ptype = normalizePriceType(r.priceType);
       const badges = [r.badge1, r.badge2, r.badge3].map(x => (x||"").trim()).filter(Boolean);
       const bigPrice = extractBigPrice(r.price);
-      const priceRaw = (r.price||"").trim();
+      const priceRaw = cleanPriceText(r.price);
 
       return `
         <article class="card pt-${esc(ptype)}">
           <div class="bar"></div>
+          ${stickerHTML(r)}
           <div class="card-body">
             <div class="row1">
-              <h3 class="title">${esc(r.title || "-")}</h3>
+              <h3 class="c-title">${esc(r.title || "-")}</h3>
               ${r.tag ? `<div class="tag">${esc(r.tag)}</div>` : ``}
             </div>
 
             <div class="row2">
               <div>
                 <div class="price">${esc(bigPrice)}</div>
-                <div class="price-sub">${esc(priceRaw)}</div>
+                ${priceRaw ? `<div class="price-sub">${esc(priceRaw)}</div>` : ``}
               </div>
               <div class="sub">${esc(r.sub || "")}</div>
             </div>
@@ -620,7 +621,12 @@
       const elMvno = document.getElementById("list-mvno");
       const elFilm = document.getElementById("list-film");
 
+      const heroDeals = document.getElementById("heroDeals");
+      const heroGrid = document.getElementById("heroGrid");
+
       [elSKT, elKT, elLG, elInternet, elMvno, elFilm].forEach(el => el.innerHTML="");
+      heroGrid.innerHTML = "";
+      heroDeals.style.display = "none";
 
       let text = "";
       try{
@@ -631,6 +637,7 @@
         [elSKT, elKT, elLG, elInternet, elMvno].forEach(el => setEmpty(el, "data.csv 불러오기 실패: " + e.message));
       }
 
+      let rowsAll = [];
       if(text && text.trim()){
         const table = parseCSV(text);
         if(table.length >= 2){
@@ -638,7 +645,7 @@
           const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
           const get = (row, key) => (row[idx[key]] ?? "").trim();
 
-          const rows = table.slice(1).map(row => ({
+          rowsAll = table.slice(1).map(row => ({
             carrier: normalizeCarrier(get(row,"carrier")),
             title: get(row,"title"),
             tag: get(row,"tag"),
@@ -650,11 +657,22 @@
             badge3: get(row,"badge3"),
           })).filter(r => r.carrier && r.title);
 
-          const skt = rows.filter(r=>r.carrier==="skt");
-          const kt = rows.filter(r=>r.carrier==="kt");
-          const lg = rows.filter(r=>r.carrier==="lg");
-          const internet = rows.filter(r=>r.carrier==="internet");
-          const mvno = rows.filter(r=>r.carrier==="mvno");
+          // ✅ TOP3 특가
+          const top3 = [...rowsAll]
+            .filter(r => r.carrier !== "film")
+            .sort((a,b)=> scoreRow(b) - scoreRow(a))
+            .slice(0,3);
+
+          if (top3.length){
+            heroDeals.style.display = "block";
+            heroGrid.innerHTML = top3.map(cardHTML).join("");
+          }
+
+          const skt = rowsAll.filter(r=>r.carrier==="skt");
+          const kt = rowsAll.filter(r=>r.carrier==="kt");
+          const lg = rowsAll.filter(r=>r.carrier==="lg");
+          const internet = rowsAll.filter(r=>r.carrier==="internet");
+          const mvno = rowsAll.filter(r=>r.carrier==="mvno");
 
           if(!skt.length) setEmpty(elSKT, "등록된 SKT 항목이 없습니다.");
           else elSKT.innerHTML = skt.map(cardHTML).join("");
@@ -670,6 +688,7 @@
 
           if(!mvno.length) setEmpty(elMvno, "알뜰요금제 항목이 없습니다.");
           else elMvno.innerHTML = mvno.map(cardHTML).join("");
+
         } else {
           [elSKT, elKT, elLG, elInternet, elMvno].forEach(el => setEmpty(el, "CSV 데이터가 부족합니다(헤더+데이터 필요)."));
         }
@@ -679,30 +698,25 @@
         });
       }
 
-      // 액정필름무료교체: 고정 안내 카드
+      // ✅ 액정필름무료교체: 번호 없이, 카톡 버튼만
       elFilm.innerHTML = `
         <article class="card film-card">
           <div class="bar"></div>
           <div class="card-body">
             <div class="row1">
-              <h3 class="title">액정필름무료교체</h3>
+              <h3 class="c-title">액정필름무료교체</h3>
               <div class="tag">카톡 주문</div>
             </div>
             <div class="row2">
               <div>
                 <div class="price">무료</div>
-                <div class="price-sub">액정필름 무료교체 이벤트</div>
+                <div class="price-sub">카톡으로 주문 후 매장 방문 추천</div>
               </div>
-              <div class="sub">카톡 주문 후<br/>매장 방문 추천</div>
-            </div>
-
-            <div class="film-cta">
-              <a class="btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡으로 주문하기</a>
+              <div class="sub">재고/기종 확인<br/>후 방문하면 빠름</div>
             </div>
 
             <div class="badges">
-              <span class="badge">※ 카톡으로 주문하고 매장 방문 추천</span>
-              <span class="badge">※ 재고/기종 확인 후 방문하면 빠름</span>
+              <a class="btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡으로 주문하기</a>
             </div>
           </div>
         </article>
