@@ -93,7 +93,7 @@
     /* Tabs */
     .tab-bar{
       position:sticky;
-      top:92px; /* sign 높이 아래 */
+      top:92px;
       z-index:150;
       background:rgba(255,255,255,0.94);
       backdrop-filter:saturate(180%) blur(10px);
@@ -102,14 +102,14 @@
     }
     .tabs{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr; /* 모바일 2열: 6개면 3줄 꽉 참 */
       gap:10px;
     }
     @media(min-width:520px){
       .tabs{ grid-template-columns: repeat(3, 1fr); }
     }
     @media(min-width:900px){
-      .tabs{ grid-template-columns: repeat(5, 1fr); }
+      .tabs{ grid-template-columns: repeat(6, 1fr); }
     }
 
     .tab-btn{
@@ -130,7 +130,7 @@
       box-shadow:0 18px 30px rgba(37,99,235,0.22);
       border-color: rgba(37,99,235,0.25);
     }
-    /* 액정필름 탭은 노란 강조 */
+    /* 액정필름무료교체 탭은 노란 강조 */
     .tab-btn.film{
       background:rgba(255,255,255,0.95);
       border-color: rgba(250,204,21,0.55);
@@ -345,11 +345,8 @@
       font-weight:900;
       padding:0 2px;
     }
-    .mini-row a{
-      color:#2563eb;
-      text-decoration:none;
-      font-weight:1000;
-    }
+    /* ✅ 이번 버전에서는 관리자페이지 링크를 화면에 노출하지 않음 */
+    .mini-row .admin-link{ display:none; }
 
     @keyframes kakaoPulse {
       0%   { transform: scale(1); box-shadow: 0 0 0 rgba(250,204,21,0); }
@@ -373,20 +370,19 @@
 
 <body>
   <div class="app">
-    <!-- ✅ 간판: 최상단 고정 -->
     <header class="sign">
       <h1 class="sign-title">복지관 2층 휴대폰 특판 안내</h1>
-      <div class="sign-sub">SK·KT·LG / 인터넷·TV + 알뜰요금 / 액정필름 무료교체(카톡 주문)</div>
+      <div class="sign-sub">SK·KT·LG / 인터넷·TV / 알뜰요금제 / 액정필름무료교체</div>
     </header>
 
-    <!-- ✅ 탭: 인터넷·TV + 알뜰 합치고 / 알뜰 자리 = 액정필름 -->
     <div class="tab-bar">
       <div class="tabs">
         <button class="tab-btn active" data-tab="skt">SKT</button>
         <button class="tab-btn" data-tab="kt">KT</button>
         <button class="tab-btn" data-tab="lg">LGU+</button>
-        <button class="tab-btn" data-tab="bundle">인터넷·TV·알뜰</button>
-        <button class="tab-btn film" data-tab="film">액정필름</button>
+        <button class="tab-btn" data-tab="internet">인터넷·TV</button>
+        <button class="tab-btn" data-tab="mvno">알뜰요금제</button>
+        <button class="tab-btn film" data-tab="film">액정필름무료교체</button>
       </div>
     </div>
 
@@ -394,23 +390,14 @@
       <section class="tab-panel active" data-panel="skt"><div id="list-skt" class="grid"></div></section>
       <section class="tab-panel" data-panel="kt"><div id="list-kt" class="grid"></div></section>
       <section class="tab-panel" data-panel="lg"><div id="list-lg" class="grid"></div></section>
-
-      <!-- ✅ 합친 탭: internet + mvno 모두 여기 -->
-      <section class="tab-panel" data-panel="bundle">
-        <div id="list-bundle" class="grid"></div>
-      </section>
-
-      <!-- ✅ 액정필름 탭 -->
-      <section class="tab-panel" data-panel="film">
-        <div class="grid" id="list-film"></div>
-      </section>
+      <section class="tab-panel" data-panel="internet"><div id="list-internet" class="grid"></div></section>
+      <section class="tab-panel" data-panel="mvno"><div id="list-mvno" class="grid"></div></section>
+      <section class="tab-panel" data-panel="film"><div class="grid" id="list-film"></div></section>
     </main>
   </div>
 
-  <!-- ✅ 하단 고정 문의 바 -->
   <div class="bottom-bar">
     <div class="actions">
-      <!-- ⚠️ 여기 전화/문자 번호만 네 번호로 바꿔 -->
       <a class="act primary" href="tel:042-821-2272">📞 전화</a>
       <a class="act" href="sms:010-5839-1512?body=복지관2층%20휴대폰%20특판%20문의드립니다.%0A(기종/%20통신사/%20번호이동or기변)%20:%20">✉️ 문자</a>
       <a class="act kakao" id="kakaoBtn" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">💬 카톡</a>
@@ -418,7 +405,8 @@
 
     <div class="mini-row">
       <span id="visitText">방문: -</span>
-      <span><a href="/admin.html" target="_blank" rel="noopener">관리자페이지</a></span>
+      <!-- 관리자페이지 링크 숨김 처리 -->
+      <span class="admin-link"><a href="/admin.html" target="_blank" rel="noopener">관리자페이지</a></span>
     </div>
   </div>
 
@@ -434,36 +422,20 @@
       window.scrollTo({top:0,behavior:"smooth"});
     });
 
-    // 방문자 카운팅(로컬 + 선택 countapi)
+    // 방문자 카운팅(로컬)
     const visitText = document.getElementById("visitText");
     (function visitorCount(){
       const key="visit_count_local";
       const n = Number(localStorage.getItem(key) || "0") + 1;
       localStorage.setItem(key, String(n));
       visitText.textContent = "이 기기 방문: " + n;
-
-      const USE_COUNTAPI = false;
-      const NAMESPACE = "a2272a-github-io";
-      const KEY = "main-visits";
-      if(USE_COUNTAPI){
-        fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`)
-          .then(r=>r.json())
-          .then(j=>{
-            if(j && typeof j.value==="number"){
-              visitText.textContent = "총 방문: " + j.value;
-            }
-          })
-          .catch(()=>{});
-      }
     })();
 
     // CSV 파서
     function parseCSV(text){
       const rows = [];
       let row = [], cur = "", inQ = false;
-
       if (text && text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-
       for (let i=0;i<text.length;i++){
         const c = text[i];
         if (c === '"'){
@@ -492,19 +464,16 @@
         "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
       }[m]));
     }
-
     function normalizeCarrier(c){
       c = (c||"").trim().toLowerCase();
       if (c === "lgu+" || c === "lgu" || c === "lg") return "lg";
-      return c; // skt/kt/internet/mvno
+      return c;
     }
-
     function normalizePriceType(p){
       p = (p||"free").trim().toLowerCase();
       if (p !== "free" && p !== "minus" && p !== "cash") return "free";
       return p;
     }
-
     function extractBigPrice(priceText){
       const raw = (priceText||"").trim();
       const m = raw.match(/-?\d[\d,]*/);
@@ -552,10 +521,11 @@
       const elSKT = document.getElementById("list-skt");
       const elKT = document.getElementById("list-kt");
       const elLG = document.getElementById("list-lg");
-      const elBundle = document.getElementById("list-bundle");
+      const elInternet = document.getElementById("list-internet");
+      const elMvno = document.getElementById("list-mvno");
       const elFilm = document.getElementById("list-film");
 
-      [elSKT, elKT, elLG, elBundle, elFilm].forEach(el => el.innerHTML="");
+      [elSKT, elKT, elLG, elInternet, elMvno, elFilm].forEach(el => el.innerHTML="");
 
       let text = "";
       try{
@@ -563,18 +533,12 @@
         if(!res.ok) throw new Error("HTTP " + res.status);
         text = await res.text();
       }catch(e){
-        [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "data.csv 불러오기 실패: " + e.message));
-        setEmpty(elFilm, "액정필름 탭은 고정 안내입니다.");
-        return;
+        [elSKT, elKT, elLG, elInternet, elMvno].forEach(el => setEmpty(el, "data.csv 불러오기 실패: " + e.message));
       }
 
-      if(!text.trim()){
-        [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "CSV가 비어있음 (data.csv 확인)"));
-      } else {
+      if(text && text.trim()){
         const table = parseCSV(text);
-        if(table.length < 2){
-          [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "CSV 데이터 부족(헤더+데이터 필요)"));
-        } else {
+        if(table.length >= 2){
           const headers = table[0].map(h => (h||"").trim());
           const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
           const get = (row, key) => (row[idx[key]] ?? "").trim();
@@ -606,20 +570,27 @@
           if(!lg.length) setEmpty(elLG, "등록된 LGU+ 항목이 없습니다.");
           else elLG.innerHTML = lg.map(cardHTML).join("");
 
-          // ✅ 합친 탭: internet + mvno 같이 렌더
-          const bundle = [...internet, ...mvno];
-          if(!bundle.length) setEmpty(elBundle, "인터넷·TV / 알뜰요금 항목이 없습니다.");
-          else elBundle.innerHTML = bundle.map(cardHTML).join("");
+          if(!internet.length) setEmpty(elInternet, "인터넷·TV 항목이 없습니다.");
+          else elInternet.innerHTML = internet.map(cardHTML).join("");
+
+          if(!mvno.length) setEmpty(elMvno, "알뜰요금제 항목이 없습니다.");
+          else elMvno.innerHTML = mvno.map(cardHTML).join("");
+        } else {
+          [elSKT, elKT, elLG, elInternet, elMvno].forEach(el => setEmpty(el, "CSV 데이터가 부족합니다(헤더+데이터 필요)."));
         }
+      } else {
+        [elSKT, elKT, elLG, elInternet, elMvno].forEach(el => {
+          if(!el.innerHTML) setEmpty(el, "CSV가 비어있음 (data.csv 확인)");
+        });
       }
 
-      // ✅ 액정필름 탭: 고정 안내 카드
+      // ✅ 액정필름무료교체 탭: 고정 안내 카드(문구 요청 반영)
       elFilm.innerHTML = `
         <article class="card film-card">
           <div class="card-topline"></div>
           <div class="card-body">
             <div class="row1">
-              <h3 class="title">액정필름 무료교체</h3>
+              <h3 class="title">액정필름무료교체</h3>
               <div class="tag">카톡 주문</div>
             </div>
             <div class="row2">
@@ -627,15 +598,16 @@
                 <div class="price">무료</div>
                 <div class="price-sub">액정필름 무료교체 이벤트</div>
               </div>
-              <div class="sub">카톡으로<br/>“필름” 보내기</div>
+              <div class="sub">카톡 주문 후<br/>매장방문 추천</div>
             </div>
+
             <div class="film-cta">
               <a class="btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡으로 주문하기</a>
-              <a class="btn" href="/admin.html" target="_blank" rel="noopener">관리자페이지</a>
             </div>
+
             <div class="badges">
-              <span class="badge">※ 방문 전 카톡 주문 추천</span>
-              <span class="badge">※ 기종/색상/수량 메시지</span>
+              <span class="badge">※ 카톡으로 주문하고 매장 방문 추천</span>
+              <span class="badge">※ 재고/기종 확인 후 방문하면 빠름</span>
             </div>
           </div>
         </article>
@@ -644,7 +616,7 @@
 
     loadAndRender();
 
-    // 액정필름 탭 들어갈 때 카톡 버튼 살짝 반짝(선택)
+    // 액정필름 탭 클릭 시 하단 카톡 버튼 반짝
     (function(){
       const filmTab = document.querySelector('.tab-btn.film');
       const kakao = document.getElementById("kakaoBtn");
