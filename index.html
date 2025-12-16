@@ -4,14 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 🔎 SEO -->
   <title>복지관 2층 휴대폰 특판 안내 | SK·KT·LG · 인터넷TV · 알뜰요금</title>
   <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. SK·KT·LG 휴대폰 특판, 인터넷·TV 현금 지원, 알뜰요금 3,300원~ 실시간 안내." />
   <link rel="canonical" href="https://a2272a.github.io/" />
   <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="복지관 2층 휴대폰, 휴대폰 특판, 알뜰요금 3300원, 휴대폰 성지, 인터넷 TV 현금지원" />
+  <meta name="keywords" content="복지관 2층 휴대폰, 휴대폰 특판, 알뜰요금 3300원, 휴대폰 성지, 인터넷 TV 현금지원, 액정필름 무료교체" />
 
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0ea5e9"/>
 
@@ -30,10 +28,11 @@
       --shadow: 0 18px 40px rgba(15,23,42,0.12);
       --shadow2: 0 10px 22px rgba(15,23,42,0.10);
 
-      --radius:22px;
-
       --price-minus:#ef4444;
       --price-cash:#f59e0b;
+
+      --kakao:#fee500;
+      --kakaoBorder:#facc15;
     }
 
     *{box-sizing:border-box}
@@ -52,9 +51,8 @@
       min-height:100vh;
       display:flex;
       flex-direction:column;
-      padding-bottom:90px; /* 하단 고정바 공간 */
+      padding-bottom:90px;
     }
-
     @media(min-width:1100px){
       .app{
         max-width:1100px;
@@ -66,65 +64,42 @@
       }
     }
 
-    /* ✅ 상단 프로모션 바 (4번 문구) */
-    .top-promo{
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: linear-gradient(135deg, #fee500, #fde047);
-      color: #0b1220;
-      font-weight: 1000;
-      text-align: center;
-      padding: 12px 10px;
-      font-size: 16px;
-      border-bottom: 1px solid rgba(0,0,0,0.10);
-      cursor: pointer;
-      user-select:none;
-    }
-    .top-promo small{
-      display:block;
-      margin-top:3px;
-      font-size: 13px;
-      font-weight: 900;
-      opacity: 0.9;
-    }
-
-    .hero{
+    /* ✅ 맨 위 간판(고정) */
+    .sign{
+      position:sticky;
+      top:0;
+      z-index:200;
       padding:18px 18px 14px;
       background:
         radial-gradient(1000px 420px at 15% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
         linear-gradient(180deg, #ffffff 0%, #f0fbff 100%);
       border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(180%) blur(8px);
     }
-    .hero-title{
+    .sign-title{
       margin:0;
-      font-size:34px;
+      font-size:36px;
       font-weight:1000;
       letter-spacing:-0.06em;
       line-height:1.05;
     }
-    .hero-sub{
+    .sign-sub{
       margin:10px 0 0;
       font-size:15px;
       font-weight:900;
       color:var(--sub);
     }
-    .hint{
-      margin:10px 0 0;
-      font-size:13px;
-      color:#64748b;
-      font-weight:900;
-    }
 
     /* Tabs */
     .tab-bar{
-      position:sticky; top:52px; z-index:30; /* top-promo가 sticky라서 그 아래로 */
+      position:sticky;
+      top:92px; /* sign 높이 아래 */
+      z-index:150;
       background:rgba(255,255,255,0.94);
       backdrop-filter:saturate(180%) blur(10px);
       border-bottom:1px solid var(--line);
       padding:10px 12px 12px;
     }
-    /* 모바일 2열, 데스크탑 5열 */
     .tabs{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -155,12 +130,22 @@
       box-shadow:0 18px 30px rgba(37,99,235,0.22);
       border-color: rgba(37,99,235,0.25);
     }
+    /* 액정필름 탭은 노란 강조 */
+    .tab-btn.film{
+      background:rgba(255,255,255,0.95);
+      border-color: rgba(250,204,21,0.55);
+    }
+    .tab-btn.film.active{
+      background:linear-gradient(135deg, #fee500 0%, #fde047 100%);
+      color:#0b1220;
+      border-color: rgba(250,204,21,0.8);
+      box-shadow:0 18px 30px rgba(250,204,21,0.22);
+    }
 
     .content{padding:14px 14px 34px}
     .tab-panel{display:none}
     .tab-panel.active{display:block}
 
-    /* list layout */
     .grid{
       display:grid;
       grid-template-columns:1fr;
@@ -192,7 +177,6 @@
       justify-content:space-between;
       gap:10px;
     }
-
     .title{
       font-size:24px;
       font-weight:1000;
@@ -219,7 +203,6 @@
       justify-content:space-between;
       gap:14px;
     }
-
     .price{
       font-size:52px;
       font-weight:1000;
@@ -257,7 +240,6 @@
       color:#0f172a;
     }
 
-    .pt-free .price{ color:#0f172a; }
     .pt-minus .price{ color:var(--price-minus); }
     .pt-cash .price{ color:var(--price-cash); }
 
@@ -268,6 +250,37 @@
       color:#475569;
       background:rgba(255,255,255,0.6);
       font-weight:900;
+    }
+
+    /* 액정필름 탭 전용 카드 */
+    .film-card{
+      border:1px solid rgba(250,204,21,0.55);
+    }
+    .film-card .card-topline{
+      background: linear-gradient(90deg, rgba(254,229,0,1), rgba(253,224,71,1));
+    }
+    .film-cta{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:1000;
+      text-decoration:none;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#0b1220;
+      box-shadow: var(--shadow2);
+    }
+    .btn.kakao{
+      background:var(--kakao);
+      border-color:var(--kakaoBorder);
     }
 
     /* bottom contact bar */
@@ -338,7 +351,6 @@
       font-weight:1000;
     }
 
-    /* ✅ 카톡 버튼 반짝/펄스 효과 */
     @keyframes kakaoPulse {
       0%   { transform: scale(1); box-shadow: 0 0 0 rgba(250,204,21,0); }
       40%  { transform: scale(1.04); box-shadow: 0 0 22px rgba(250,204,21,0.55); }
@@ -360,29 +372,21 @@
 </head>
 
 <body>
-  <!-- 검색 보강용 숨김 텍스트 -->
-  <div style="display:none">복지관 2층 휴대폰 매장 특판 전용 사이트</div>
-
-  <!-- ✅ 상단 프로모션 바 -->
-  <div class="top-promo" id="promoBar">
-    액정필름 무료교체
-    <small>카톡 주문 가능</small>
-  </div>
-
   <div class="app">
-    <header class="hero">
-      <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
-      <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
-      <div class="hint">※ 가격/조건은 수시 변동될 수 있습니다. 방문 전 문의 추천</div>
+    <!-- ✅ 간판: 최상단 고정 -->
+    <header class="sign">
+      <h1 class="sign-title">복지관 2층 휴대폰 특판 안내</h1>
+      <div class="sign-sub">SK·KT·LG / 인터넷·TV + 알뜰요금 / 액정필름 무료교체(카톡 주문)</div>
     </header>
 
+    <!-- ✅ 탭: 인터넷·TV + 알뜰 합치고 / 알뜰 자리 = 액정필름 -->
     <div class="tab-bar">
       <div class="tabs">
         <button class="tab-btn active" data-tab="skt">SKT</button>
         <button class="tab-btn" data-tab="kt">KT</button>
         <button class="tab-btn" data-tab="lg">LGU+</button>
-        <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-        <button class="tab-btn" data-tab="mvno">알뜰요금</button>
+        <button class="tab-btn" data-tab="bundle">인터넷·TV·알뜰</button>
+        <button class="tab-btn film" data-tab="film">액정필름</button>
       </div>
     </div>
 
@@ -390,17 +394,25 @@
       <section class="tab-panel active" data-panel="skt"><div id="list-skt" class="grid"></div></section>
       <section class="tab-panel" data-panel="kt"><div id="list-kt" class="grid"></div></section>
       <section class="tab-panel" data-panel="lg"><div id="list-lg" class="grid"></div></section>
-      <section class="tab-panel" data-panel="internet"><div id="list-internet" class="grid"></div></section>
-      <section class="tab-panel" data-panel="mvno"><div id="list-mvno" class="grid"></div></section>
+
+      <!-- ✅ 합친 탭: internet + mvno 모두 여기 -->
+      <section class="tab-panel" data-panel="bundle">
+        <div id="list-bundle" class="grid"></div>
+      </section>
+
+      <!-- ✅ 액정필름 탭 -->
+      <section class="tab-panel" data-panel="film">
+        <div class="grid" id="list-film"></div>
+      </section>
     </main>
   </div>
 
   <!-- ✅ 하단 고정 문의 바 -->
   <div class="bottom-bar">
     <div class="actions">
-      <!-- ⚠️ 여기 전화번호/문자번호만 네 번호로 수정 -->
-      <a class="act primary" id="btn-call" href="tel:042-821-2272">📞 전화</a>
-      <a class="act" id="btn-sms" href="sms:010-5839-1512?body=복지관2층%20휴대폰%20특판%20문의드립니다.%0A(기종/%20통신사/%20번호이동or기변)%20:%20">✉️ 문자</a>
+      <!-- ⚠️ 여기 전화/문자 번호만 네 번호로 바꿔 -->
+      <a class="act primary" href="tel:042-821-2272">📞 전화</a>
+      <a class="act" href="sms:010-5839-1512?body=복지관2층%20휴대폰%20특판%20문의드립니다.%0A(기종/%20통신사/%20번호이동or기변)%20:%20">✉️ 문자</a>
       <a class="act kakao" id="kakaoBtn" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">💬 카톡</a>
     </div>
 
@@ -411,9 +423,7 @@
   </div>
 
   <script>
-    // -----------------------------
     // 탭 전환
-    // -----------------------------
     const tabs=document.querySelectorAll(".tab-btn");
     const panels=document.querySelectorAll(".tab-panel");
     tabs.forEach(b=>b.onclick=()=>{
@@ -424,9 +434,7 @@
       window.scrollTo({top:0,behavior:"smooth"});
     });
 
-    // -----------------------------
-    // 방문자 카운팅 (로컬 + 선택 countapi)
-    // -----------------------------
+    // 방문자 카운팅(로컬 + 선택 countapi)
     const visitText = document.getElementById("visitText");
     (function visitorCount(){
       const key="visit_count_local";
@@ -434,11 +442,9 @@
       localStorage.setItem(key, String(n));
       visitText.textContent = "이 기기 방문: " + n;
 
-      // 전세계 공용 카운트(원하면 true)
       const USE_COUNTAPI = false;
       const NAMESPACE = "a2272a-github-io";
       const KEY = "main-visits";
-
       if(USE_COUNTAPI){
         fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`)
           .then(r=>r.json())
@@ -451,14 +457,11 @@
       }
     })();
 
-    // -----------------------------
-    // CSV 파서 (따옴표/콤마 대응)
-    // -----------------------------
+    // CSV 파서
     function parseCSV(text){
       const rows = [];
       let row = [], cur = "", inQ = false;
 
-      // BOM 제거
       if (text && text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
 
       for (let i=0;i<text.length;i++){
@@ -502,19 +505,15 @@
       return p;
     }
 
-    // "판매가 39만원" / "월 3,300원~" / "현금+상품권 최대 지급" 같은 텍스트도 유지
     function extractBigPrice(priceText){
       const raw = (priceText||"").trim();
-      // 숫자/콤마 있는 경우만 숫자 뽑기 (없으면 원문 유지)
       const m = raw.match(/-?\d[\d,]*/);
       return m ? m[0] : raw;
     }
 
     function cardHTML(r){
-      const carrier = normalizeCarrier(r.carrier);
       const ptype = normalizePriceType(r.priceType);
       const badges = [r.badge1, r.badge2, r.badge3].map(x => (x||"").trim()).filter(Boolean);
-
       const bigPrice = extractBigPrice(r.price);
       const priceRaw = (r.price||"").trim();
 
@@ -550,91 +549,115 @@
     }
 
     async function loadAndRender(){
-      const targets = {
-        skt: document.getElementById("list-skt"),
-        kt: document.getElementById("list-kt"),
-        lg: document.getElementById("list-lg"),
-        internet: document.getElementById("list-internet"),
-        mvno: document.getElementById("list-mvno"),
-      };
-      Object.values(targets).forEach(el => el.innerHTML = "");
+      const elSKT = document.getElementById("list-skt");
+      const elKT = document.getElementById("list-kt");
+      const elLG = document.getElementById("list-lg");
+      const elBundle = document.getElementById("list-bundle");
+      const elFilm = document.getElementById("list-film");
+
+      [elSKT, elKT, elLG, elBundle, elFilm].forEach(el => el.innerHTML="");
 
       let text = "";
       try{
         const res = await fetch("data.csv?v=" + Date.now(), { cache:"no-store" });
-        if(!res.ok) throw new Error("fetch data.csv failed: HTTP " + res.status);
+        if(!res.ok) throw new Error("HTTP " + res.status);
         text = await res.text();
       }catch(e){
-        Object.values(targets).forEach(el => setEmpty(el, "data.csv 불러오기 실패: " + e.message));
+        [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "data.csv 불러오기 실패: " + e.message));
+        setEmpty(elFilm, "액정필름 탭은 고정 안내입니다.");
         return;
       }
 
       if(!text.trim()){
-        Object.values(targets).forEach(el => setEmpty(el, "CSV가 비어있음 (data.csv 확인)"));
-        return;
+        [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "CSV가 비어있음 (data.csv 확인)"));
+      } else {
+        const table = parseCSV(text);
+        if(table.length < 2){
+          [elSKT, elKT, elLG, elBundle].forEach(el => setEmpty(el, "CSV 데이터 부족(헤더+데이터 필요)"));
+        } else {
+          const headers = table[0].map(h => (h||"").trim());
+          const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+          const get = (row, key) => (row[idx[key]] ?? "").trim();
+
+          const rows = table.slice(1).map(row => ({
+            carrier: normalizeCarrier(get(row,"carrier")),
+            title: get(row,"title"),
+            tag: get(row,"tag"),
+            price: get(row,"price"),
+            priceType: get(row,"priceType") || "free",
+            sub: get(row,"sub"),
+            badge1: get(row,"badge1"),
+            badge2: get(row,"badge2"),
+            badge3: get(row,"badge3"),
+          })).filter(r => r.carrier && r.title);
+
+          const skt = rows.filter(r=>r.carrier==="skt");
+          const kt = rows.filter(r=>r.carrier==="kt");
+          const lg = rows.filter(r=>r.carrier==="lg");
+          const internet = rows.filter(r=>r.carrier==="internet");
+          const mvno = rows.filter(r=>r.carrier==="mvno");
+
+          if(!skt.length) setEmpty(elSKT, "등록된 SKT 항목이 없습니다.");
+          else elSKT.innerHTML = skt.map(cardHTML).join("");
+
+          if(!kt.length) setEmpty(elKT, "등록된 KT 항목이 없습니다.");
+          else elKT.innerHTML = kt.map(cardHTML).join("");
+
+          if(!lg.length) setEmpty(elLG, "등록된 LGU+ 항목이 없습니다.");
+          else elLG.innerHTML = lg.map(cardHTML).join("");
+
+          // ✅ 합친 탭: internet + mvno 같이 렌더
+          const bundle = [...internet, ...mvno];
+          if(!bundle.length) setEmpty(elBundle, "인터넷·TV / 알뜰요금 항목이 없습니다.");
+          else elBundle.innerHTML = bundle.map(cardHTML).join("");
+        }
       }
 
-      const table = parseCSV(text);
-      if(table.length < 2){
-        Object.values(targets).forEach(el => setEmpty(el, "CSV 데이터가 부족함 (헤더+데이터 필요)"));
-        return;
-      }
-
-      const headers = table[0].map(h => (h||"").trim());
-      const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
-      const get = (row, key) => (row[idx[key]] ?? "").trim();
-
-      const rows = table.slice(1).map(row => ({
-        carrier: normalizeCarrier(get(row,"carrier")),
-        title: get(row,"title"),
-        tag: get(row,"tag"),
-        price: get(row,"price"),
-        priceType: get(row,"priceType") || "free",
-        sub: get(row,"sub"),
-        badge1: get(row,"badge1"),
-        badge2: get(row,"badge2"),
-        badge3: get(row,"badge3"),
-      })).filter(r => r.carrier && r.title);
-
-      const grouped = {skt:[], kt:[], lg:[], internet:[], mvno:[]};
-      rows.forEach(r => { if(grouped[r.carrier]) grouped[r.carrier].push(r); });
-
-      for (const k of Object.keys(grouped)){
-        const el = targets[k];
-        const items = grouped[k];
-        if(!items.length) setEmpty(el, "등록된 항목이 없습니다. (admin.html에서 data.csv를 채워주세요)");
-        else el.innerHTML = items.map(cardHTML).join("");
-      }
+      // ✅ 액정필름 탭: 고정 안내 카드
+      elFilm.innerHTML = `
+        <article class="card film-card">
+          <div class="card-topline"></div>
+          <div class="card-body">
+            <div class="row1">
+              <h3 class="title">액정필름 무료교체</h3>
+              <div class="tag">카톡 주문</div>
+            </div>
+            <div class="row2">
+              <div>
+                <div class="price">무료</div>
+                <div class="price-sub">액정필름 무료교체 이벤트</div>
+              </div>
+              <div class="sub">카톡으로<br/>“필름” 보내기</div>
+            </div>
+            <div class="film-cta">
+              <a class="btn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡으로 주문하기</a>
+              <a class="btn" href="/admin.html" target="_blank" rel="noopener">관리자페이지</a>
+            </div>
+            <div class="badges">
+              <span class="badge">※ 방문 전 카톡 주문 추천</span>
+              <span class="badge">※ 기종/색상/수량 메시지</span>
+            </div>
+          </div>
+        </article>
+      `;
     }
 
     loadAndRender();
 
-    // -----------------------------
-    // 프로모션 바 클릭 → 카톡 버튼 반짝 + 아래로 이동 + (원하면) 카톡 링크도 열기
-    // -----------------------------
+    // 액정필름 탭 들어갈 때 카톡 버튼 살짝 반짝(선택)
     (function(){
-      const promo = document.getElementById("promoBar");
+      const filmTab = document.querySelector('.tab-btn.film');
       const kakao = document.getElementById("kakaoBtn");
-      if(!promo || !kakao) return;
-
-      promo.addEventListener("click", ()=>{
-        // 1) 하단으로 내려서 카톡 버튼 보이게
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-
-        // 2) 반짝 애니메이션
+      if(!filmTab || !kakao) return;
+      filmTab.addEventListener("click", ()=>{
         kakao.classList.remove("kakao-sparkle");
         void kakao.offsetWidth;
         kakao.classList.add("kakao-sparkle");
         setTimeout(()=>kakao.classList.remove("kakao-sparkle"), 2000);
-
-        // 3) 바로 카톡 열고 싶으면 아래 주석 해제
-        // window.open("https://open.kakao.com/o/s729bI5h", "_blank");
       });
     })();
 
-    // -----------------------------
-    // service worker 등록 (있으면)
-    // -----------------------------
+    // service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js').catch(()=>{});
