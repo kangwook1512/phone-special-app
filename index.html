@@ -1,226 +1,510 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>복지관 2층 휴대폰 매장 | 특판 안내</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>복지관 2층 휴대폰 매장 | 특판 전용 사이트</title>
+  <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. SK·KT·LG 휴대폰 특판, 인터넷TV, 알뜰요금 안내. 문의는 카톡." />
 
-<style>
-:root{
-  --bg:#F6F7FB;
-  --ink:#0b1220;
-  --muted:#5b6475;
-  --card:#ffffff;
-  --stroke:rgba(15,23,42,.08);
-  --shadow:0 14px 32px rgba(20,30,60,.12);
-  --radius:16px;
-  --brand1:#4F46E5;
-  --brand2:#22D3EE;
-  --bottomH:56px;
-}
+  <style>
+    :root{
+      --bg:#F6F7FB;
+      --ink:#0b1220;
+      --muted:#5b6475;
 
-*{box-sizing:border-box;}
-html,body{height:100%;}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(900px 520px at 15% 10%, rgba(79,70,229,.10), transparent 60%),
-    radial-gradient(900px 520px at 85% 30%, rgba(34,211,238,.08), transparent 60%),
-    var(--bg);
-}
+      --card:#ffffff;
+      --stroke:rgba(15,23,42,.08);
+      --shadow:0 14px 32px rgba(20,30,60,.12);
+      --radius:16px;
 
-/* ===== 전체 구조 ===== */
-.app{
-  min-height:100svh;
-  display:flex;
-  flex-direction:column;
-}
+      --brand1:#4F46E5;
+      --brand2:#22D3EE;
 
-.wrap{
-  max-width:980px;
-  margin:0 auto;
-  padding:0 12px;
-}
+      --max:980px;
+      --bottomH:56px;
+    }
 
-/* ===== 상단 ===== */
-header{
-  padding:12px 0 8px;
-}
-.hero{
-  background:#fff;
-  border:1px solid var(--stroke);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:0 10px 24px rgba(20,30,60,.08);
-}
-.hero h1{
-  margin:0;
-  font-size:20px;
-  font-weight:900;
-}
-.hero p{
-  margin:6px 0 0;
-  font-size:13px;
-  color:var(--muted);
-  font-weight:700;
-}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Noto Sans KR", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 15% 10%, rgba(79,70,229,.10), transparent 60%),
+        radial-gradient(900px 520px at 85% 30%, rgba(34,211,238,.08), transparent 60%),
+        var(--bg);
+    }
 
-/* ===== 메인 ===== */
-main{
-  flex:1 1 auto;
-  padding-bottom:calc(var(--bottomH) + env(safe-area-inset-bottom) + 14px);
-}
+    .app{ min-height:100svh; display:flex; flex-direction:column; }
+    .wrap{ max-width:var(--max); margin:0 auto; padding:0 12px; }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:12px;
-  padding:12px 0 20px;
-}
+    /* ===== 상단(간판) ===== */
+    header{ padding:12px 0 8px; }
+    .hero{
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--stroke);
+      border-radius:18px;
+      padding:12px;
+      box-shadow:0 10px 24px rgba(20,30,60,.08);
+      backdrop-filter: blur(10px);
+    }
+    .heroTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .hero h1{
+      margin:0;
+      font-size:20px;
+      font-weight:950;
+      letter-spacing:-0.5px;
+      line-height:1.15;
+    }
+    .hero p{
+      margin:6px 0 0;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+    }
+    .pill{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:950;
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand1),var(--brand2));
+      box-shadow:0 14px 28px rgba(79,70,229,.18);
+      white-space:nowrap;
+      user-select:none;
+    }
 
-.card{
-  background:var(--card);
-  border:1px solid var(--stroke);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:12px;
-}
+    /* ===== 통신사 탭(가로 스크롤) ===== */
+    .tabs{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      padding-bottom:2px;
+    }
+    .tabs::-webkit-scrollbar{ display:none; }
 
-.card-top{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
+    .tab{
+      flex:0 0 auto;
+      border-radius:999px;
+      padding:10px 12px;
+      border:1px solid rgba(15,23,42,.10);
+      background:rgba(255,255,255,.80);
+      color:var(--ink);
+      font-weight:950;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+      transition:transform .05s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab:active{ transform:scale(.98); }
+    .tab.active{
+      border-color:transparent;
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand1),var(--brand2));
+      box-shadow:0 14px 28px rgba(79,70,229,.18);
+    }
 
-.title{
-  font-size:16px;
-  font-weight:900;
-}
-.sub{
-  margin-top:4px;
-  font-size:13px;
-  color:var(--muted);
-  font-weight:700;
-}
-.price{
-  font-size:18px;
-  font-weight:900;
-  color:var(--brand1);
-  white-space:nowrap;
-}
-.desc{
-  margin-top:8px;
-  font-size:13px;
-  color:var(--muted);
-  font-weight:700;
-  line-height:1.4;
-  white-space:pre-line;
-}
+    /* ===== 메인 ===== */
+    main{
+      flex:1 1 auto;
+      padding-bottom: calc(var(--bottomH) + env(safe-area-inset-bottom) + 14px);
+    }
 
-.badge{
-  display:inline-block;
-  margin-top:8px;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-  color:#fff;
-  background:linear-gradient(135deg,#ef4444,#f97316);
-}
+    .status{
+      margin:12px 0 0;
+      background:rgba(255,255,255,.80);
+      border:1px dashed rgba(15,23,42,.18);
+      border-radius:14px;
+      padding:12px;
+      font-weight:900;
+      color:var(--muted);
+      display:none;
+      box-shadow:0 10px 22px rgba(20,30,60,.08);
+    }
+    .status b{ color:var(--ink); }
 
-@media(min-width:820px){
-  .grid{grid-template-columns:1fr 1fr;}
-}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      padding:12px 0 20px;
+    }
+    @media(min-width:820px){
+      .grid{ grid-template-columns:1fr 1fr; }
+    }
 
-/* ===== 하단 고정바 : 동일 크기 3분할 ===== */
-.bottom-bar{
-  position:fixed;
-  left:0; right:0; bottom:0;
-  height:var(--bottomH);
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  background:rgba(246,247,251,.95);
-  backdrop-filter:blur(10px);
-  border-top:1px solid var(--stroke);
-  padding-bottom:env(safe-area-inset-bottom);
-  z-index:9999;
-}
+    .card{
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:12px;
+    }
+    .cardTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .title{
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:-0.4px;
+      line-height:1.2;
+    }
+    .sub{
+      margin-top:4px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+      line-height:1.25;
+    }
+    .right{
+      text-align:right;
+      min-width:110px;
+    }
+    .carrier{
+      font-size:11px;
+      font-weight:950;
+      color:rgba(91,100,117,.95);
+      margin-bottom:4px;
+    }
+    .price{
+      font-size:18px;
+      font-weight:1000;
+      color:var(--brand1);
+      white-space:nowrap;
+      letter-spacing:-0.5px;
+      line-height:1.05;
+    }
+    .badgeRow{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:950;
+      border:1px solid rgba(15,23,42,.08);
+      background:rgba(246,247,251,.85);
+      color:var(--ink);
+      user-select:none;
+    }
+    .badge.hot{
+      border:none;
+      color:#fff;
+      background:linear-gradient(135deg,#ef4444,#f97316);
+      box-shadow:0 12px 24px rgba(239,68,68,.16);
+    }
+    .desc{
+      margin-top:10px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+      line-height:1.4;
+      white-space:pre-line;
+    }
 
-.bottom-bar a{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:15px;
-  font-weight:900;
-  text-decoration:none;
-  color:var(--ink);
-  border-right:1px solid var(--stroke);
-}
-.bottom-bar a:last-child{border-right:none;}
-.bottom-bar a.kakao{
-  color:#fff;
-  background:linear-gradient(135deg,var(--brand1),var(--brand2));
-}
-</style>
+    /* ===== 하단 고정바(심플 3분할 동일 크기) ===== */
+    .bottom-bar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      height:var(--bottomH);
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      background:rgba(246,247,251,.95);
+      backdrop-filter:blur(10px);
+      border-top:1px solid var(--stroke);
+      padding-bottom:env(safe-area-inset-bottom);
+      z-index:9999;
+    }
+    .bottom-bar a{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:15px;
+      font-weight:950;
+      text-decoration:none;
+      color:var(--ink);
+      border-right:1px solid var(--stroke);
+      user-select:none;
+    }
+    .bottom-bar a:last-child{ border-right:none; }
+    .bottom-bar a.kakao{
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand1),var(--brand2));
+    }
+  </style>
 </head>
 
 <body>
-<div class="app">
-
-  <!-- 상단 -->
-  <header>
-    <div class="wrap">
-      <div class="hero">
-        <h1>복지관 2층 휴대폰 매장</h1>
-        <p>휴대폰 · 인터넷TV · 알뜰요금 특판 안내</p>
-      </div>
-    </div>
-  </header>
-
-  <!-- 메인 -->
-  <main>
-    <div class="wrap">
-      <div class="grid">
-
-        <div class="card">
-          <div class="card-top">
+  <div class="app">
+    <header>
+      <div class="wrap">
+        <div class="hero">
+          <div class="heroTop">
             <div>
-              <div class="title">알뜰요금 LG망</div>
-              <div class="sub">통화 · 문자 무제한</div>
+              <h1>복지관 2층 휴대폰 매장</h1>
+              <p>휴대폰 · 인터넷TV · 알뜰요금 특판 전용 사이트</p>
             </div>
-            <div class="price">월 3,300원~</div>
+            <div class="pill">카톡 문의 필수</div>
           </div>
-          <span class="badge">HOT</span>
-          <div class="desc">가입비 / 유심비 없음
-카톡 문의 필수</div>
-        </div>
 
-        <div class="card">
-          <div class="card-top">
-            <div>
-              <div class="title">인터넷 + TV</div>
-              <div class="sub">설치 조건별 상이</div>
-            </div>
-            <div class="price">현금 최대 지급</div>
-          </div>
-          <div class="desc">주소 남겨주시면
-가능 여부 바로 안내</div>
+          <!-- 통신사 탭 -->
+          <div class="tabs" id="tabs"></div>
         </div>
-
       </div>
-    </div>
-  </main>
+    </header>
 
-</div>
+    <main>
+      <div class="wrap">
+        <div class="status" id="status"></div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </main>
+  </div>
 
-<!-- 하단 고정 -->
-<div class="bottom-bar">
-  <a href="tel:042-821-2272">전화</a>
-  <a href="sms:010-5839-1512">문자</a>
-  <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
-</div>
+  <!-- 하단 고정바(동일 크기) -->
+  <div class="bottom-bar">
+    <a href="tel:042-821-2272">전화</a>
+    <a href="sms:010-5839-1512">문자</a>
+    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
+  </div>
 
+<script>
+  // 탭(통신사/카테고리)
+  const CATEGORIES = [
+    { key: "SK", label: "SK" },
+    { key: "KT", label: "KT" },
+    { key: "LG", label: "LG" },
+    { key: "인터넷TV", label: "인터넷TV" },
+    { key: "알뜰요금", label: "알뜰요금" }
+  ];
+
+  // CSV 없거나 비었을 때 예시(카드 비어있음 방지)
+  const FALLBACK = [
+    { category:"SK", title:"아이폰/갤럭시 특판", subtitle:"모델/조건별 상이", price:"0원~", badge:"HOT", desc:"당일 시세 변동 가능\n카톡으로 모델/용량 보내주세요", priority:"90" },
+    { category:"KT", title:"신규/기변/번이", subtitle:"조건 맞춤 안내", price:"문의", badge:"상담", desc:"원하시는 모델/색상/용량 알려주시면 정리해드립니다.", priority:"80" },
+    { category:"LG", title:"지원금 최적 조합", subtitle:"실구매가 기준", price:"문의", badge:"상담", desc:"가능한 조합 중 최저 실구매가로 안내", priority:"80" },
+    { category:"인터넷TV", title:"인터넷 + TV", subtitle:"설치 조건별 상이", price:"현금 최대 지급", badge:"문의", desc:"주소/통신사/희망상품 카톡으로 남겨주세요", priority:"70" },
+    { category:"알뜰요금", title:"알뜰요금", subtitle:"추가비용 없음", price:"월 3,300원~", badge:"HOT", desc:"액정필름 무료교체 (카톡주문필수)\n문의는 카톡으로", priority:"100" },
+  ];
+
+  let active = "SK";
+  let allRows = [];
+
+  init();
+
+  async function init(){
+    renderTabs();
+    await loadCSV();
+    renderGrid();
+  }
+
+  function renderTabs(){
+    const tabs = document.getElementById("tabs");
+    tabs.innerHTML = "";
+    CATEGORIES.forEach(c=>{
+      const b = document.createElement("button");
+      b.className = "tab" + (c.key===active ? " active" : "");
+      b.textContent = c.label;
+      b.onclick = ()=>{
+        active = c.key;
+        document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+        renderGrid();
+      };
+      tabs.appendChild(b);
+    });
+  }
+
+  function setStatus(html){
+    const s = document.getElementById("status");
+    if(!html){
+      s.style.display="none";
+      s.innerHTML="";
+      return;
+    }
+    s.style.display="block";
+    s.innerHTML = html;
+  }
+
+  async function loadCSV(){
+    try{
+      const res = await fetch("data.csv", { cache:"no-store" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      const text = await res.text();
+      const rows = parseCSV(text);
+      allRows = normalizeRows(rows);
+
+      if(!allRows.length){
+        allRows = FALLBACK;
+        setStatus("data.csv는 읽혔지만 내용이 비어있어 <b>예시 카드</b>로 표시 중입니다. CSV 내용을 채우면 자동 반영됩니다.");
+      }else{
+        setStatus("");
+      }
+    }catch(e){
+      allRows = FALLBACK;
+      setStatus("data.csv를 불러오지 못해 <b>예시 카드</b>로 표시 중입니다. index.html과 같은 폴더에 data.csv 업로드 후 새로고침하세요.");
+    }
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById("grid");
+
+    const rows = allRows
+      .filter(r => (r.category||"").trim() === active)
+      .sort((a,b)=> (num(b.priority)-num(a.priority)));
+
+    grid.innerHTML = "";
+
+    if(!rows.length){
+      const div = document.createElement("div");
+      div.className = "status";
+      div.style.display = "block";
+      div.innerHTML = `현재 <b>${escapeHTML(active)}</b> 카테고리에 카드가 없습니다. data.csv에 해당 카테고리 행을 추가하면 표시됩니다.`;
+      grid.appendChild(div);
+      return;
+    }
+
+    rows.forEach(r=> grid.appendChild(cardEl(r)));
+  }
+
+  function cardEl(r){
+    const badge = (r.badge||"").trim();
+    const isHot = /hot|특가|0원|초특가|강추/i.test(badge);
+
+    const el = document.createElement("section");
+    el.className = "card";
+    el.innerHTML = `
+      <div class="cardTop">
+        <div>
+          <div class="title">${escapeHTML(r.title || "제목")}</div>
+          ${r.subtitle ? `<div class="sub">${escapeHTML(r.subtitle)}</div>` : ``}
+        </div>
+        <div class="right">
+          <div class="carrier">${escapeHTML(r.category || "")}</div>
+          <div class="price">${escapeHTML(r.price || "문의")}</div>
+        </div>
+      </div>
+
+      <div class="badgeRow">
+        ${badge ? `<span class="badge ${isHot ? "hot":""}">${escapeHTML(badge)}</span>` : ``}
+      </div>
+
+      ${r.desc ? `<div class="desc">${escapeHTML(r.desc)}</div>` : ``}
+    `;
+    return el;
+  }
+
+  // ------- CSV 파서(기본) -------
+  function parseCSV(text){
+    const lines = text.replace(/\r/g,"").split("\n").filter(l=>l.trim().length);
+    if(!lines.length) return [];
+    const header = splitCSV(lines[0]).map(x=>x.trim());
+    const out = [];
+
+    for(let i=1;i<lines.length;i++){
+      const cols = splitCSV(lines[i]);
+      const obj = {};
+      header.forEach((h,idx)=> obj[h] = (cols[idx] ?? "").trim());
+      out.push(obj);
+    }
+    return out;
+  }
+
+  function splitCSV(line){
+    const result = [];
+    let cur = "";
+    let inQ = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = !inQ;
+      }else if(ch === ',' && !inQ){
+        result.push(cur); cur="";
+      }else cur += ch;
+    }
+    result.push(cur);
+    return result;
+  }
+
+  // ------- 헤더 유연 매핑 -------
+  function normalizeRows(rows){
+    if(!rows || !rows.length) return [];
+
+    const map = {
+      category: ["category","카테고리","통신사","망","carrier","type"],
+      title: ["title","제목","모델","상품","name"],
+      subtitle: ["subtitle","부제","조건","요약","sub"],
+      price: ["price","가격","요금","월요금","금액","지원금","money"],
+      badge: ["badge","뱃지","태그","구분","label"],
+      desc: ["desc","설명","비고","메모","detail"],
+      priority: ["priority","우선순위","rank","sort"]
+    };
+
+    const pick = (o, keys)=>{
+      for(const k of keys) if(Object.prototype.hasOwnProperty.call(o,k)) return o[k];
+      return "";
+    };
+
+    return rows.map(o=>({
+        category: normalizeCategory(pick(o,map.category)),
+        title: pick(o,map.title),
+        subtitle: pick(o,map.subtitle),
+        price: pick(o,map.price),
+        badge: pick(o,map.badge),
+        desc: pick(o,map.desc),
+        priority: pick(o,map.priority) || "0"
+      }))
+      .filter(r=> r.category);
+  }
+
+  function normalizeCategory(v){
+    const s = (v||"").trim();
+    if(!s) return "";
+    if(/^sk$/i.test(s) || s.includes("SK")) return "SK";
+    if(/^kt$/i.test(s) || s.includes("KT")) return "KT";
+    if(/^lg$/i.test(s) || s.includes("LG")) return "LG";
+    if(s.includes("인터넷") || s.includes("TV") || /tv/i.test(s)) return "인터넷TV";
+    if(s.includes("알뜰") || /mvno/i.test(s)) return "알뜰요금";
+    return s; // 탭에 없는 값이면 표시 안될 수 있음
+  }
+
+  function num(v){
+    const n = parseFloat(String(v||"0").replace(/[^\d.-]/g,""));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function escapeHTML(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+</script>
 </body>
 </html>
