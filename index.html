@@ -7,11 +7,20 @@
 
 <style>
 :root{
-  --bg:#f6f7fb;
+  /* 베이스 & 포인트 */
+  --bg:#f4f7fb;
+  --card:#ffffff;
   --ink:#0b1220;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --brand:#111827;
+  --muted:#7b8191;
+  --line:#e6e9ef;
+
+  --accent:#ff4d4f;      /* 가격 포인트 */
+  --accent2:#4f7cff;    /* 선택 탭 */
+  --accent3:#22c55e;    /* 전화 */
+  --accent4:#38bdf8;    /* 문자 */
+  --accent5:#ffe066;    /* 카톡 */
+
+  --topH:auto;
   --bottomH:56px;
 }
 
@@ -31,10 +40,10 @@ body{
   padding:8px 6px;
   background:#fff;
   border-bottom:1px solid var(--line);
-  font-weight:600;
+  font-weight:700;
 }
 
-/* 통신사 2열 */
+/* 통신사 2열 탭 */
 .carrier-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -44,61 +53,70 @@ body{
   border-bottom:1px solid var(--line);
 }
 .carrier-btn{
-  padding:10px 0;
-  text-align:center;
-  font-weight:700;
-  font-size:14px;
+  appearance:none;
   border:1px solid var(--line);
-  background:#fafafa;
-  border-radius:6px;
+  background:#f9fafb;
+  border-radius:10px;
+  padding:12px 0;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+}
+.carrier-btn.active{
+  background:var(--accent2);
+  color:#fff;
+  border-color:var(--accent2);
 }
 
-/* 카드 영역 */
+/* 메인 영역 */
 .main{
-  padding:10px 10px calc(var(--bottomH) + 50px);
+  padding:10px 10px calc(var(--bottomH) + 12px);
 }
 
-/* 카드 2열 */
+/* 카드 그리드: 화면 높이 채우기 */
 .card-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
-}
 
-/* 카드 */
+  /* 상단+하단 제외한 영역을 2행으로 정확 분할 */
+  height:calc(100vh - 170px - var(--bottomH));
+}
 .card{
-  background:#fff;
+  background:var(--card);
   border:1px solid var(--line);
-  border-radius:8px;
-  padding:12px 10px;
+  border-radius:16px;
+  padding:16px 14px;
+
   display:flex;
   flex-direction:column;
   justify-content:center;
-  min-height:120px;
+
+  /* 시각적 중심 */
+  text-align:left;
 }
 
-/* 카드 내용 정렬 */
+/* 카드 텍스트 – 최대화 */
 .card .model{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-
-.card .price{
-  font-size:20px;
+  font-size:18px;
   font-weight:900;
-  margin-bottom:6px;
+  margin-bottom:10px;
 }
-
+.card .price{
+  font-size:30px;
+  font-weight:1000;
+  color:var(--accent);
+  margin-bottom:8px;
+}
 .card .cond{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:600;
+  font-size:14px;
+  font-weight:800;
+  color:#111827;
 }
 
-/* 카드 밖 조건 문구 */
+/* 카드 공통 조건 (1회) */
 .common-note{
-  margin:12px 0 0;
+  margin:10px 0 0;
   text-align:center;
   font-size:12px;
   color:var(--muted);
@@ -119,16 +137,13 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:700;
+  font-weight:900;
   text-decoration:none;
-  color:var(--ink);
-  border-right:1px solid var(--line);
-}
-.bottom-bar a:last-child{border-right:none;}
-.bottom-bar .kakao{
-  background:#111827;
   color:#fff;
 }
+.bottom-bar .call{background:var(--accent3);}
+.bottom-bar .sms{background:var(--accent4);}
+.bottom-bar .kakao{background:var(--accent5); color:#111;}
 </style>
 </head>
 
@@ -139,59 +154,77 @@ body{
   복지관2층매장 · 액정필름 무료교체 (카톡주문필수)
 </div>
 
-<!-- 통신사 -->
-<div class="carrier-grid">
-  <div class="carrier-btn">특가폰</div>
-  <div class="carrier-btn">SK</div>
-  <div class="carrier-btn">KT</div>
-  <div class="carrier-btn">LG</div>
-  <div class="carrier-btn">인터넷TV</div>
-  <div class="carrier-btn">알뜰요금</div>
+<!-- 통신사 탭 -->
+<div class="carrier-grid" id="carrierGrid">
+  <button class="carrier-btn active" data-cat="특가폰">특가폰</button>
+  <button class="carrier-btn" data-cat="SK">SK</button>
+  <button class="carrier-btn" data-cat="KT">KT</button>
+  <button class="carrier-btn" data-cat="LG">LG</button>
+  <button class="carrier-btn" data-cat="인터넷TV">인터넷TV</button>
+  <button class="carrier-btn" data-cat="알뜰요금">알뜰요금</button>
 </div>
 
 <!-- 카드 -->
 <div class="main">
-  <div class="card-grid">
-
-    <!-- 카드 예시 (15~20개까지 그대로 반복 가능) -->
-    <div class="card">
+  <div class="card-grid" id="cardGrid">
+    <div class="card" data-cat="특가폰,SK">
       <div class="model">아이폰15</div>
       <div class="price">0원</div>
       <div class="cond">기기변경</div>
     </div>
-
-    <div class="card">
+    <div class="card" data-cat="특가폰,KT">
       <div class="model">갤럭시 S25 FE</div>
       <div class="price">34만원</div>
       <div class="cond">기기변경</div>
     </div>
-
-    <div class="card">
+    <div class="card" data-cat="특가폰,LG">
       <div class="model">아이폰14</div>
       <div class="price">0원</div>
       <div class="cond">기기변경</div>
     </div>
-
-    <div class="card">
+    <div class="card" data-cat="SK">
       <div class="model">갤럭시 S24</div>
       <div class="price">19만원</div>
       <div class="cond">기기변경</div>
     </div>
-
   </div>
 
-  <!-- 카드 공통 조건 -->
+  <!-- 조건 문구 (1회) -->
   <div class="common-note">
-    요금제 및 부가 별도문의
+    요금제 및 부가서비스 별도문의
   </div>
 </div>
 
-<!-- 하단 고정 -->
+<!-- 하단 -->
 <div class="bottom-bar">
-  <a href="tel:042-821-2272">전화</a>
-  <a href="sms:010-5839-1512">문자</a>
-  <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
+  <a class="call" href="tel:042-821-2272">전화</a>
+  <a class="sms" href="sms:010-5839-1512">문자</a>
+  <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
 </div>
+
+<script>
+(function(){
+  const grid = document.getElementById('carrierGrid');
+  const buttons = Array.from(grid.querySelectorAll('.carrier-btn'));
+  const cards = Array.from(document.querySelectorAll('.card'));
+
+  function applyFilter(cat){
+    buttons.forEach(b=>b.classList.toggle('active', b.dataset.cat===cat));
+    cards.forEach(card=>{
+      const cats=(card.dataset.cat||'').split(',').map(s=>s.trim());
+      card.style.display = cats.includes(cat) ? '' : 'none';
+    });
+  }
+
+  grid.addEventListener('click', e=>{
+    const btn=e.target.closest('.carrier-btn');
+    if(!btn) return;
+    applyFilter(btn.dataset.cat);
+  });
+
+  applyFilter('특가폰');
+})();
+</script>
 
 </body>
 </html>
