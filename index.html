@@ -1,381 +1,208 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 🔎 Google 검색 최적화 -->
-  <title>복지관 2층 휴대폰 특판 안내 | SK·KT·LG · 인터넷TV · 알뜰요금</title>
-  <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. SK·KT·LG 휴대폰 특판, 인터넷·TV 현금 지원, 알뜰요금 3,300원~ 실시간 안내." />
-  <link rel="canonical" href="https://a2272a.github.io/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="복지관 2층 휴대폰, 휴대폰 특판, 알뜰요금 3300원, 휴대폰 성지, 연구소 휴대폰, 인터넷 TV 현금지원" />
+<title>복지관 2층 휴대폰 특판 안내</title>
+<meta name="description" content="복지관 2층 휴대폰 특판 전용 사이트" />
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-      });
-    }
-  </script>
+<style>
+/* ===== 기본 ===== */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
+  background:linear-gradient(180deg,#eaf6ff 0%,#f6fffb 100%);
+  color:#0b1220;
+}
+.app{max-width:1100px;margin:0 auto}
 
-  <style>
-    :root{
-      --bg:#f4fbff;
-      --ink:#0b1220;
-      --sub:#334155;
+/* ===== 헤더 ===== */
+.hero{
+  padding:20px;
+  background:linear-gradient(135deg,#dff1ff,#eefbf6);
+  border-bottom:1px solid rgba(15,23,42,.1)
+}
+.hero-title{
+  margin:0;
+  font-size:32px;
+  font-weight:1000;
+}
+.hero-sub{
+  margin-top:6px;
+  font-weight:900;
+  color:#334155;
+}
 
-      --skt:#ff3b4a;
-      --kt:#111827;
-      --lg:#c026d3;
-      --internet:#f97316;
-      --mvno:#16a34a;
+/* ===== 탭 ===== */
+.tab-bar{
+  position:sticky;top:0;z-index:10;
+  background:#fff;
+  padding:12px;
+  border-bottom:1px solid rgba(15,23,42,.1)
+}
+.tabs{display:flex;gap:10px}
+.tab-btn{
+  flex:1;
+  padding:14px 10px;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,.15);
+  background:#fff;
+  font-weight:1000;
+  cursor:pointer;
+}
+.tab-btn.active{
+  background:linear-gradient(135deg,#0ea5e9,#2563eb);
+  color:#fff;
+}
 
-      --blue:#0ea5e9;
-      --blue2:#2563eb;
+/* ===== 리스트 ===== */
+.content{padding:16px}
+#list-skt,#list-kt,#list-lg,#list-internet,#list-mvno{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:14px;
+}
 
-      --radius:24px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 450px at 10% 0%, rgba(14,165,233,0.18) 0%, rgba(14,165,233,0) 55%),
-        radial-gradient(900px 420px at 95% 22%, rgba(34,197,94,0.12) 0%, rgba(34,197,94,0) 60%),
-        linear-gradient(180deg, #ffffff 0%, var(--bg) 35%, #ffffff 100%);
-    }
-    .app{width:100%;min-height:100vh;display:flex;flex-direction:column;}
-    @media(min-width:1100px){
-      .app{
-        max-width:1100px;
-        margin:18px auto;
-        border-radius:28px;
-        overflow:hidden;
-        background:#fff;
-        box-shadow:0 26px 60px rgba(15,23,42,0.14);
-      }
-    }
-    .hero{
-      padding:18px 18px 16px;
-      background:
-        radial-gradient(1000px 420px at 15% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
-        linear-gradient(180deg, #ffffff 0%, #f0fbff 100%);
-      border-bottom:1px solid rgba(15,23,42,0.08);
-    }
-    .hero-title{
-      margin:0;
-      font-size:32px;
-      font-weight:1000;
-      letter-spacing:-0.06em;
-      line-height:1.06;
-    }
-    .hero-sub{
-      margin:8px 0 0;
-      font-size:15px;
-      font-weight:900;
-      color:var(--sub);
-    }
+/* ===== 카드 ===== */
+.deal-card{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 18px 30px rgba(15,23,42,.12);
+  border:1px solid rgba(15,23,42,.08)
+}
+.deal-topbar{height:8px}
+.deal-body{padding:14px}
 
-    .tab-bar{
-      position:sticky; top:0; z-index:30;
-      background:rgba(255,255,255,0.94);
-      backdrop-filter:saturate(180%) blur(10px);
-      border-bottom:1px solid rgba(15,23,42,0.08);
-      padding:10px 12px 12px;
-    }
-    .tabs{display:flex;gap:10px;flex-wrap:wrap}
-    .tab-btn{
-      flex:1; min-width:120px;
-      border:none;cursor:pointer;
-      padding:14px 10px;border-radius:999px;
-      font-size:15px;font-weight:1000;
-      background:#fff;color:#0b1220;
-      border:1px solid rgba(15,23,42,0.10);
-      box-shadow:0 12px 22px rgba(15,23,42,0.08);
-    }
-    .tab-btn.active{
-      background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
-      color:#fff;
-      box-shadow:0 18px 30px rgba(37,99,235,0.22);
-    }
+.deal-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+.deal-title{
+  font-size:20px;
+  font-weight:1000;
+}
+.deal-tag{
+  font-size:13px;
+  font-weight:900;
+  color:#475569;
+  white-space:nowrap;
+}
+.deal-price{
+  margin:10px 0 4px;
+  font-size:36px;
+  font-weight:1000;
+}
+.deal-sub{
+  font-size:13px;
+  font-weight:900;
+  color:#334155;
+}
+.deal-badges{
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.deal-badge{
+  padding:6px 10px;
+  border-radius:999px;
+  background:#f1f5f9;
+  font-size:12px;
+  font-weight:900;
+  border:1px solid rgba(15,23,42,.1)
+}
 
-    .content{padding:14px 14px 34px}
-    .tab-panel{display:none}
-    .tab-panel.active{display:block}
-
-    /* cards */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-      gap:12px;
-    }
-    @media(min-width:680px){
-      .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
-    }
-    @media(min-width:980px){
-      .grid{grid-template-columns: repeat(3, minmax(0, 1fr));}
-    }
-    .card{
-      border-radius:22px;
-      background:#fff;
-      border:1px solid rgba(15,23,42,0.10);
-      box-shadow:0 18px 34px rgba(15,23,42,0.10);
-      overflow:hidden;
-    }
-    .card-top{
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(15,23,42,0.06);
-      background:linear-gradient(180deg, rgba(14,165,233,0.10) 0%, rgba(255,255,255,0) 100%);
-    }
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .title{
-      margin:0;
-      font-size:18px;
-      font-weight:1000;
-      letter-spacing:-0.02em;
-    }
-    .tag{
-      font-size:13px;
-      font-weight:900;
-      color:var(--sub);
-      white-space:nowrap;
-    }
-    .price{
-      padding:12px 14px 14px;
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .price strong{
-      font-size:24px;
-      font-weight:1000;
-      letter-spacing:-0.03em;
-    }
-    .price small{
-      font-size:13px;
-      font-weight:900;
-      color:var(--sub);
-    }
-    .badges{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      padding:0 14px 14px;
-    }
-    .badge{
-      font-size:12px;
-      font-weight:1000;
-      padding:8px 10px;
-z
-      border-radius:999px;
-      border:1px solid rgba(15,23,42,0.10);
-      background:rgba(15,23,42,0.03);
-    }
-    .accent{
-      height:6px;
-      background:linear-gradient(90deg, var(--blue), var(--blue2));
-    }
-    .accent.skt{background:linear-gradient(90deg, var(--skt), #ff7a7a);}
-    .accent.kt{background:linear-gradient(90deg, var(--kt), #475569);}
-    .accent.lg{background:linear-gradient(90deg, var(--lg), #fb7185);}
-    .accent.internet{background:linear-gradient(90deg, var(--internet), #fb923c);}
-    .accent.mvno{background:linear-gradient(90deg, var(--mvno), #4ade80);}
-
-    .priceType-free strong{color:#111827;}
-    .priceType-minus strong{color:#dc2626;}
-    .priceType-cash strong{color:#0f766e;}
-
-    .empty{
-      padding:18px;
-      border-radius:18px;
-      border:1px dashed rgba(15,23,42,0.20);
-      color:var(--sub);
-      font-weight:900;
-      background:rgba(255,255,255,0.7);
-    }
-  </style>
+/* ===== 숨김 ===== */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+</style>
 </head>
 
 <body>
-  <!-- 검색 보강용 숨김 텍스트 -->
-  <div style="display:none">복지관 2층 휴대폰 매장 특판 전용 사이트</div>
+<div class="app">
 
-  <div class="app">
-    <header class="hero">
-      <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
-      <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
-    </header>
+<header class="hero">
+  <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
+  <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
+</header>
 
-    <div class="tab-bar">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="skt">SKT</button>
-        <button class="tab-btn" data-tab="kt">KT</button>
-        <button class="tab-btn" data-tab="lg">LGU+</button>
-        <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-        <button class="tab-btn" data-tab="mvno">알뜰요금</button>
-      </div>
-    </div>
-
-    <main class="content">
-      <section class="tab-panel active" data-panel="skt"><div id="list-skt" class="grid"></div></section>
-      <section class="tab-panel" data-panel="kt"><div id="list-kt" class="grid"></div></section>
-      <section class="tab-panel" data-panel="lg"><div id="list-lg" class="grid"></div></section>
-      <section class="tab-panel" data-panel="internet"><div id="list-internet" class="grid"></div></section>
-      <section class="tab-panel" data-panel="mvno"><div id="list-mvno" class="grid"></div></section>
-    </main>
+<div class="tab-bar">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="skt">SKT</button>
+    <button class="tab-btn" data-tab="kt">KT</button>
+    <button class="tab-btn" data-tab="lg">LGU+</button>
+    <button class="tab-btn" data-tab="internet">인터넷·TV</button>
+    <button class="tab-btn" data-tab="mvno">알뜰요금</button>
   </div>
+</div>
 
-  <script>
-    // 탭
-    const tabs=document.querySelectorAll(".tab-btn");
-    const panels=document.querySelectorAll(".tab-panel");
-    tabs.forEach(b=>b.onclick=()=>{
-      tabs.forEach(x=>x.classList.remove("active"));
-      panels.forEach(p=>p.classList.remove("active"));
-      b.classList.add("active");
-      document.querySelector(`[data-panel="${b.dataset.tab}"]`).classList.add("active");
-      window.scrollTo({top:0,behavior:"smooth"});
-    });
+<main class="content">
+  <section class="tab-panel active" data-panel="skt"><div id="list-skt"></div></section>
+  <section class="tab-panel" data-panel="kt"><div id="list-kt"></div></section>
+  <section class="tab-panel" data-panel="lg"><div id="list-lg"></div></section>
+  <section class="tab-panel" data-panel="internet"><div id="list-internet"></div></section>
+  <section class="tab-panel" data-panel="mvno"><div id="list-mvno"></div></section>
+</main>
 
-    // CSV 파서 (따옴표/콤마 대응)
-    function parseCSV(text){
-      const rows = [];
-      let row = [], cur = "", inQ = false;
-      for (let i=0;i<text.length;i++){
-        const c = text[i];
-        if (c === '"'){
-          if (inQ && text[i+1] === '"'){ cur += '"'; i++; }
-          else inQ = !inQ;
-        } else if (c === ',' && !inQ){
-          row.push(cur); cur="";
-        } else if ((c === '\n' || c === '\r') && !inQ){
-          if (c === '\r' && text[i+1] === '\n') i++;
-          row.push(cur);
-          rows.push(row);
-          row=[]; cur="";
-        } else {
-          cur += c;
-        }
-      }
-      if (cur.length || row.length){ row.push(cur); rows.push(row); }
-      return rows;
-    }
+</div>
 
-    function esc(s){
-      return String(s ?? "").replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[m]));
-    }
+<script>
+/* ===== 탭 ===== */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add("active");
+    window.scrollTo({top:0});
+  }
+});
 
-    function normalizeCarrier(c){
-      c = (c||"").trim().toLowerCase();
-      if (c === "lgu+" || c === "lgu" || c === "lg") return "lg";
-      return c; // skt/kt/internet/mvno
-    }
+/* ===== CSV 로드 ===== */
+fetch("data.csv?"+Date.now())
+.then(r=>r.text())
+.then(text=>{
+  const lines=text.trim().split("\n");
+  const headers=lines.shift().split(",");
+  lines.forEach(l=>{
+    if(!l.trim()) return;
+    const v=l.split(",").map(x=>x.replace(/^"|"$/g,""));
+    const row={}; headers.forEach((h,i)=>row[h]=v[i]||"");
+    render(row);
+  });
+});
 
-    function cardHTML(r){
-      const carrier = normalizeCarrier(r.carrier);
-      const priceType = (r.priceType||"free").trim().toLowerCase();
-      const badges = [r.badge1, r.badge2, r.badge3].map(x => (x||"").trim()).filter(Boolean);
+function render(r){
+  const wrap=document.getElementById("list-"+r.carrier);
+  if(!wrap) return;
 
-      return `
-        <article class="card priceType-${esc(priceType)}">
-          <div class="accent ${esc(carrier)}"></div>
-          <div class="card-top">
-            <div class="row">
-              <h3 class="title">${esc(r.title || "-")}</h3>
-              <div class="tag">${esc(r.tag || "")}</div>
-            </div>
-          </div>
-          <div class="price">
-            <strong>${esc(r.price || "")}</strong>
-            <small>${esc(r.sub || "")}</small>
-          </div>
-          ${badges.length ? `<div class="badges">${badges.map(b=>`<span class="badge">${esc(b)}</span>`).join("")}</div>` : `<div style="height:12px"></div>`}
-        </article>
-      `;
-    }
+  const topColor={
+    skt:"#ff3b4a",kt:"#111827",lg:"#c026d3",
+    internet:"#f97316",mvno:"#16a34a"
+  }[r.carrier]||"#0ea5e9";
 
-    async function loadAndRender(){
-      const targets = {
-        skt: document.getElementById("list-skt"),
-        kt: document.getElementById("list-kt"),
-        lg: document.getElementById("list-lg"),
-        internet: document.getElementById("list-internet"),
-        mvno: document.getElementById("list-mvno"),
-      };
-
-      // 로딩 표시
-      Object.values(targets).forEach(el => el.innerHTML = `<div class="empty">불러오는 중…</div>`);
-
-      let text = "";
-      try{
-        const res = await fetch("data.csv?x=" + Date.now(), {cache:"no-store"});
-        if(!res.ok) throw new Error("HTTP " + res.status);
-        text = await res.text();
-      }catch(e){
-        Object.values(targets).forEach(el => el.innerHTML = `<div class="empty">data.csv 불러오기 실패: ${esc(e.message)}</div>`);
-        console.error("fetch data.csv failed", e);
-        return;
-      }
-
-      // 빈 파일 방지
-      if(!text.trim()){
-        Object.values(targets).forEach(el => el.innerHTML = `<div class="empty">CSV가 비어있음 (data.csv 내용 확인)</div>`);
-        return;
-      }
-
-      const table = parseCSV(text).filter(r => r.some(v => String(v||"").trim() !== ""));
-      if(table.length < 2){
-        Object.values(targets).forEach(el => el.innerHTML = `<div class="empty">CSV 데이터가 부족함 (헤더+데이터 필요)</div>`);
-        return;
-      }
-
-      const headers = table[0].map(h => (h||"").trim());
-      const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
-
-      function get(row, key){ return (row[idx[key]] ?? "").trim(); }
-
-      const rows = table.slice(1).map(row => ({
-        carrier: normalizeCarrier(get(row,"carrier")),
-        title: get(row,"title"),
-        tag: get(row,"tag"),
-        price: get(row,"price"),
-        priceType: get(row,"priceType") || "free",
-        sub: get(row,"sub"),
-        badge1: get(row,"badge1"),
-        badge2: get(row,"badge2"),
-        badge3: get(row,"badge3"),
-      })).filter(r => r.carrier && r.title); // carrier/title 없는 줄은 버림
-
-      // 그룹핑
-      const grouped = {skt:[], kt:[], lg:[], internet:[], mvno:[]};
-      rows.forEach(r => {
-        if(grouped[r.carrier]) grouped[r.carrier].push(r);
-      });
-
-      // 렌더
-      for (const k of Object.keys(grouped)){
-        const el = targets[k];
-        if(!grouped[k].length){
-          el.innerHTML = `<div class="empty">등록된 항목이 없습니다. (admin.html에서 data.csv 불러오기/수정)</div>`;
-        } else {
-          el.innerHTML = grouped[k].map(cardHTML).join("");
-        }
-      }
-    }
-
-    loadAndRender();
-  </script>
+  const card=document.createElement("div");
+  card.className="deal-card";
+  card.innerHTML=`
+    <div class="deal-topbar" style="background:${topColor}"></div>
+    <div class="deal-body">
+      <div class="deal-row">
+        <div class="deal-title">${r.title}</div>
+        <div class="deal-tag">${r.tag}</div>
+      </div>
+      <div class="deal-price">${r.price}</div>
+      <div class="deal-sub">${r.sub}</div>
+      <div class="deal-badges">
+        ${[r.badge1,r.badge2,r.badge3].filter(Boolean)
+          .map(b=>`<span class="deal-badge">${b}</span>`).join("")}
+      </div>
+    </div>`;
+  wrap.appendChild(card);
+}
+</script>
 </body>
 </html>
