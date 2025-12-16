@@ -1,208 +1,632 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>복지관 2층 휴대폰 특판 안내</title>
-<meta name="description" content="복지관 2층 휴대폰 특판 전용 사이트" />
+  <title>복지관 2층 휴대폰 특판 안내 | SK·KT·LG · 인터넷TV · 알뜰요금</title>
+  <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. SK·KT·LG 휴대폰 특판, 인터넷·TV 현금 지원, 알뜰요금 3,300원~ 실시간 안내." />
+  <link rel="canonical" href="https://a2272a.github.io/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="keywords" content="복지관 2층 휴대폰, 휴대폰 특판, 알뜰요금 3300원, 휴대폰 성지, 연구소 휴대폰, 인터넷 TV 현금지원" />
 
-<style>
-/* ===== 기본 ===== */
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
-  background:linear-gradient(180deg,#eaf6ff 0%,#f6fffb 100%);
-  color:#0b1220;
-}
-.app{max-width:1100px;margin:0 auto}
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0ea5e9"/>
 
-/* ===== 헤더 ===== */
-.hero{
-  padding:20px;
-  background:linear-gradient(135deg,#dff1ff,#eefbf6);
-  border-bottom:1px solid rgba(15,23,42,.1)
-}
-.hero-title{
-  margin:0;
-  font-size:32px;
-  font-weight:1000;
-}
-.hero-sub{
-  margin-top:6px;
-  font-weight:900;
-  color:#334155;
-}
+  <style>
+    :root{
+      --bg:#f4fbff;
+      --ink:#0b1220;
+      --sub:#334155;
 
-/* ===== 탭 ===== */
-.tab-bar{
-  position:sticky;top:0;z-index:10;
-  background:#fff;
-  padding:12px;
-  border-bottom:1px solid rgba(15,23,42,.1)
-}
-.tabs{display:flex;gap:10px}
-.tab-btn{
-  flex:1;
-  padding:14px 10px;
-  border-radius:999px;
-  border:1px solid rgba(15,23,42,.15);
-  background:#fff;
-  font-weight:1000;
-  cursor:pointer;
-}
-.tab-btn.active{
-  background:linear-gradient(135deg,#0ea5e9,#2563eb);
-  color:#fff;
-}
+      --blue:#0ea5e9;
+      --blue2:#2563eb;
 
-/* ===== 리스트 ===== */
-.content{padding:16px}
-#list-skt,#list-kt,#list-lg,#list-internet,#list-mvno{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:14px;
-}
+      --card:#ffffff;
+      --line:rgba(15,23,42,0.10);
 
-/* ===== 카드 ===== */
-.deal-card{
-  background:#fff;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 18px 30px rgba(15,23,42,.12);
-  border:1px solid rgba(15,23,42,.08)
-}
-.deal-topbar{height:8px}
-.deal-body{padding:14px}
+      --shadow: 0 18px 40px rgba(15,23,42,0.12);
+      --shadow2: 0 10px 22px rgba(15,23,42,0.10);
 
-.deal-row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-.deal-title{
-  font-size:20px;
-  font-weight:1000;
-}
-.deal-tag{
-  font-size:13px;
-  font-weight:900;
-  color:#475569;
-  white-space:nowrap;
-}
-.deal-price{
-  margin:10px 0 4px;
-  font-size:36px;
-  font-weight:1000;
-}
-.deal-sub{
-  font-size:13px;
-  font-weight:900;
-  color:#334155;
-}
-.deal-badges{
-  margin-top:10px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.deal-badge{
-  padding:6px 10px;
-  border-radius:999px;
-  background:#f1f5f9;
-  font-size:12px;
-  font-weight:900;
-  border:1px solid rgba(15,23,42,.1)
-}
+      --radius:22px;
 
-/* ===== 숨김 ===== */
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-</style>
+      /* carrier accent */
+      --skt:#ff3b4a;
+      --kt:#111827;
+      --lg:#c026d3;
+      --internet:#f97316;
+      --mvno:#16a34a;
+
+      /* price */
+      --price-free:#0ea5e9;
+      --price-minus:#ef4444;
+      --price-cash:#f59e0b;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 520px at 10% 0%, rgba(14,165,233,0.18) 0%, rgba(14,165,233,0) 55%),
+        radial-gradient(900px 460px at 95% 20%, rgba(34,197,94,0.12) 0%, rgba(34,197,94,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 35%, #ffffff 100%);
+    }
+
+    .app{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding-bottom:84px; /* bottom bar space */
+    }
+
+    @media(min-width:1100px){
+      .app{
+        max-width:1100px;
+        margin:18px auto;
+        border-radius:28px;
+        overflow:hidden;
+        background:#fff;
+        box-shadow:0 26px 60px rgba(15,23,42,0.14);
+      }
+      body{background:#eef7ff;}
+    }
+
+    .hero{
+      padding:18px 18px 14px;
+      background:
+        radial-gradient(1000px 420px at 15% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, #f0fbff 100%);
+      border-bottom:1px solid var(--line);
+    }
+    .hero-title{
+      margin:0;
+      font-size:34px;
+      font-weight:1000;
+      letter-spacing:-0.06em;
+      line-height:1.05;
+    }
+    .hero-sub{
+      margin:10px 0 0;
+      font-size:15px;
+      font-weight:900;
+      color:var(--sub);
+    }
+
+    /* Tabs */
+    .tab-bar{
+      position:sticky; top:0; z-index:30;
+      background:rgba(255,255,255,0.94);
+      backdrop-filter:saturate(180%) blur(10px);
+      border-bottom:1px solid var(--line);
+      padding:10px 12px 12px;
+    }
+
+    /* 모바일: 2줄(2/2/1) 느낌. 데스크탑: 한 줄 */
+    .tabs{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media(min-width:520px){
+      .tabs{ grid-template-columns: repeat(3, 1fr); }
+    }
+    @media(min-width:900px){
+      .tabs{ grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .tab-btn{
+      border:none; cursor:pointer;
+      padding:14px 10px;
+      border-radius:999px;
+      font-size:15px;
+      font-weight:1000;
+      background:#fff;
+      color:#0b1220;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+      white-space:nowrap;
+    }
+    .tab-btn.active{
+      background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+      color:#fff;
+      box-shadow:0 18px 30px rgba(37,99,235,0.22);
+      border-color: rgba(37,99,235,0.25);
+    }
+
+    .content{padding:14px 14px 34px}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* list layout */
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media(min-width:720px){
+      .grid{ grid-template-columns:1fr 1fr; }
+    }
+    @media(min-width:1020px){
+      .grid{ grid-template-columns:1fr 1fr 1fr; }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:26px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .card-topline{
+      height:7px;
+      background: linear-gradient(90deg, rgba(255,59,74,0.95), rgba(59,130,246,0.85));
+    }
+
+    .card-body{ padding:16px 16px 14px; }
+    .row1{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .title{
+      font-size:24px;
+      font-weight:1000;
+      letter-spacing:-0.04em;
+      line-height:1.1;
+      margin:0;
+    }
+
+    .tag{
+      font-size:14px;
+      font-weight:1000;
+      color:#111827;
+      background: #f1f5f9;
+      border:1px solid rgba(15,23,42,0.10);
+      padding:8px 10px;
+      border-radius:999px;
+      flex:0 0 auto;
+    }
+
+    .row2{
+      margin-top:14px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .price{
+      font-size:52px;
+      font-weight:1000;
+      letter-spacing:-0.06em;
+      line-height:0.95;
+      margin:0;
+    }
+    .price-sub{
+      font-size:13px;
+      font-weight:1000;
+      color:#64748b;
+      margin-top:6px;
+    }
+    .sub{
+      font-size:16px;
+      font-weight:1000;
+      color:#0f172a;
+      text-align:right;
+      line-height:1.2;
+    }
+
+    .badges{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .badge{
+      font-size:13px;
+      font-weight:1000;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+      color:#0f172a;
+    }
+
+    .hint{
+      margin:10px 2px 0;
+      font-size:13px;
+      color:#64748b;
+      font-weight:900;
+    }
+
+    /* price coloring by type */
+    .pt-free .price{ color:#0f172a; }
+    .pt-minus .price{ color:var(--price-minus); }
+    .pt-cash .price{ color:var(--price-cash); }
+
+    /* bottom contact bar */
+    .bottom-bar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      z-index:60;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px) saturate(180%);
+      border-top:1px solid var(--line);
+      padding:10px 10px 12px;
+    }
+    @media(min-width:1100px){
+      .bottom-bar{
+        left:50%;
+        transform:translateX(-50%);
+        max-width:1100px;
+        border-bottom-left-radius:28px;
+        border-bottom-right-radius:28px;
+      }
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+      align-items:center;
+    }
+    .act{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:14px 10px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: var(--shadow2);
+      font-weight:1000;
+      color:#0b1220;
+      text-decoration:none;
+      user-select:none;
+    }
+    .act.primary{
+      background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+      color:#fff;
+      border-color: rgba(37,99,235,0.25);
+    }
+    .act.kakao{
+      background:#fee500;
+      color:#0b1220;
+      border-color:#facc15;
+    }
+    .act small{
+      display:block;
+      font-size:11px;
+      font-weight:900;
+      opacity:0.9;
+      margin-top:2px;
+    }
+
+    .mini-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:8px;
+      font-size:12px;
+      color:#64748b;
+      font-weight:900;
+      padding:0 2px;
+    }
+    .mini-row a{
+      color:#2563eb;
+      text-decoration:none;
+      font-weight:1000;
+    }
+
+    /* empty state */
+    .empty{
+      padding:18px;
+      border:1px dashed rgba(15,23,42,0.18);
+      border-radius:18px;
+      color:#475569;
+      background:rgba(255,255,255,0.6);
+      font-weight:900;
+    }
+  </style>
 </head>
 
 <body>
-<div class="app">
+  <!-- 검색 보강용 숨김 텍스트 -->
+  <div style="display:none">복지관 2층 휴대폰 매장 특판 전용 사이트</div>
 
-<header class="hero">
-  <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
-  <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
-</header>
+  <div class="app">
+    <header class="hero">
+      <h1 class="hero-title">복지관 2층 휴대폰 특판 안내</h1>
+      <div class="hero-sub">SK·KT·LG / 인터넷·TV 현금 최대지원 / 알뜰요금 3,300원~</div>
+      <div class="hint">※ 가격/조건은 수시 변동될 수 있습니다. 방문 전 문의 추천</div>
+    </header>
 
-<div class="tab-bar">
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="skt">SKT</button>
-    <button class="tab-btn" data-tab="kt">KT</button>
-    <button class="tab-btn" data-tab="lg">LGU+</button>
-    <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-    <button class="tab-btn" data-tab="mvno">알뜰요금</button>
+    <div class="tab-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="skt">SKT</button>
+        <button class="tab-btn" data-tab="kt">KT</button>
+        <button class="tab-btn" data-tab="lg">LGU+</button>
+        <button class="tab-btn" data-tab="internet">인터넷·TV</button>
+        <button class="tab-btn" data-tab="mvno">알뜰요금</button>
+      </div>
+    </div>
+
+    <main class="content">
+      <section class="tab-panel active" data-panel="skt"><div id="list-skt" class="grid"></div></section>
+      <section class="tab-panel" data-panel="kt"><div id="list-kt" class="grid"></div></section>
+      <section class="tab-panel" data-panel="lg"><div id="list-lg" class="grid"></div></section>
+      <section class="tab-panel" data-panel="internet"><div id="list-internet" class="grid"></div></section>
+      <section class="tab-panel" data-panel="mvno"><div id="list-mvno" class="grid"></div></section>
+    </main>
   </div>
-</div>
 
-<main class="content">
-  <section class="tab-panel active" data-panel="skt"><div id="list-skt"></div></section>
-  <section class="tab-panel" data-panel="kt"><div id="list-kt"></div></section>
-  <section class="tab-panel" data-panel="lg"><div id="list-lg"></div></section>
-  <section class="tab-panel" data-panel="internet"><div id="list-internet"></div></section>
-  <section class="tab-panel" data-panel="mvno"><div id="list-mvno"></div></section>
-</main>
+  <!-- 하단 고정 문의 바 -->
+  <div class="bottom-bar">
+    <div class="actions">
+      <!-- ✅ 여기 전화번호 바꿔 -->
+      <a class="act primary" id="btn-call" href="tel:010-0000-0000">📞 전화</a>
 
-</div>
+      <!-- ✅ 여기 문자번호 바꿔 -->
+      <a class="act" id="btn-sms" href="sms:010-0000-0000?body=복지관2층%20휴대폰%20특판%20문의드립니다.%0A(기종/%20통신사/%20번호이동or기변)%20:%20">✉️ 문자</a>
 
-<script>
-/* ===== 탭 ===== */
-document.querySelectorAll(".tab-btn").forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add("active");
-    window.scrollTo({top:0});
-  }
-});
+      <!-- ✅ 여기 카톡 오픈채팅 링크 바꿔 -->
+      <a class="act kakao" id="btn-kakao" href="https://open.kakao.com/o/XXXXXXXX" target="_blank" rel="noopener">💬 카톡</a>
+    </div>
 
-/* ===== CSV 로드 ===== */
-fetch("data.csv?"+Date.now())
-.then(r=>r.text())
-.then(text=>{
-  const lines=text.trim().split("\n");
-  const headers=lines.shift().split(",");
-  lines.forEach(l=>{
-    if(!l.trim()) return;
-    const v=l.split(",").map(x=>x.replace(/^"|"$/g,""));
-    const row={}; headers.forEach((h,i)=>row[h]=v[i]||"");
-    render(row);
-  });
-});
+    <div class="mini-row">
+      <span id="visitText">방문: -</span>
+      <span>
+        <a href="/admin.html" target="_blank" rel="noopener">관리자페이지</a>
+      </span>
+    </div>
+  </div>
 
-function render(r){
-  const wrap=document.getElementById("list-"+r.carrier);
-  if(!wrap) return;
+  <script>
+    // -----------------------------
+    // 탭 전환
+    // -----------------------------
+    const tabs=document.querySelectorAll(".tab-btn");
+    const panels=document.querySelectorAll(".tab-panel");
+    tabs.forEach(b=>b.onclick=()=>{
+      tabs.forEach(x=>x.classList.remove("active"));
+      panels.forEach(p=>p.classList.remove("active"));
+      b.classList.add("active");
+      document.querySelector(`[data-panel="${b.dataset.tab}"]`).classList.add("active");
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
 
-  const topColor={
-    skt:"#ff3b4a",kt:"#111827",lg:"#c026d3",
-    internet:"#f97316",mvno:"#16a34a"
-  }[r.carrier]||"#0ea5e9";
+    // -----------------------------
+    // CSV 로드 + 렌더
+    // carrier,title,tag,price,priceType,sub,badge1,badge2,badge3
+    // -----------------------------
+    const CARRIERS = ["skt","kt","lg","internet","mvno"];
+    const listEls = {
+      skt: document.getElementById("list-skt"),
+      kt: document.getElementById("list-kt"),
+      lg: document.getElementById("list-lg"),
+      internet: document.getElementById("list-internet"),
+      mvno: document.getElementById("list-mvno")
+    };
 
-  const card=document.createElement("div");
-  card.className="deal-card";
-  card.innerHTML=`
-    <div class="deal-topbar" style="background:${topColor}"></div>
-    <div class="deal-body">
-      <div class="deal-row">
-        <div class="deal-title">${r.title}</div>
-        <div class="deal-tag">${r.tag}</div>
-      </div>
-      <div class="deal-price">${r.price}</div>
-      <div class="deal-sub">${r.sub}</div>
-      <div class="deal-badges">
-        ${[r.badge1,r.badge2,r.badge3].filter(Boolean)
-          .map(b=>`<span class="deal-badge">${b}</span>`).join("")}
-      </div>
-    </div>`;
-  wrap.appendChild(card);
-}
-</script>
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // 간단 CSV 파서(따옴표 포함 지원)
+    function parseCSV(text){
+      const rows=[];
+      let i=0, field="", row=[], inQuotes=false;
+
+      // BOM 제거
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+      while(i < text.length){
+        const c=text[i];
+
+        if(inQuotes){
+          if(c === '"'){
+            if(text[i+1] === '"'){ field+='"'; i++; }
+            else { inQuotes=false; }
+          }else{
+            field += c;
+          }
+        }else{
+          if(c === '"'){ inQuotes=true; }
+          else if(c === ','){
+            row.push(field.trim());
+            field="";
+          }else if(c === '\n'){
+            row.push(field.trim());
+            field="";
+            // 빈 줄 스킵
+            if(row.some(v=>String(v).trim()!=="")) rows.push(row);
+            row=[];
+          }else if(c === '\r'){
+            // ignore
+          }else{
+            field += c;
+          }
+        }
+        i++;
+      }
+      // last
+      row.push(field.trim());
+      if(row.some(v=>String(v).trim()!=="")) rows.push(row);
+
+      if(rows.length===0) return { headers: [], data: [] };
+
+      const headers = rows[0].map(h=>h.trim());
+      const data = rows.slice(1).map(r=>{
+        const obj={};
+        headers.forEach((h,idx)=> obj[h]= (r[idx] ?? "").trim());
+        return obj;
+      });
+      return { headers, data };
+    }
+
+    function normalizeCarrier(v){
+      const x = String(v||"").trim().toLowerCase();
+      if(x==="lgu+"||x==="lgu"||x==="lg") return "lg";
+      if(x==="skt") return "skt";
+      if(x==="kt") return "kt";
+      if(x==="internet"||x==="tv"||x==="iptv") return "internet";
+      if(x==="mvno"||x==="알뜰"||x==="알뜰요금") return "mvno";
+      return x;
+    }
+
+    function extractNumberishPrice(priceText){
+      // "판매가 39만원" -> 39 / "월 3,300원~" -> 3,300(문자 유지) / "0원" -> 0
+      const s = String(priceText||"").trim();
+      // 숫자만 뽑되, 콤마는 유지 가능
+      const m = s.match(/-?\d[\d,]*/);
+      return m ? m[0] : s;
+    }
+
+    function renderCard(item){
+      const title = item.title || "";
+      const tag = item.tag || "";
+      const priceType = (item.priceType || "free").toLowerCase();
+      const priceRaw = item.price || "";
+      const price = extractNumberishPrice(priceRaw);
+      const sub = item.sub || "";
+
+      const badges = [item.badge1, item.badge2, item.badge3].filter(Boolean).map(x=>x.trim()).filter(Boolean);
+
+      return `
+        <article class="card pt-${escapeHtml(priceType)}">
+          <div class="card-topline"></div>
+          <div class="card-body">
+            <div class="row1">
+              <h3 class="title">${escapeHtml(title)}</h3>
+              ${tag ? `<div class="tag">${escapeHtml(tag)}</div>` : ``}
+            </div>
+
+            <div class="row2">
+              <div>
+                <div class="price">${escapeHtml(price)}</div>
+                <div class="price-sub">${escapeHtml(priceRaw)}</div>
+              </div>
+              <div class="sub">${escapeHtml(sub)}</div>
+            </div>
+
+            ${badges.length ? `
+              <div class="badges">
+                ${badges.map(b=>`<span class="badge">${escapeHtml(b)}</span>`).join("")}
+              </div>
+            ` : ``}
+          </div>
+        </article>
+      `;
+    }
+
+    function setEmpty(el, carrier){
+      const nameMap = {skt:"SKT", kt:"KT", lg:"LGU+", internet:"인터넷·TV", mvno:"알뜰요금"};
+      el.innerHTML = `<div class="empty">${nameMap[carrier]} 데이터가 없습니다. (관리자페이지에서 data.csv를 먼저 채워주세요)</div>`;
+    }
+
+    async function loadAndRender(){
+      // 초기 비우기
+      CARRIERS.forEach(c=>{
+        listEls[c].innerHTML = "";
+      });
+
+      try{
+        // cache busting: ?v=timestamp 로 오래된 캐시 방지
+        const res = await fetch("data.csv?v=" + Date.now(), { cache: "no-store" });
+        if(!res.ok) throw new Error("fetch data.csv failed: " + res.status);
+
+        const text = await res.text();
+        if(!text || !text.trim()) throw new Error("csv is empty");
+
+        const { headers, data } = parseCSV(text);
+
+        // 필수 헤더 체크
+        const need = ["carrier","title","tag","price","priceType","sub","badge1","badge2","badge3"];
+        const hasAll = need.every(h=>headers.includes(h));
+        if(!hasAll){
+          // 그래도 가능한 만큼 렌더 시도
+          console.warn("CSV headers missing. headers=", headers);
+        }
+
+        // carrier별 분배
+        const buckets = {skt:[], kt:[], lg:[], internet:[], mvno:[]};
+        data.forEach(d=>{
+          const c = normalizeCarrier(d.carrier);
+          if(buckets[c]) buckets[c].push(d);
+        });
+
+        // 렌더
+        CARRIERS.forEach(c=>{
+          const items = buckets[c] || [];
+          if(items.length===0) setEmpty(listEls[c], c);
+          else listEls[c].innerHTML = items.map(renderCard).join("");
+        });
+
+      }catch(err){
+        console.error(err);
+        // 에러 시 모든 탭에 표시
+        CARRIERS.forEach(c=>{
+          listEls[c].innerHTML = `<div class="empty">데이터를 불러오지 못했습니다.<br/><br/>원인: ${escapeHtml(err.message)}<br/><br/>해결: data.csv가 루트에 있고, 1행 헤더가 정확한지 확인하세요.</div>`;
+        });
+      }
+    }
+
+    // -----------------------------
+    // 방문자 카운팅 (간단 버전: 로컬 기준 + (선택) countapi)
+    // -----------------------------
+    const visitText = document.getElementById("visitText");
+    (function visitorCount(){
+      // 1) 로컬(브라우저) 카운트
+      const key="visit_count_local";
+      const n = Number(localStorage.getItem(key) || "0") + 1;
+      localStorage.setItem(key, String(n));
+      visitText.textContent = "이 기기 방문: " + n;
+
+      // 2) (선택) 전세계 공용 카운트: countapi (무료/가벼움)
+      // 필요하면 아래 true로 바꾸고, 네 사이트 고유키로 변경해.
+      const USE_COUNTAPI = false;
+      const NAMESPACE = "a2272a-github-io";
+      const KEY = "main-visits";
+
+      if(USE_COUNTAPI){
+        fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`)
+          .then(r=>r.json())
+          .then(j=>{
+            if(j && typeof j.value==="number"){
+              visitText.textContent = "총 방문: " + j.value;
+            }
+          })
+          .catch(()=>{});
+      }
+    })();
+
+    // -----------------------------
+    // 시작
+    // -----------------------------
+    loadAndRender();
+
+    // -----------------------------
+    // service worker 등록 (있으면)
+    // -----------------------------
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+      });
+    }
+  </script>
 </body>
 </html>
