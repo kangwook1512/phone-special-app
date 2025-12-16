@@ -51,7 +51,7 @@
       min-height:100vh;
       display:flex;
       flex-direction:column;
-      padding-bottom:90px;
+      padding-bottom:92px; /* 하단 고정바 공간 */
     }
     @media(min-width:1100px){
       .app{
@@ -64,7 +64,7 @@
       }
     }
 
-    /* ✅ 맨 위 간판(고정) */
+    /* ✅ 간판(고정) */
     .sign{
       position:sticky;
       top:0;
@@ -74,23 +74,24 @@
         radial-gradient(1000px 420px at 15% 0%, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0) 60%),
         linear-gradient(180deg, #ffffff 0%, #f0fbff 100%);
       border-bottom:1px solid var(--line);
-      backdrop-filter:saturate(180%) blur(8px);
+      backdrop-filter:saturate(180%) blur(10px);
     }
     .sign-title{
       margin:0;
-      font-size:36px;
+      font-size:34px;
       font-weight:1000;
       letter-spacing:-0.06em;
       line-height:1.05;
     }
     .sign-sub{
       margin:10px 0 0;
-      font-size:15px;
+      font-size:14px;
       font-weight:900;
       color:var(--sub);
+      line-height:1.25;
     }
 
-    /* Tabs */
+    /* ✅ 한 줄 스크롤 탭 (예시 2번) */
     .tab-bar{
       position:sticky;
       top:92px;
@@ -100,29 +101,46 @@
       border-bottom:1px solid var(--line);
       padding:10px 12px 12px;
     }
+
+    .tabs-wrap{
+      position:relative;
+      overflow:hidden; /* 오른쪽 그라데이션 힌트 */
+    }
+
     .tabs{
-      display:grid;
-      grid-template-columns: 1fr 1fr; /* 모바일 2열: 6개면 3줄 꽉 참 */
+      display:flex;
       gap:10px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:2px;
+      scroll-snap-type:x mandatory;
     }
-    @media(min-width:520px){
-      .tabs{ grid-template-columns: repeat(3, 1fr); }
-    }
-    @media(min-width:900px){
-      .tabs{ grid-template-columns: repeat(6, 1fr); }
+    .tabs::-webkit-scrollbar{ display:none; }
+
+    /* 오른쪽 “더 있음” 힌트 그라데이션 */
+    .tabs-wrap::after{
+      content:"";
+      position:absolute;
+      top:0; right:0;
+      width:44px; height:100%;
+      background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.96) 70%);
+      pointer-events:none;
     }
 
     .tab-btn{
-      border:none; cursor:pointer;
-      padding:14px 10px;
+      flex:0 0 auto;
+      border:none;
+      cursor:pointer;
+      padding:12px 14px;
       border-radius:999px;
-      font-size:15px;
+      font-size:14px;
       font-weight:1000;
       background:#fff;
       color:#0b1220;
       border:1px solid var(--line);
       box-shadow: var(--shadow2);
       white-space:nowrap;
+      scroll-snap-align:start;
     }
     .tab-btn.active{
       background:linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
@@ -130,10 +148,8 @@
       box-shadow:0 18px 30px rgba(37,99,235,0.22);
       border-color: rgba(37,99,235,0.25);
     }
-    /* 액정필름무료교체 탭은 노란 강조 */
     .tab-btn.film{
-      background:rgba(255,255,255,0.95);
-      border-color: rgba(250,204,21,0.55);
+      border-color: rgba(250,204,21,0.65);
     }
     .tab-btn.film.active{
       background:linear-gradient(135deg, #fee500 0%, #fde047 100%);
@@ -151,12 +167,8 @@
       grid-template-columns:1fr;
       gap:14px;
     }
-    @media(min-width:720px){
-      .grid{ grid-template-columns:1fr 1fr; }
-    }
-    @media(min-width:1020px){
-      .grid{ grid-template-columns:1fr 1fr 1fr; }
-    }
+    @media(min-width:720px){ .grid{ grid-template-columns:1fr 1fr; } }
+    @media(min-width:1020px){ .grid{ grid-template-columns:1fr 1fr 1fr; } }
 
     .card{
       background:var(--card);
@@ -178,17 +190,17 @@
       gap:10px;
     }
     .title{
-      font-size:24px;
+      font-size:22px;
       font-weight:1000;
       letter-spacing:-0.04em;
       line-height:1.1;
       margin:0;
     }
     .tag{
-      font-size:14px;
+      font-size:13px;
       font-weight:1000;
       color:#111827;
-      background: #f1f5f9;
+      background:#f1f5f9;
       border:1px solid rgba(15,23,42,0.10);
       padding:8px 10px;
       border-radius:999px;
@@ -204,20 +216,20 @@
       gap:14px;
     }
     .price{
-      font-size:52px;
+      font-size:50px;
       font-weight:1000;
       letter-spacing:-0.06em;
       line-height:0.95;
       margin:0;
     }
     .price-sub{
-      font-size:13px;
+      font-size:12px;
       font-weight:1000;
       color:#64748b;
       margin-top:6px;
     }
     .sub{
-      font-size:16px;
+      font-size:15px;
       font-weight:1000;
       color:#0f172a;
       text-align:right;
@@ -231,7 +243,7 @@
       margin-top:12px;
     }
     .badge{
-      font-size:13px;
+      font-size:12px;
       font-weight:1000;
       padding:8px 10px;
       border-radius:12px;
@@ -252,7 +264,7 @@
       font-weight:900;
     }
 
-    /* 액정필름 탭 전용 카드 */
+    /* 액정필름 카드 */
     .film-card{
       border:1px solid rgba(250,204,21,0.55);
     }
@@ -302,7 +314,6 @@
         border-bottom-right-radius:28px;
       }
     }
-
     .actions{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -334,7 +345,6 @@
       color:#0b1220;
       border-color:#facc15;
     }
-
     .mini-row{
       display:flex;
       justify-content:space-between;
@@ -345,26 +355,18 @@
       font-weight:900;
       padding:0 2px;
     }
-    /* ✅ 이번 버전에서는 관리자페이지 링크를 화면에 노출하지 않음 */
-    .mini-row .admin-link{ display:none; }
 
+    /* 관리자페이지 노출 제거(방문자용) */
+    .admin-link{ display:none; }
+
+    /* 카톡 버튼 반짝 */
     @keyframes kakaoPulse {
       0%   { transform: scale(1); box-shadow: 0 0 0 rgba(250,204,21,0); }
       40%  { transform: scale(1.04); box-shadow: 0 0 22px rgba(250,204,21,0.55); }
       70%  { transform: scale(0.99); box-shadow: 0 0 10px rgba(250,204,21,0.35); }
       100% { transform: scale(1); box-shadow: 0 0 0 rgba(250,204,21,0); }
     }
-    @keyframes kakaoWiggle {
-      0%{ transform: rotate(0deg); }
-      25%{ transform: rotate(-2deg); }
-      50%{ transform: rotate(2deg); }
-      75%{ transform: rotate(-1deg); }
-      100%{ transform: rotate(0deg); }
-    }
-    .kakao-sparkle{
-      animation: kakaoPulse 0.9s ease-in-out 0s 2, kakaoWiggle 0.35s ease-in-out 0s 2;
-      transform-origin: center;
-    }
+    .kakao-sparkle{ animation: kakaoPulse 0.9s ease-in-out 0s 2; }
   </style>
 </head>
 
@@ -376,13 +378,15 @@
     </header>
 
     <div class="tab-bar">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="skt">SKT</button>
-        <button class="tab-btn" data-tab="kt">KT</button>
-        <button class="tab-btn" data-tab="lg">LGU+</button>
-        <button class="tab-btn" data-tab="internet">인터넷·TV</button>
-        <button class="tab-btn" data-tab="mvno">알뜰요금제</button>
-        <button class="tab-btn film" data-tab="film">액정필름무료교체</button>
+      <div class="tabs-wrap">
+        <div class="tabs" id="tabs">
+          <button class="tab-btn active" data-tab="skt">SKT</button>
+          <button class="tab-btn" data-tab="kt">KT</button>
+          <button class="tab-btn" data-tab="lg">LGU+</button>
+          <button class="tab-btn" data-tab="internet">인터넷·TV</button>
+          <button class="tab-btn" data-tab="mvno">알뜰요금제</button>
+          <button class="tab-btn film" data-tab="film">액정필름무료교체</button>
+        </div>
       </div>
     </div>
 
@@ -396,6 +400,7 @@
     </main>
   </div>
 
+  <!-- 하단 고정 문의 바 -->
   <div class="bottom-bar">
     <div class="actions">
       <a class="act primary" href="tel:042-821-2272">📞 전화</a>
@@ -405,7 +410,6 @@
 
     <div class="mini-row">
       <span id="visitText">방문: -</span>
-      <!-- 관리자페이지 링크 숨김 처리 -->
       <span class="admin-link"><a href="/admin.html" target="_blank" rel="noopener">관리자페이지</a></span>
     </div>
   </div>
@@ -419,10 +423,14 @@
       panels.forEach(p=>p.classList.remove("active"));
       b.classList.add("active");
       document.querySelector(`[data-panel="${b.dataset.tab}"]`).classList.add("active");
+
+      // 탭 클릭 시 해당 버튼이 화면 안쪽으로 오게 살짝 보정(모바일 편의)
+      b.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+
       window.scrollTo({top:0,behavior:"smooth"});
     });
 
-    // 방문자 카운팅(로컬)
+    // 방문자 카운팅(현재는 "이 기기" 카운트만)
     const visitText = document.getElementById("visitText");
     (function visitorCount(){
       const key="visit_count_local";
@@ -584,7 +592,7 @@
         });
       }
 
-      // ✅ 액정필름무료교체 탭: 고정 안내 카드(문구 요청 반영)
+      // ✅ 액정필름무료교체 탭: 고정 안내 카드
       elFilm.innerHTML = `
         <article class="card film-card">
           <div class="card-topline"></div>
@@ -598,7 +606,7 @@
                 <div class="price">무료</div>
                 <div class="price-sub">액정필름 무료교체 이벤트</div>
               </div>
-              <div class="sub">카톡 주문 후<br/>매장방문 추천</div>
+              <div class="sub">카톡 주문 후<br/>매장 방문 추천</div>
             </div>
 
             <div class="film-cta">
@@ -629,7 +637,7 @@
       });
     })();
 
-    // service worker
+    // service worker (있으면)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js').catch(()=>{});
