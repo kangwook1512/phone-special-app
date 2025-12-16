@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>관리자페이지 | 특판 데이터 관리</title>
+  <style>
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+      background:#f6f7fb;
+      color:#111;
+    }
+    header{
+      padding:16px;
+      background:#111827;
+      color:#fff;
+      font-weight:900;
+      font-size:18px;
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .box{
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .blue{background:#2563eb;color:#fff;}
+    .green{background:#16a34a;color:#fff;}
+    .black{background:#111827;color:#fff;}
+    .red{background:#dc2626;color:#fff;}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+    }
+    th,td{
+      border-bottom:1px solid #e5e7eb;
+      padding:8px;
+      font-size:14px;
+      text-align:left;
+    }
+    th{
+      background:#f1f5f9;
+      font-size:12px;
+    }
+    input,select{
+      width:100%;
+      padding:8px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
+    }
+  </style>
+</head>
+<body>
+
+<header>관리자페이지 (admin.html) - 특판 데이터 관리</header>
+
+<div class="wrap">
+  <div class="box">
+    <div class="row">
+      <button class="blue" onclick="loadCSV()">data.csv 불러오기</button>
+      <button class="green" onclick="addRow()">행 추가</button>
+      <button class="black" onclick="downloadCSV()">CSV 다운로드</button>
+      <a href="https://github.com/a2272a/a2272a.github.io/edit/main/data.csv"
+         target="_blank"
+         style="padding:10px 14px;border-radius:10px;border:1px solid #d1d5db;text-decoration:none;font-weight:900;">
+        GitHub에서 data.csv 수정
+      </a>
+    </div>
+
+    <table id="table">
+      <thead>
+        <tr>
+          <th>carrier</th>
+          <th>title</th>
+          <th>tag</th>
+          <th>price</th>
+          <th>priceType</th>
+          <th>sub</th>
+          <th>badge1</th>
+          <th>badge2</th>
+          <th>badge3</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const headers = ["carrier","title","tag","price","priceType","sub","badge1","badge2","badge3"];
+let rows = [];
+
+function loadCSV(){
+  fetch("data.csv?ts="+Date.now())
+    .then(r=>r.text())
+    .then(t=>{
+      const lines = t.split("\n").filter(l=>l.trim());
+      rows = lines.slice(1).map(l=>{
+        const v=l.split(",");
+        let o={};
+        headers.forEach((h,i)=>o[h]=v[i]||"");
+        return o;
+      });
+      render();
+      alert("불러오기 완료");
+    });
+}
+
+function render(){
+  const tbody=document.querySelector("#table tbody");
+  tbody.innerHTML="";
+  rows.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    headers.forEach(h=>{
+      const td=document.createElement("td");
+      const inp=document.createElement("input");
+      inp.value=r[h];
+      inp.oninput=e=>r[h]=e.target.value;
+      td.appendChild(inp);
+      tr.appendChild(td);
+    });
+    const td=document.createElement("td");
+    const btn=document.createElement("button");
+    btn.className="red";
+    btn.textContent="삭제";
+    btn.onclick=()=>{rows.splice(i,1);render();};
+    td.appendChild(btn);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  });
+}
+
+function addRow(){
+  rows.unshift({
+    carrier:"skt",
+    title:"",
+    tag:"",
+    price:"",
+    priceType:"free",
+    sub:"",
+    badge1:"",
+    badge2:"",
+    badge3:""
+  });
+  render();
+}
+
+function downloadCSV(){
+  let csv = headers.join(",")+"\n";
+  rows.forEach(r=>{
+    csv += headers.map(h=>`"${(r[h]||"").replace(/"/g,'""')}"`).join(",")+"\n";
+  });
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="data.csv";
+  a.click();
+}
+</script>
+
+</body>
+</html>
