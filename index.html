@@ -1,205 +1,194 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>복지관 2층 휴대폰 매장 | 특판 전용 사이트</title>
-  <meta name="description" content="복지관 2층 휴대폰 매장 특판 전용 사이트. 휴대폰·인터넷TV·알뜰요금 특판 안내. 문의는 카톡으로." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>복지관 2층 휴대폰 매장 | 특판 안내</title>
 
-  <style>
-    :root{
-      /* 요즘 스타일 톤 */
-      --bg:#F6F7FB;
-      --ink:#0b1220;
-      --muted:#5b6475;
+<style>
+:root{
+  --bg:#F6F7FB;
+  --ink:#0b1220;
+  --muted:#5b6475;
+  --card:#ffffff;
+  --stroke:rgba(15,23,42,.08);
+  --shadow:0 14px 32px rgba(20,30,60,.12);
+  --radius:16px;
+  --brand1:#4F46E5;
+  --brand2:#22D3EE;
+  --bottomH:56px;
+}
 
-      --card:#ffffff;
-      --stroke:rgba(15,23,42,.08);
-      --shadow:0 14px 32px rgba(20,30,60,.12);
-      --radius:16px;
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(900px 520px at 15% 10%, rgba(79,70,229,.10), transparent 60%),
+    radial-gradient(900px 520px at 85% 30%, rgba(34,211,238,.08), transparent 60%),
+    var(--bg);
+}
 
-      --brand1:#4F46E5;
-      --brand2:#22D3EE;
+/* ===== 전체 구조 ===== */
+.app{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+}
 
-      --bottomH:56px;
-      --max:980px;
-    }
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 12px;
+}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Noto Sans KR", sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(900px 520px at 15% 10%, rgba(79,70,229,.10), transparent 60%),
-        radial-gradient(900px 520px at 85% 30%, rgba(34,211,238,.08), transparent 60%),
-        var(--bg);
-    }
+/* ===== 상단 ===== */
+header{
+  padding:12px 0 8px;
+}
+.hero{
+  background:#fff;
+  border:1px solid var(--stroke);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 10px 24px rgba(20,30,60,.08);
+}
+.hero h1{
+  margin:0;
+  font-size:20px;
+  font-weight:900;
+}
+.hero p{
+  margin:6px 0 0;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+}
 
-    /* 전체 골격 */
-    .app{
-      min-height:100svh;
-      display:flex;
-      flex-direction:column;
-    }
+/* ===== 메인 ===== */
+main{
+  flex:1 1 auto;
+  padding-bottom:calc(var(--bottomH) + env(safe-area-inset-bottom) + 14px);
+}
 
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:0 12px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  padding:12px 0 20px;
+}
 
-    /* 상단 */
-    header{ padding:12px 0 6px; }
-    .hero{
-      background:rgba(255,255,255,.75);
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      padding:12px;
-      box-shadow:0 10px 24px rgba(20,30,60,.08);
-      backdrop-filter: blur(10px);
-    }
-    .hero h1{
-      margin:0;
-      font-size:20px;
-      font-weight:900;
-      letter-spacing:-0.5px;
-    }
-    .hero p{
-      margin:6px 0 0;
-      font-size:13px;
-      font-weight:700;
-      color:var(--muted);
-    }
+.card{
+  background:var(--card);
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:12px;
+}
 
-    /* 메인 */
-    main{
-      flex:1 1 auto;
-      padding-bottom: calc(var(--bottomH) + env(safe-area-inset-bottom) + 12px);
-    }
+.card-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      padding:12px 0 20px;
-    }
+.title{
+  font-size:16px;
+  font-weight:900;
+}
+.sub{
+  margin-top:4px;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+}
+.price{
+  font-size:18px;
+  font-weight:900;
+  color:var(--brand1);
+  white-space:nowrap;
+}
+.desc{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+  line-height:1.4;
+  white-space:pre-line;
+}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:12px;
-    }
+.badge{
+  display:inline-block;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  color:#fff;
+  background:linear-gradient(135deg,#ef4444,#f97316);
+}
 
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-    }
+@media(min-width:820px){
+  .grid{grid-template-columns:1fr 1fr;}
+}
 
-    .title{
-      font-size:16px;
-      font-weight:900;
-      letter-spacing:-0.4px;
-    }
+/* ===== 하단 고정바 : 동일 크기 3분할 ===== */
+.bottom-bar{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  height:var(--bottomH);
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  background:rgba(246,247,251,.95);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--stroke);
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:9999;
+}
 
-    .sub{
-      margin-top:4px;
-      font-size:13px;
-      font-weight:700;
-      color:var(--muted);
-    }
-
-    .price{
-      font-size:18px;
-      font-weight:900;
-      color:var(--brand1);
-      white-space:nowrap;
-    }
-
-    .desc{
-      margin-top:8px;
-      font-size:13px;
-      font-weight:700;
-      color:var(--muted);
-      line-height:1.4;
-      white-space:pre-line;
-    }
-
-    .badge{
-      display:inline-block;
-      margin-top:8px;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      color:#fff;
-      background:linear-gradient(135deg,#ef4444,#f97316);
-    }
-
-    /* 데스크톱 2열 */
-    @media (min-width:820px){
-      .grid{ grid-template-columns:1fr 1fr; }
-    }
-
-    /* 하단 고정바 - 동일 크기 3분할 */
-    .bottom-bar{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      height:var(--bottomH);
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      background:rgba(246,247,251,.94);
-      backdrop-filter: blur(10px);
-      border-top:1px solid var(--stroke);
-      padding-bottom: env(safe-area-inset-bottom);
-      z-index:9999;
-    }
-
-    .bottom-bar a{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:15px;
-      font-weight:900;
-      text-decoration:none;
-      color:var(--ink);
-      border-right:1px solid var(--stroke);
-    }
-    .bottom-bar a:last-child{ border-right:none; }
-
-    .bottom-bar .kakao{
-      color:#fff;
-      background:linear-gradient(135deg,var(--brand1),var(--brand2));
-    }
-  </style>
+.bottom-bar a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:900;
+  text-decoration:none;
+  color:var(--ink);
+  border-right:1px solid var(--stroke);
+}
+.bottom-bar a:last-child{border-right:none;}
+.bottom-bar a.kakao{
+  color:#fff;
+  background:linear-gradient(135deg,var(--brand1),var(--brand2));
+}
+</style>
 </head>
 
 <body>
 <div class="app">
 
+  <!-- 상단 -->
   <header>
     <div class="wrap">
       <div class="hero">
         <h1>복지관 2층 휴대폰 매장</h1>
-        <p>휴대폰 · 인터넷TV · 알뜰요금 특판 전용 사이트</p>
+        <p>휴대폰 · 인터넷TV · 알뜰요금 특판 안내</p>
       </div>
     </div>
   </header>
 
+  <!-- 메인 -->
   <main>
     <div class="wrap">
       <div class="grid">
 
-        <!-- 카드 예시 -->
         <div class="card">
           <div class="card-top">
             <div>
               <div class="title">알뜰요금 LG망</div>
-              <div class="sub">통화·문자 무제한</div>
+              <div class="sub">통화 · 문자 무제한</div>
             </div>
             <div class="price">월 3,300원~</div>
           </div>
@@ -216,8 +205,8 @@
             </div>
             <div class="price">현금 최대 지급</div>
           </div>
-          <div class="desc">지역·통신사·상품에 따라 상이
-카톡으로 주소 남겨주세요</div>
+          <div class="desc">주소 남겨주시면
+가능 여부 바로 안내</div>
         </div>
 
       </div>
@@ -226,11 +215,11 @@
 
 </div>
 
-<!-- 하단 고정바 -->
+<!-- 하단 고정 -->
 <div class="bottom-bar">
   <a href="tel:042-821-2272">전화</a>
   <a href="sms:010-5839-1512">문자</a>
-  <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
+  <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
 </div>
 
 </body>
