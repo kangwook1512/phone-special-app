@@ -141,10 +141,10 @@ function parseCSV(text){
     const cols = splitCSVLine(line);
     const get = (k)=> (idx[k] != null ? (cols[idx[k]] ?? '').trim() : '');
 
-    // ✅ 분류/표시에 필요한 것만 파싱 (payout/margin_* 절대 금지)
     return {
+      // ✅ 분류/표시에 필요한 것만 파싱 (payout/margin_* 절대 금지)
       type: get('type'),
-      carrier: get('carrier'),
+      carrier: get('carrier') || get('통신사') || get('캐리어') || get('망'),
       title: get('title'),
       display_price: get('display_price'),
       sub_price: get('sub_price'),
@@ -194,45 +194,101 @@ function cardHTML(model, price, cond, sub){
   </div>`;
 }
 
-/** 정규화 */
 function T(x){ return (x||'').toString().trim().toUpperCase(); }
+
+/** 통신사 표준화 (휴대폰 탭용: SK/KT/LG로 수렴) */
 function normCarrier(v){
-  const x = T(v).replace(/\s+/g,'');
-  if(x.includes('SK')) return 'SK';
-  if(x.includes('KT')) return 'KT';
-  if(x.includes('LG') || x.includes('LGU') || x.includes('U+')) return 'LG';
+  const raw = (v ?? '').toString().trim();
+  const x = raw.toUpperCase().replace(/\s+/g,'');
+
+  if (x.includes('SK') || raw.includes('에스케이') || raw.includes('티월드')) return 'SK';
+  if (x.includes('KT') || x.includes('KTF') || raw.includes('케이티') || raw.includes('올레')) return 'KT';
+  if (x.includes('LG') || x.includes('LGU') || x.includes('U+') || x.includes('UPLUS')
+      || raw.includes('엘지') || raw.includes('유플') || raw.includes('유플러스')) return 'LG';
+
   return x;
 }
 
-/** type 판별(유연) */
-function isPhoneType(type){
-  // PHONE, PHONE_LOW, PHONE_HIGH 등 PHONE*이면 전부 휴대폰
-  return T(type).startsWith('PHONE');
+/** 인터넷/알뜰 탭용: "망" 표기도 보기 좋게 수렴 */
+function normNetLabel(v){
+  const raw = (v ?? '').toString().trim();
+  const x = raw.toUpperCase().replace(/\s+/g,'');
+
+  // 이미 SK망/KT망/LG망이면 그대로
+  if (raw.includes('SK망') || x.includes('SK망')) return 'SK망';
+  if (raw.includes('KT망') || x.includes('KT망')) return 'KT망';
+  if (raw.includes('LG망') || raw.includes('LGU망') || x.includes('LG망') || x.includes('LGU망')) return 'LG망';
+
+  // 통신사 표준화
+  const c = normCarrier(raw);
+  if (c === 'SK') return 'SK';
+  if (c === 'KT') return 'KT';
+  if (c === 'LG') return 'LG';
+
+  return raw || '기타';
 }
-function isIntvType(type){
-  const x = T(type);
-  if(!x) return false;
-  if(x.includes('INTV')) return true;
-  if(x.includes('INTERNET')) return true;
-  if(x.includes('IPTV')) return true;
-  if(x.includes('TV') && !x.startsWith('PHONE')) return true;
+
+/** 분류용 텍스트 뭉치 */
+function blob(r){
+  return [
+    (r.type||''),
+    (r.carrier||''),
+    (r.title||''),
+    (r.display_price||''),
+    (r.sub_price||''),
+    (r.note||'')
+  ].join(' ').trim();
+}
+
+/** 휴대폰 / 인터넷TV / 알뜰 / 특가폰 분류 (CSV 표기 흔들려도 잡히게) */
+function isPhoneRow(r){
+  const x = T(r.type);
+  return x.startsWith('PHONE') || x.includes('MOBILE') || x.includes('HANDSET');
+}
+function isSpecialRow(r){
+  const b = blob(r);
+  const x = T(r.type);
+  return x.includes('SPECIAL') || b.includes('특가폰') || b.includes('특가');
+}
+function isIntvRow(r){
+  const b = blob(r);
+  const x = T(r.type);
+
+  // 휴대폰은 제외
+  if (isPhoneRow(r)) return false;
+
+  // type 기반 + 텍스트 기반 혼합
+  if (x.includes('INTV') || x.includes('INTERNET') || x.includes('IPTV')) return true;
+
+  // 한글 키워드
+  if (b.includes('인터넷')) return true;
+  if (b.includes('IPTV')) return true;
+  if (b.includes('TV') && !b.includes('갤럭시') && !b.includes('아이폰')) return true; // 폰 모델명 오인 최소화
+  if (b.includes('기가') || b.includes('와이파이') || b.includes('WIFI') || b.includes('공유기')) return true;
+
   return false;
 }
-function isMvnoType(type){
-  const x = T(type);
-  if(!x) return false;
-  if(x.includes('MVNO')) return true;
-  if(x.includes('ALTTEL')) return true;
-  if(x.includes('ALT')) return true;
-  if(x.includes('알뜰')) return true;
-  if(x.includes('요금')) return true;
-  return false;
-}
-function isSpecialType(type){
-  const x = T(type);
-  if(!x) return false;
-  if(x.includes('SPECIAL')) return true;
-  if(x.includes('특가')) return true;
+function isMvnoRow(r){
+  const b = blob(r);
+  const x = T(r.type);
+
+  // 휴대폰은 제외
+  if (isPhoneRow(r)) return false;
+
+  // type 기반 + 텍스트 기반
+  if (x.includes('MVNO') || x.includes('ALTTEL') || x.includes('ALT')) return true;
+
+  if (b.includes('알뜰')) return true;
+  if (b.includes('요금제')) return true;
+
+  // 데이터 요금제 패턴(알뜰에서 흔함): "GB + Mbps"
+  const hasGB = /(\d+\s*GB)|(\d+\s*기가)/i.test(b);
+  const hasMbps = /(\d+\s*MBPS)|(\d+\s*Mbps)/i.test(b);
+  if (hasGB && hasMbps) return true;
+
+  // "월 3,300" 같은 월요금 패턴
+  if (b.includes('월') && /[\d,]+\s*원/.test(b)) return true;
+
   return false;
 }
 
@@ -252,7 +308,7 @@ function splitPhoneCards(row){
   const s = (row.display_price ?? '').trim();
   const m = s.match(/이동\s*([-\d.,]+)\s*\/\s*기변\s*([-\d.,]+)/);
 
-  // ⚠️ 내부/마진 문구 금지: WARN라도 "조건 확인"만 표시
+  // 내부/마진 문구 금지: WARN라도 "조건 확인"만 표시
   const safeSub = (row.warn === 'WARN') ? '조건 확인' : (row.sub_price || '');
 
   if(!m){
@@ -278,22 +334,25 @@ function emptyHTML(msg){
   return `
     <div class="card" style="grid-column:1 / -1;">
       <div class="model">${escapeHTML(msg)}</div>
-      <div class="sub">data.csv의 type / carrier 값만 확인하면 됩니다.</div>
+      <div class="sub">data.csv 내용이 아직 없거나 분류 키워드가 없을 수 있습니다.</div>
     </div>
   `;
 }
 
-/** 통신사별 묶음 렌더링 */
-function renderGroupedByCarrier(items, label){
+/** 그룹 렌더 */
+function renderGrouped(items, label, netMode){
   const map = new Map();
   items.forEach(r=>{
-    const c = (r.carrier||'').trim() || '기타';
-    if(!map.has(c)) map.set(c, []);
-    map.get(c).push(r);
+    const key = netMode ? normNetLabel(r.carrier) : normCarrier(r.carrier);
+    if(!map.has(key)) map.set(key, []);
+    map.get(key).push(r);
   });
 
-  const order = ['SK','KT','LG','SK망','KT망','LG망'];
-  const carriers = Array.from(map.keys()).sort((a,b)=>{
+  const order = netMode
+    ? ['SK','KT','LG','SK망','KT망','LG망','기타']
+    : ['SK','KT','LG','기타'];
+
+  const keys = Array.from(map.keys()).sort((a,b)=>{
     const ia = order.indexOf(a), ib = order.indexOf(b);
     if(ia === -1 && ib === -1) return a.localeCompare(b, 'ko');
     if(ia === -1) return 1;
@@ -301,9 +360,9 @@ function renderGroupedByCarrier(items, label){
     return ia - ib;
   });
 
-  carriers.forEach(c=>{
-    grid.insertAdjacentHTML('beforeend', `<div class="section-title">${escapeHTML(label)} · ${escapeHTML(c)}</div>`);
-    map.get(c).forEach(r=>{
+  keys.forEach(k=>{
+    grid.insertAdjacentHTML('beforeend', `<div class="section-title">${escapeHTML(label)} · ${escapeHTML(k)}</div>`);
+    map.get(k).forEach(r=>{
       grid.insertAdjacentHTML(
         'beforeend',
         cardHTML(r.title, formatPrice(r.display_price), r.note || label, (r.warn === 'WARN') ? '조건 확인' : (r.sub_price || ''))
@@ -322,7 +381,7 @@ function render(cat){
 
       // SK/KT/LG = 이동/기변 휴대폰만
       if(cat === 'SK' || cat === 'KT' || cat === 'LG'){
-        const picked = rows.filter(r => isPhoneType(r.type) && normCarrier(r.carrier) === cat);
+        const picked = rows.filter(r => isPhoneRow(r) && normCarrier(r.carrier) === cat);
 
         picked.forEach(r=>{
           splitPhoneCards(r).forEach(c=>{
@@ -336,9 +395,9 @@ function render(cat){
         return;
       }
 
-      // 특가폰(현재 없으면 비어있게)
+      // 특가폰 (없으면 빈칸 유지)
       if(cat === 'SPECIAL'){
-        const picked = rows.filter(r => isSpecialType(r.type));
+        const picked = rows.filter(r => isSpecialRow(r));
         if(picked.length === 0){
           grid.innerHTML = emptyHTML('특가폰 항목이 비어있음');
           return;
@@ -352,25 +411,25 @@ function render(cat){
         return;
       }
 
-      // 인터넷TV = 통신사별 묶음
+      // 인터넷TV (표기 흔들려도 키워드로 분류)
       if(cat === 'INTV'){
-        const picked = rows.filter(r => isIntvType(r.type));
+        const picked = rows.filter(r => isIntvRow(r));
         if(picked.length === 0){
           grid.innerHTML = emptyHTML('인터넷TV 항목이 비어있음');
           return;
         }
-        renderGroupedByCarrier(picked, '인터넷TV');
+        renderGrouped(picked, '인터넷TV', false);
         return;
       }
 
-      // 알뜰요금 = 통신사(망)별 묶음
+      // 알뜰요금 (표기 흔들려도 키워드로 분류)
       if(cat === 'MVNO'){
-        const picked = rows.filter(r => isMvnoType(r.type));
+        const picked = rows.filter(r => isMvnoRow(r));
         if(picked.length === 0){
           grid.innerHTML = emptyHTML('알뜰요금 항목이 비어있음');
           return;
         }
-        renderGroupedByCarrier(picked, '알뜰요금');
+        renderGrouped(picked, '알뜰요금', true);
         return;
       }
 
