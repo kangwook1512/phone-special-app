@@ -15,7 +15,6 @@
   --price:#ef4444;
   --tab:#2563eb;
 }
-
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
@@ -24,7 +23,7 @@ body{
   color:var(--ink);
 }
 
-/* 상단 탭 */
+/* 탭 */
 .tabs{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -41,52 +40,21 @@ body{
   background:#f3f4f6;
   cursor:pointer;
 }
-.tab.active{
-  background:var(--tab);
-  color:#fff;
-}
+.tab.active{background:var(--tab);color:#fff;}
 
 /* 카드 */
 .main{padding:12px;}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .card{
   background:var(--card);
   border-radius:18px;
   padding:18px 16px;
   box-shadow:0 4px 12px rgba(0,0,0,.04);
 }
-.model{
-  font-size:18px;
-  font-weight:900;
-  margin-bottom:6px;
-}
-.price{
-  font-size:36px;
-  font-weight:900;
-  color:var(--price);
-  margin-bottom:8px;
-}
-.cond{
-  font-size:14px;
-  font-weight:800;
-  margin-bottom:4px;
-}
-.sub{
-  font-size:13px;
-  color:var(--muted);
-  font-weight:700;
-}
-
-/* 휴대폰 고정 문구 */
-.phone-rule{
-  font-size:13px;
-  font-weight:800;
-  margin-bottom:4px;
-}
+.model{font-size:18px;font-weight:900;margin-bottom:6px;}
+.price{font-size:36px;font-weight:900;color:var(--price);margin-bottom:8px;}
+.cond{font-size:14px;font-weight:800;margin-bottom:4px;}
+.sub{font-size:13px;color:var(--muted);font-weight:700;}
 </style>
 </head>
 
@@ -127,13 +95,12 @@ function parseCSV(text){
 }
 
 /* 숫자 포맷 */
-function formatNumber(n){
+function fmt(n){
   const num = Number(n);
-  if(isNaN(num)) return n;
-  return num.toLocaleString();
+  return isNaN(num) ? n : num.toLocaleString();
 }
 
-/* 카드 */
+/* 카드 HTML */
 function cardHTML(model, price, cond, sub, carrier){
   return `
   <div class="card">
@@ -152,19 +119,20 @@ function render(tabType){
       grid.innerHTML='';
 
       rows.forEach(r=>{
+        /* 휴대폰 — 원래 잘되던 방식 고정 */
         if(tabType==='PHONE'){
           const m = r.display_price.match(/이동\s*([-\d]+)\s*\/\s*기변\s*([-\d]+)/);
           if(m){
-            grid.innerHTML+=cardHTML(
+            grid.innerHTML += cardHTML(
               r.title,
-              formatNumber(m[1]),
+              fmt(m[1]),
               '번호이동',
               `${PHONE_PLAN[r.carrier]} · ${PHONE_EXTRA}`,
               r.carrier
             );
-            grid.innerHTML+=cardHTML(
+            grid.innerHTML += cardHTML(
               r.title,
-              formatNumber(m[2]),
+              fmt(m[2]),
               '기기변경',
               `${PHONE_PLAN[r.carrier]} · ${PHONE_EXTRA}`,
               r.carrier
@@ -172,8 +140,9 @@ function render(tabType){
           }
         }
 
+        /* 인터넷TV — display_price = 지원금(+상품권), sub_price = 월요금 */
         if(tabType==='INTV'){
-          grid.innerHTML+=cardHTML(
+          grid.innerHTML += cardHTML(
             r.title,
             r.display_price,
             '',
@@ -182,10 +151,11 @@ function render(tabType){
           );
         }
 
+        /* 알뜰요금 — display_price 숫자만(3300), 크게 표시 */
         if(tabType==='MVNO'){
-          grid.innerHTML+=cardHTML(
+          grid.innerHTML += cardHTML(
             r.title,
-            formatNumber(r.display_price),
+            fmt(r.display_price),
             '',
             r.note,
             r.carrier
@@ -212,3 +182,4 @@ render('PHONE');
 
 </body>
 </html>
+
