@@ -1,410 +1,332 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>복지관2층매장</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>복지관2층매장</title>
 
-  <!-- 캐시 꼬임 방지(최대한) -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+<!-- ✅ 서비스워커 완전 무력화 (캐시 문제 종결) -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
+}
+</script>
 
-  <style>
-    :root{
-      --bg:#f5f6f8;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --line:#e5e7eb;
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
 
-      --price:#ef4444;
-      --tab:#2563eb;
+  --price:#ef4444;
+  --tab:#2563eb;
 
-      --call:#22c55e;
-      --sms:#38bdf8;
-      --kakao:#fee500;
-      --kakaoInk:#3b2f00;
-    }
+  --call:#22c55e;
+  --sms:#38bdf8;
+  --kakao:#fee500;
+}
 
-    *{box-sizing:border-box;}
-    html,body{margin:0;padding:0;}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-      background:var(--bg);
-      color:var(--ink);
-      -webkit-font-smoothing:antialiased;
-    }
-    a{color:inherit;text-decoration:none;}
-    .wrap{max-width:1100px;margin:0 auto;padding:14px 12px 22px;}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
 
-    /* 상단 간판(과하지 않게, 아침형) */
-    .top{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px 14px 12px;
-      box-shadow:0 6px 18px rgba(17,24,39,.06);
-    }
-    .brandRow{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:flex-start;
-    }
-    .title{
-      margin:0;
-      font-size:30px;
-      font-weight:1000;
-      letter-spacing:-0.03em;
-      line-height:1.05;
-    }
-    .sub{
-      margin:6px 0 0;
-      font-size:13px;
-      font-weight:800;
-      color:var(--muted);
-    }
+/* 상단 탭 (6개 = 2열3줄처럼 보이게 3칸 그리드) */
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:12px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.tab{
+  padding:14px 0;
+  text-align:center;
+  font-weight:900;
+  border-radius:12px;
+  background:#f3f4f6;
+  cursor:pointer;
+  user-select:none;
+}
+.tab.active{
+  background:var(--tab);
+  color:#fff;
+}
 
-    .contacts{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:1000;
-      box-shadow:0 4px 12px rgba(17,24,39,.06);
-      white-space:nowrap;
-    }
-    .chip small{color:var(--muted); font-weight:1000;}
-    .chip.kakao{
-      background:var(--kakao);
-      border-color:#f6e05e;
-      color:var(--kakaoInk);
-    }
+/* 카드 */
+.main{padding:12px;padding-bottom:190px;}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+.badge{font-size:12px;font-weight:900;color:#2563eb;margin-bottom:6px;}
+.model{font-size:16px;font-weight:900;margin-bottom:6px;line-height:1.15;}
+.price{font-size:26px;font-weight:900;color:var(--price);line-height:1.05;}
+.sub{font-size:13px;color:var(--muted);font-weight:700;margin-top:6px;line-height:1.25;}
 
-    /* 탭(6개) */
-    .tabs{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding-bottom:6px;
-      -webkit-overflow-scrolling:touch;
-    }
-    .tabBtn{
-      flex:0 0 auto;
-      padding:11px 14px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:1000;
-      font-size:14px;
-      cursor:pointer;
-      box-shadow:0 4px 12px rgba(17,24,39,.05);
-      white-space:nowrap;
-      transition:.12s ease;
-    }
-    .tabBtn.active{
-      border-color:rgba(37,99,235,.35);
-      background:rgba(37,99,235,.10);
-      color:var(--tab);
-      transform:translateY(-1px);
-    }
+/* ✅ 휴대폰: 모델/판매가 최대로 */
+.card.phone .model{
+  font-size: clamp(18px, 4.8vw, 26px);
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.card.phone .price{
+  font-size: clamp(30px, 7.2vw, 44px);
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.card.phone .sub{
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-top: 6px;
+}
 
-    .sectionHead{
-      margin-top:12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .sectionTitle{
-      margin:0;
-      font-size:18px;
-      font-weight:1000;
-      letter-spacing:-0.03em;
-    }
-    .sectionHint{
-      margin:0;
-      font-size:12px;
-      font-weight:900;
-      color:var(--muted);
-    }
+/* ✅ 인터넷TV: 지원금+상품권(note) 최대로 */
+.card.intv .sub{
+  font-size: clamp(16px, 4.6vw, 24px);
+  font-weight: 900;
+  color: var(--ink);
+  margin-top: 10px;
+}
 
-    .grid{
-      margin-top:10px;
-      display:grid;
-      gap:10px;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-    }
-    @media (min-width:760px){
-      .grid{grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px;}
-    }
+/* ✅ 알뜰요금: 요금(월 3,300원 등) 최대로 */
+.card.mvno .price{
+  font-size: clamp(30px, 7.2vw, 44px);
+  font-weight: 900;
+}
+.card.mvno .sub{
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px;
-      box-shadow:0 10px 22px rgba(17,24,39,.06);
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-height:140px;
-    }
-
-    /* 휴대폰: 모델/판매가 최대 */
-    .model{margin:0; font-size:22px; font-weight:1000; letter-spacing:-0.03em; line-height:1.08; word-break:keep-all;}
-    .price{margin:0; font-size:28px; font-weight:1000; letter-spacing:-0.04em; line-height:1.05; color:var(--price); word-break:keep-all;}
-    .subPrice{margin:0; font-size:14px; font-weight:900; color:var(--muted);}
-
-    /* 인터넷TV: 지원금+상품권 최대 */
-    .tvMain{margin:0; font-size:30px; font-weight:1000; letter-spacing:-0.04em; color:var(--price); line-height:1.05;}
-    .tvGift{margin:0; font-size:20px; font-weight:1000; letter-spacing:-0.03em; color:#0f172a;}
-
-    /* 알뜰: 요금(3,300원) 최대 */
-    .mvnoFee{margin:0; font-size:34px; font-weight:1000; letter-spacing:-0.05em; color:var(--price); line-height:1.0;}
-    .mvnoDesc{margin:0; font-size:14px; font-weight:900; color:var(--muted);}
-
-    .note{margin:0; font-size:12px; font-weight:900; color:var(--muted); line-height:1.3; word-break:keep-all;}
-
-    .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:auto;}
-    .tag{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-size:12px;
-      font-weight:1000;
-      color:#0f172a;
-      letter-spacing:-0.02em;
-    }
-    .tag.blue{border-color:rgba(37,99,235,.25); background:rgba(37,99,235,.08); color:var(--tab);}
-    .tag.gray{color:var(--muted);}
-
-    .empty{
-      border:1px dashed #cbd5e1;
-      background:linear-gradient(180deg,#ffffff,#f8fafc);
-    }
-    .empty .price,.empty .tvMain,.empty .mvnoFee{color:#94a3b8;}
-    .empty .model{color:#334155;}
-  </style>
+/* 하단 */
+.footer{
+  position:fixed;left:0;right:0;bottom:0;
+  background:#fff;border-top:1px solid var(--line);
+}
+.footer-msg{text-align:center;padding:10px;font-size:14px;font-weight:900;}
+.footer-store{text-align:center;font-size:18px;font-weight:900;padding-bottom:6px;}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.footer-actions a{
+  text-align:center;padding:16px 0;
+  font-weight:900;text-decoration:none;color:#111;
+}
+.call{background:var(--call);color:#fff;}
+.sms{background:var(--sms);color:#fff;}
+.kakao{background:var(--kakao);}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="top">
-      <div class="brandRow">
-        <div>
-          <h1 class="title">복지관2층매장</h1>
-          <p class="sub">휴대폰 특가 · 인터넷TV · 알뜰요금제 실시간 안내</p>
-        </div>
-        <div class="contacts">
-          <a class="chip" href="tel:042-821-2272"><small>전화</small><span>042-821-2272</span></a>
-          <a class="chip" href="sms:010-5839-1512"><small>문자</small><span>010-5839-1512</span></a>
-          <a class="chip kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener"><small>카톡</small><span>오픈채팅</span></a>
-        </div>
-      </div>
 
-      <div class="tabs" id="tabs">
-        <button class="tabBtn active" data-key="PHONE_SK">SK 특가폰</button>
-        <button class="tabBtn" data-key="PHONE_KT">KT 특가폰</button>
-        <button class="tabBtn" data-key="PHONE_LG">LG 특가폰</button>
-        <button class="tabBtn" data-key="INTERNET_TV">인터넷TV</button>
-        <button class="tabBtn" data-key="MVNO">알뜰요금제</button>
-        <button class="tabBtn" data-key="ETC">공지/기타</button>
-      </div>
-    </div>
+<!-- ✅ 6개 탭 -->
+<div class="tabs">
+  <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
+  <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
+  <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
+  <div class="tab" data-tab="SPECIAL">특판폰</div>
+  <div class="tab" data-tab="INTV">인터넷TV</div>
+  <div class="tab" data-tab="MVNO">알뜰요금</div>
+</div>
 
-    <div class="sectionHead">
-      <h2 class="sectionTitle" id="sectionTitle">SK 특가폰</h2>
-      <p class="sectionHint" id="sectionHint">SK 109요금 6개월 / 부가별도문의</p>
-    </div>
+<!-- 카드 영역 -->
+<div class="main">
+  <div class="grid" id="cards"></div>
+</div>
 
-    <div class="grid" id="grid"></div>
+<!-- 하단 -->
+<div class="footer">
+  <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
+  <div class="footer-store">복지관2층매장</div>
+  <div class="footer-actions">
+    <a class="call" href="tel:042-821-2272">전화</a>
+    <a class="sms" href="sms:010-5839-1512">문자</a>
+    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
   </div>
+</div>
 
 <script>
-  const META = {
-    PHONE_SK: { title:'SK 특가폰', hint:'SK 109요금 6개월 / 부가별도문의' },
-    PHONE_KT: { title:'KT 특가폰', hint:'KT 110요금 6개월 / 부가별도문의' },
-    PHONE_LG: { title:'LG 특가폰', hint:'LG 115요금 6개월 / 부가별도문의' },
-    INTERNET_TV: { title:'인터넷TV', hint:'지원금 + 상품권 (조건 문의)' },
-    MVNO: { title:'알뜰요금제', hint:'요금(예: 3,300원~) 크게 표시' },
-    ETC: { title:'공지/기타', hint:'공지/서비스/안내' }
-  };
+const CSV_URL = 'data.csv?v=' + Date.now();
+const grid = document.getElementById('cards');
+const tabs = document.querySelectorAll('.tab');
 
-  let activeKey = 'PHONE_SK';
-  let rows = [];
+/* ✅ 휴대폰 요금조건/부가 문구 고정 */
+const PHONE_PLAN = {
+  SK: 'SK 109요금 6개월',
+  KT: 'KT 110요금 6개월',
+  LG: 'LG 115요금 6개월'
+};
+const PHONE_EXTRA = '부가별도문의';
 
-  const $grid = document.getElementById('grid');
-  const $sectionTitle = document.getElementById('sectionTitle');
-  const $sectionHint = document.getElementById('sectionHint');
+/* ✅ 안전한 CSV 파서 (콤마/괄호/한글/따옴표 OK) */
+function parseCSV(text){
+  const t = (text || '').replace(/\r/g,'');
+  const rows=[], cur=[];
+  let cell='', inQ=false;
 
-  function esc(s=''){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  function splitCSVLine(line){
-    const res=[]; let cur=''; let inQ=false;
-    for(let i=0;i<line.length;i++){
-      const ch=line[i];
-      if(ch === '"'){
-        if(inQ && line[i+1] === '"'){ cur+='"'; i++; }
-        else inQ=!inQ;
-      } else if(ch === ',' && !inQ){ res.push(cur); cur=''; }
-      else cur+=ch;
-    }
-    res.push(cur);
-    return res;
+  for(let i=0;i<t.length;i++){
+    const c=t[i], n=t[i+1];
+    if(c === '"' && n === '"'){ cell+='"'; i++; }
+    else if(c === '"'){ inQ = !inQ; }
+    else if(c === ',' && !inQ){ cur.push(cell); cell=''; }
+    else if(c === '\n' && !inQ){
+      cur.push(cell); rows.push([...cur]);
+      cur.length=0; cell='';
+    } else cell += c;
   }
-  function parseCSV(text){
-    const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim().length);
-    if(!lines.length) return [];
-    const header=splitCSVLine(lines[0]).map(h=>h.trim());
-    const out=[];
-    for(let i=1;i<lines.length;i++){
-      const cols=splitCSVLine(lines[i]);
-      const obj={};
-      header.forEach((h,idx)=>obj[h]=(cols[idx]??'').trim());
-      if(obj.type || obj.title || obj.display_price) out.push(obj);
-    }
-    return out;
-  }
-  function filtered(){ return rows.filter(r => (r.type||'').toUpperCase() === activeKey); }
+  cur.push(cell); rows.push([...cur]);
 
-  function phoneHint(key){
-    if(key==='PHONE_SK') return 'SK 109요금 6개월';
-    if(key==='PHONE_KT') return 'KT 110요금 6개월';
-    return 'LG 115요금 6개월';
-  }
-
-  function cardPhone(r){
-    const model=esc(r.title||'특판 등록 예정');
-    const price=esc(r.display_price||'가격 등록 예정');
-    const sub=esc(r.sub_price||'요금조건 문의');
-    const note=esc(r.note||'');
-    const empty = (!r.title && !r.display_price) ? 'empty' : '';
-    return `
-      <div class="card ${empty}">
-        <p class="model">${model}</p>
-        <p class="price">${price}</p>
-        <p class="subPrice">${sub}</p>
-        ${note ? `<p class="note">${note}</p>` : ''}
-        <div class="tags">
-          <span class="tag blue">${phoneHint(activeKey)}</span>
-          <span class="tag gray">부가별도문의</span>
-        </div>
-      </div>`;
-  }
-
-  function cardTV(r){
-    const title=esc(r.title||'인터넷TV 등록 예정');
-    const main=esc(r.display_price||'지원금 등록 예정');
-    const gift=esc(r.sub_price||'상품권 등록 예정');
-    const note=esc(r.note||'설치/약정/결합 조건 문의');
-    const empty = (!r.title && !r.display_price && !r.sub_price) ? 'empty' : '';
-    return `
-      <div class="card ${empty}">
-        <p class="model">${title}</p>
-        <p class="tvMain">${main}</p>
-        <p class="tvGift">${gift}</p>
-        <p class="note">${note}</p>
-        <div class="tags">
-          <span class="tag blue">지원금 + 상품권</span>
-          <span class="tag gray">조건 문의</span>
-        </div>
-      </div>`;
-  }
-
-  function cardMVNO(r){
-    const title=esc(r.title||'알뜰요금제 등록 예정');
-    const fee=esc(r.display_price||'3,300원~');
-    const desc=esc(r.sub_price||'요금제 상세 조건');
-    const note=esc(r.note||'가입비/유심 등 추가비용 문의');
-    const empty = (!r.title && !r.display_price && !r.sub_price) ? 'empty' : '';
-    return `
-      <div class="card ${empty}">
-        <p class="model">${title}</p>
-        <p class="mvnoFee">${fee}</p>
-        <p class="mvnoDesc">${desc}</p>
-        <p class="note">${note}</p>
-        <div class="tags">
-          <span class="tag blue">알뜰요금</span>
-          <span class="tag gray">문의</span>
-        </div>
-      </div>`;
-  }
-
-  function cardETC(r){
-    const title=esc(r.title||'공지/서비스 등록 예정');
-    const main=esc(r.display_price||'내용 등록 예정');
-    const sub=esc(r.sub_price||'');
-    const note=esc(r.note||'');
-    const empty = (!r.title && !r.display_price && !r.sub_price && !r.note) ? 'empty' : '';
-    return `
-      <div class="card ${empty}">
-        <p class="model">${title}</p>
-        <p class="price" style="color:#0f172a">${main}</p>
-        ${sub ? `<p class="subPrice">${sub}</p>` : ''}
-        ${note ? `<p class="note">${note}</p>` : ''}
-        <div class="tags">
-          <span class="tag blue">안내</span>
-          <span class="tag gray">공지</span>
-        </div>
-      </div>`;
-  }
-
-  function render(){
-    const meta = META[activeKey] || META.PHONE_SK;
-    $sectionTitle.textContent = meta.title;
-    $sectionHint.textContent = meta.hint;
-
-    const list = filtered();
-    const show = list.length ? list : Array.from({length:6}, ()=>({}));
-
-    let html='';
-    if(activeKey==='PHONE_SK' || activeKey==='PHONE_KT' || activeKey==='PHONE_LG'){
-      html = show.map(cardPhone).join('');
-    } else if(activeKey==='INTERNET_TV'){
-      html = show.map(cardTV).join('');
-    } else if(activeKey==='MVNO'){
-      html = show.map(cardMVNO).join('');
-    } else {
-      html = show.map(cardETC).join('');
-    }
-    $grid.innerHTML = html;
-  }
-
-  async function loadCSV(){
-    try{
-      const res = await fetch('data.csv', { cache:'no-store' });
-      if(!res.ok) throw new Error('no csv');
-      rows = parseCSV(await res.text());
-    } catch(e){
-      rows = [];
-    }
-  }
-
-  document.querySelectorAll('#tabs .tabBtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const key = btn.getAttribute('data-key');
-      if(!key) return;
-      activeKey = key;
-      document.querySelectorAll('#tabs .tabBtn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      render();
-      setTimeout(()=>window.scrollTo({top: document.querySelector('.sectionHead').offsetTop - 8, behavior:'smooth'}), 30);
+  if(!rows.length) return [];
+  const header = rows.shift().map(h => (h||'').trim());
+  return rows
+    .filter(r => r.some(v => (v||'').trim() !== ''))
+    .map(r=>{
+      const o={};
+      header.forEach((h,i)=> o[h] = (r[i] ?? '').trim());
+      return o;
     });
-  });
+}
 
-  (async ()=>{
-    await loadCSV();
-    render();
-  })();
+/* 휴대폰 가격 숫자 → 만원 / 0이하 → 문의 */
+function phonePrice(nStr){
+  const n = Number(String(nStr||'').replace(/,/g,'').trim());
+  if(!isFinite(n) || n <= 0) return '문의';
+  return `${n}만원`;
+}
+
+/* 휴대폰 이동/기변 분리 */
+function phoneCards(r){
+  const out=[];
+  const m = (r.display_price||'').match(/이동\s*([-\d.,]+)/);
+  const g = (r.display_price||'').match(/기변\s*([-\d.,]+)/);
+  const plan = PHONE_PLAN[r.carrier] || '';
+  const subLine = `${plan}`;
+  const extraLine = PHONE_EXTRA;
+
+  if(m){
+    out.push(`
+      <div class="card phone">
+        <div class="badge">이동</div>
+        <div class="model">${escapeHTML(r.title)}</div>
+        <div class="price">${escapeHTML(phonePrice(m[1]))}</div>
+        <div class="sub">${escapeHTML(subLine)}</div>
+        <div class="sub">${escapeHTML(extraLine)}</div>
+      </div>
+    `);
+  }
+  if(g){
+    out.push(`
+      <div class="card phone">
+        <div class="badge">기변</div>
+        <div class="model">${escapeHTML(r.title)}</div>
+        <div class="price">${escapeHTML(phonePrice(g[1]))}</div>
+        <div class="sub">${escapeHTML(subLine)}</div>
+        <div class="sub">${escapeHTML(extraLine)}</div>
+      </div>
+    `);
+  }
+  return out;
+}
+
+function cardHTML(title, price, sub, cls){
+  return `
+    <div class="card ${cls||''}">
+      <div class="model">${escapeHTML(title)}</div>
+      <div class="price">${escapeHTML(price)}</div>
+      ${sub ? `<div class="sub">${escapeHTML(sub)}</div>` : ``}
+    </div>
+  `;
+}
+
+function filterRows(rows, tab){
+  if(tab==='SK_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='SK');
+  if(tab==='KT_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='KT');
+  if(tab==='LG_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='LG');
+  if(tab==='SPECIAL')  return rows.filter(r=>r.type==='SPECIAL');     // 지금 비워두면 0개가 정상
+  if(tab==='INTV')     return rows.filter(r=>r.type==='INTV');
+  if(tab==='MVNO')     return rows.filter(r=>r.type==='MVNO');
+  return [];
+}
+
+function render(tab){
+  fetch(CSV_URL,{cache:'no-store'})
+    .then(r=>r.text())
+    .then(t=>{
+      const rows = parseCSV(t);
+      const show = filterRows(rows, tab);
+
+      grid.innerHTML='';
+
+      show.forEach(r=>{
+        if(r.type === 'PHONE'){
+          phoneCards(r).forEach(html => grid.innerHTML += html);
+        } else if(r.type === 'INTV'){
+          // display_price: 월요금(결합요금)
+          // note: 현금지원금 + 상품권 (크게)
+          grid.innerHTML += cardHTML(r.title, r.display_price, r.note, 'intv');
+        } else if(r.type === 'MVNO'){
+          // display_price: 월 요금 (크게)
+          // note: 통화/문자/현금 등
+          grid.innerHTML += cardHTML(r.title, r.display_price, r.note, 'mvno');
+        } else {
+          grid.innerHTML += cardHTML(r.title, r.display_price, r.note, '');
+        }
+      });
+
+      if(!grid.innerHTML.trim()){
+        grid.innerHTML = `
+          <div class="card" style="grid-column:1 / -1;">
+            <div class="model">표시할 항목 없음</div>
+            <div class="sub">data.csv에 해당 분류(type)가 비어있습니다.</div>
+          </div>
+        `;
+      }
+    })
+    .catch(()=>{
+      grid.innerHTML = `
+        <div class="card" style="grid-column:1 / -1;">
+          <div class="model">data.csv 읽기 실패</div>
+          <div class="sub">파일명(data.csv) / 업로드 위치를 확인하세요.</div>
+        </div>
+      `;
+    });
+}
+
+function escapeHTML(str){
+  return (str ?? '').toString()
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+tabs.forEach(t=>{
+  t.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    render(t.dataset.tab);
+  };
+});
+
+render('SK_PHONE');
 </script>
 
 </body>
