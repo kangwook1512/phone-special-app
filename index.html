@@ -1,138 +1,185 @@
-<script>
-const CSV_URL = 'data.csv?v=' + Date.now(); // 캐시 방지
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>복지관2층매장</title>
 
-const tabs = document.querySelectorAll('.tab');
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --price:#ef4444;
+  --tab:#2563eb;
+  --call:#22c55e;
+  --sms:#38bdf8;
+  --kakao:#fee500;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+/* 상단 탭 */
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:12px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.tab{
+  padding:14px 0;
+  text-align:center;
+  font-weight:900;
+  border-radius:12px;
+  background:#f3f4f6;
+  cursor:pointer;
+}
+.tab.active{
+  background:var(--tab);
+  color:#fff;
+}
+
+/* 카드 */
+.main{padding:12px;padding-bottom:190px;}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px 16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.04);
+}
+.model{font-size:18px;font-weight:900;margin-bottom:8px;}
+.price{font-size:32px;font-weight:900;color:var(--price);margin-bottom:10px;}
+.cond{font-size:14px;font-weight:800;margin-bottom:6px;}
+.sub{font-size:13px;color:var(--muted);font-weight:700;}
+
+/* 하단 */
+.footer{
+  position:fixed;left:0;right:0;bottom:0;
+  background:#fff;border-top:1px solid var(--line);
+}
+.footer-msg{text-align:center;padding:10px;font-size:14px;font-weight:800;}
+.footer-store{text-align:center;font-size:18px;font-weight:900;padding-bottom:6px;}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.footer-actions a{
+  text-align:center;padding:16px 0;
+  font-weight:900;text-decoration:none;color:#111;
+}
+.call{background:var(--call);color:#fff;}
+.sms{background:var(--sms);color:#fff;}
+.kakao{background:var(--kakao);}
+</style>
+</head>
+
+<body>
+
+<!-- 상단 탭 -->
+<div class="tabs">
+  <div class="tab active" data-cat="SK">SK</div>
+  <div class="tab" data-cat="KT">KT</div>
+  <div class="tab" data-cat="LG">LG</div>
+</div>
+
+<!-- 카드 영역 -->
+<div class="main">
+  <div class="grid" id="cards"></div>
+</div>
+
+<!-- 하단 -->
+<div class="footer">
+  <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
+  <div class="footer-store">복지관2층매장</div>
+  <div class="footer-actions">
+    <a class="call" href="tel:042-821-2272">전화</a>
+    <a class="sms" href="sms:010-5839-1512">문자</a>
+    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
+  </div>
+</div>
+
+<script>
+const CSV_URL = 'data.csv?v=' + Date.now();
 const grid = document.getElementById('cards');
+const tabs = document.querySelectorAll('.tab');
 
 function parseCSV(text){
-  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim().length);
-  const header = lines.shift().split(',').map(s=>s.trim());
-  const idx = Object.fromEntries(header.map((h,i)=>[h,i]));
-
-  const rows = lines.map(line=>{
-    // 쉼표가 데이터 안에 들어가는 경우는 현재 데이터 구조상 거의 없다고 보고 단순 split
-    const cols = line.split(',');
+  const lines = text.trim().split('\n');
+  const headers = lines.shift().split(',');
+  return lines.map(l=>{
+    const c = l.split(',');
     return {
-      carrier: (cols[idx.carrier]||'').trim().toLowerCase(), // skt/kt/lg/internet 등
-      title:   (cols[idx.title]||'').trim(),
-      tag:     (cols[idx.tag]||'').trim(),                 // 번호이동/기기변경
-      price:   (cols[idx.price]||'').trim(),
-      priceType:(cols[idx.priceType]||'').trim(),          // free/minus/cash 등
-      sub:     (cols[idx.sub]||'').trim()
+      carrier:c[0].toLowerCase(),
+      title:c[1],
+      tag:c[2],
+      price:c[3],
+      priceType:c[4],
+      sub:c[5]
     };
   });
-  return rows;
 }
 
-function formatPrice(price, priceType){
-  const n = Number(price);
-  if (Number.isNaN(n)) return price;
-
-  // 기본은 "만원" 단위 표시(기존 UI와 맞춤)
-  // 음수는 표시 정책이 필요하면 여기서 조정 가능
-  if (priceType === 'cash') return `${n}만원`;
-  if (priceType === 'minus') return `${n}만원`; // 필요시 "마-5" 같은 표기로 변경 가능
-  // free 포함 기본
-  return `${n}만원`;
+function carrierTab(c){
+  if(c==='skt') return 'SK';
+  if(c==='kt') return 'KT';
+  if(c==='lg') return 'LG';
+  return '';
 }
 
-function makeCardHTML(model, left, right, activeCat){
-  // left/right: {tag, price, priceType, sub}
-  const leftHtml = left ? `
-    <div class="card" data-cat="${activeCat},특가폰">
-      <div class="model">${model}</div>
-      <div class="price">${formatPrice(left.price, left.priceType)}</div>
-      <div class="cond">${left.tag}</div>
-      <div class="sub">${left.sub}</div>
-    </div>` : '';
+function render(tab){
+  fetch(CSV_URL,{cache:'no-store'})
+    .then(r=>r.text())
+    .then(t=>{
+      const rows=parseCSV(t);
+      const map={};
 
-  const rightHtml = right ? `
-    <div class="card" data-cat="${activeCat},특가폰">
-      <div class="model">${model}</div>
-      <div class="price">${formatPrice(right.price, right.priceType)}</div>
-      <div class="cond">${right.tag}</div>
-      <div class="sub">${right.sub}</div>
-    </div>` : '';
+      rows.forEach(r=>{
+        const k=carrierTab(r.carrier)+'_'+r.title;
+        if(!map[k]) map[k]={tab:carrierTab(r.carrier),title:r.title,left:null,right:null};
+        if(r.tag.includes('번호이동')) map[k].left=r;
+        if(r.tag.includes('기기변경')) map[k].right=r;
+      });
 
-  return leftHtml + rightHtml;
+      grid.innerHTML='';
+      Object.values(map).forEach(m=>{
+        if(m.tab!==tab) return;
+        if(m.left) grid.innerHTML+=cardHTML(m.title,m.left);
+        if(m.right) grid.innerHTML+=cardHTML(m.title,m.right);
+      });
+    });
 }
 
-function carrierToTab(carrier){
-  if (carrier === 'skt') return 'SK';
-  if (carrier === 'kt') return 'KT';
-  if (carrier === 'lg') return 'LG';
-  if (carrier === 'internet') return '인터넷TV';
-  if (carrier === 'mvno') return '알뜰요금';
-  return '특가폰';
-}
-
-async function loadAndRender(){
-  const res = await fetch(CSV_URL, {cache:'no-store'});
-  const text = await res.text();
-  const rows = parseCSV(text);
-
-  // 그룹키: carrier+title
-  const map = new Map();
-  for (const r of rows){
-    const tab = carrierToTab(r.carrier);
-    const key = `${tab}||${r.title}`;
-    if (!map.has(key)) map.set(key, {tab, title:r.title, left:null, right:null});
-    const item = map.get(key);
-
-    if (r.tag.includes('번호이동')) item.left = r;
-    else if (r.tag.includes('기기변경')) item.right = r;
-    else {
-      // 기타 태그는 오른쪽에 넣음(필요시 조정)
-      item.right = r;
-    }
-  }
-
-  // 렌더(기존 하드코딩 카드 제거)
-  grid.innerHTML = '';
-
-  // 탭별로 묶어서 출력(현재 선택 탭만 보이게)
-  const items = Array.from(map.values());
-
-  // 기본 활성 탭
-  const activeTab = document.querySelector('.tab.active')?.dataset.cat || 'SK';
-
-  // 활성 탭 먼저, 그 다음 나머지(원하면 정렬 변경 가능)
-  items.sort((a,b)=>{
-    if (a.tab === activeTab && b.tab !== activeTab) return -1;
-    if (a.tab !== activeTab && b.tab === activeTab) return 1;
-    return a.title.localeCompare(b.title, 'ko');
-  });
-
-  for (const it of items){
-    // 좌(번호이동) / 우(기기변경) 페어로 두 장 생성
-    const html = makeCardHTML(it.title, it.left, it.right, it.tab);
-    grid.insertAdjacentHTML('beforeend', html);
-  }
-
-  // 탭 필터 적용(기존 로직 유지)
-  applyFilter(activeTab);
-}
-
-function applyFilter(cat){
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(c=>{
-    const list = c.dataset.cat.split(',');
-    c.style.display = list.includes(cat) ? 'flex' : 'none';
-  });
+function cardHTML(title,r){
+  return `
+  <div class="card">
+    <div class="model">${title}</div>
+    <div class="price">${r.price}만원</div>
+    <div class="cond">${r.tag}</div>
+    <div class="sub">${r.sub}</div>
+  </div>`;
 }
 
 tabs.forEach(t=>{
-  t.addEventListener('click',()=>{
+  t.onclick=()=>{
     tabs.forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
-    applyFilter(t.dataset.cat);
-  });
+    render(t.dataset.cat);
+  };
 });
 
-// 실행
-loadAndRender().catch(err=>{
-  console.error(err);
-  // 실패 시 아무것도 안 보이는 것보단 메시지
-  grid.innerHTML = `<div style="padding:12px;color:#ef4444;font-weight:800;">데이터 로드 실패: data.csv 확인 필요</div>`;
-});
+render('SK');
 </script>
+
+</body>
+</html>
