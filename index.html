@@ -114,60 +114,183 @@ const CSV_URL = 'data.csv?v=' + Date.now();
 const grid = document.getElementById('cards');
 const tabs = document.querySelectorAll('.tab');
 
+/** 최소 CSV 파서 (따옴표 처리) */
 function parseCSV(text){
-  const lines = text.trim().split('\n');
-  const headers = lines.shift().split(',');
-  return lines.map(l=>{
-    const c = l.split(',');
+  const lines = text.replace(/\r/g,'').trim().split('\n').filter(Boolean);
+  if(lines.length === 0) return [];
+
+  const headers = splitCSVLine(lines.shift()).map(h => h.trim());
+  const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+
+  return lines.map(line=>{
+    const cols = splitCSVLine(line);
+    const get = (k)=> (idx[k] != null ? (cols[idx[k]] ?? '').trim() : '');
+
     return {
-      carrier:c[0].toLowerCase(),
-      title:c[1],
-      tag:c[2],
-      price:c[3],
-      priceType:c[4],
-      sub:c[5]
+      type: get('type'),                 // PHONE / PHONE_LOW / INTV / MVNO
+      carrier: get('carrier'),           // SK / KT / LG
+      title: get('title'),
+      display_price: get('display_price'),
+      sub_price: get('sub_price'),
+      payout: get('payout'),
+      margin_target: get('margin_target'),
+      margin_actual: get('margin_actual'),
+      warn: get('warn'),                 // OK / WARN
+      note: get('note')
     };
   });
 }
 
-function carrierTab(c){
-  if(c==='skt') return 'SK';
-  if(c==='kt') return 'KT';
-  if(c==='lg') return 'LG';
-  return '';
+function splitCSVLine(line){
+  const out = [];
+  let cur = '';
+  let inQ = false;
+
+  for(let i=0;i<line.length;i++){
+    const ch = line[i];
+    if(ch === '"'){
+      // "" -> "
+      if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if(ch === ',' && !inQ){
+      out.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+/** 탭별로 보여줄 (type, carrier) 매핑 고정 */
+function tabFilter(tab){
+  if(tab === 'SK') return { type:'PHONE_LOW', carrier:'SK' };
+  if(tab === 'KT') return { type:'INTV',      carrier:'KT' };
+  if(tab === 'LG') return { type:'MVNO',      carrier:'LG' };
+  return { type:'', carrier:'' };
+}
+
+/** 가격 표시: 월/원 포함이면 그대로, 숫자면 만원 붙이기 */
+function formatPrice(v){
+  const s = (v ?? '').toString().trim();
+  if(!s) return '';
+  if(/[원월]/.test(s)) return s;                // "월 9,900원" 같은 형태
+  if(/[가-힣]/.test(s)) return s;               // 이미 "이동 57 / 기변 55" 같이 문자가 있으면 그대로
+  // 숫자/마이너스 숫자면 만원 처리
+  const n = Number(s.replace(/,/g,''));
+  if(!isNaN(n)) return `${s}만원`;
+  return s;
+}
+
+/** 저가요금특가폰: "이동 57 / 기변 55"면 2장 카드로 분리 */
+function splitPhoneCards(row){
+  const s = (row.display_price ?? '').trim();
+  // 패턴: 이동 57 / 기변 55
+  const m = s.match(/이동\s*([-\d.,]+)\s*\/\s*기변\s*([-\d.,]+)/);
+  if(!m){
+    // 분리 못하면 1장으로
+    return [{
+      model: row.title,
+      price: formatPrice(row.display_price),
+      cond: row.note || '저가요금 특가폰',
+      sub: row.warn === 'WARN' ? '⚠️ 마진/정책 확인' : (row.sub_price || '')
+    }];
+  }
+  const move = m[1];
+  const chg  = m[2];
+
+  const commonSub = row.warn === 'WARN' ? '⚠️ 마진/정책 확인' : (row.sub_price || '');
+  const note = row.note || '';
+
+  return [
+    {
+      model: row.title,
+      price: formatPrice(move),
+      cond: '번호이동',
+      sub: note || commonSub
+    },
+    {
+      model: row.title,
+      price: formatPrice(chg),
+      cond: '기기변경',
+      sub: note || commonSub
+    }
+  ];
 }
 
 function render(tab){
+  const want = tabFilter(tab);
+
   fetch(CSV_URL,{cache:'no-store'})
     .then(r=>r.text())
     .then(t=>{
-      const rows=parseCSV(t);
-      const map={};
+      const rows = parseCSV(t);
 
-      rows.forEach(r=>{
-        const k=carrierTab(r.carrier)+'_'+r.title;
-        if(!map[k]) map[k]={tab:carrierTab(r.carrier),title:r.title,left:null,right:null};
-        if(r.tag.includes('번호이동')) map[k].left=r;
-        if(r.tag.includes('기기변경')) map[k].right=r;
-      });
+      // 탭에 맞는 행만
+      const picked = rows.filter(r =>
+        (r.type || '').toUpperCase() === want.type &&
+        (r.carrier || '').toUpperCase() === want.carrier
+      );
 
       grid.innerHTML='';
-      Object.values(map).forEach(m=>{
-        if(m.tab!==tab) return;
-        if(m.left) grid.innerHTML+=cardHTML(m.title,m.left);
-        if(m.right) grid.innerHTML+=cardHTML(m.title,m.right);
+
+      // 카드 생성
+      picked.forEach(r=>{
+        if(want.type === 'PHONE_LOW'){
+          // 2장 분리
+          splitPhoneCards(r).forEach(c=>{
+            grid.innerHTML += cardHTML(c.model, c.price, c.cond, c.sub);
+          });
+        } else if(want.type === 'INTV'){
+          // 인터넷TV: display_price에 지급액(또는 보여줄 값)이 들어오도록 엑셀에서 맞춰둔 전제
+          const cond = r.note || '인터넷·TV';
+          const sub = r.warn === 'WARN' ? '⚠️ 지급액/마진 확인' : (r.sub_price || '');
+          grid.innerHTML += cardHTML(r.title, formatPrice(r.display_price), cond, sub);
+        } else if(want.type === 'MVNO'){
+          // 알뜰요금제: display_price = "월 9,900원" 형태
+          const cond = r.note || '알뜰요금제';
+          const sub = r.warn === 'WARN' ? '⚠️ 지급액/마진 확인' : (r.sub_price || '');
+          grid.innerHTML += cardHTML(r.title, formatPrice(r.display_price), cond, sub);
+        }
       });
+
+      if(!grid.innerHTML.trim()){
+        grid.innerHTML = `
+          <div class="card" style="grid-column:1 / -1;">
+            <div class="model">${tab} 항목이 비어있음</div>
+            <div class="sub">CSV출력_v2에서 type/carrier가 맞는지 확인하세요.</div>
+          </div>
+        `;
+      }
+    })
+    .catch(()=>{
+      grid.innerHTML = `
+        <div class="card" style="grid-column:1 / -1;">
+          <div class="model">data.csv 읽기 실패</div>
+          <div class="sub">파일명(data.csv)과 업로드 위치를 확인하세요.</div>
+        </div>
+      `;
     });
 }
 
-function cardHTML(title,r){
+function cardHTML(model, price, cond, sub){
   return `
   <div class="card">
-    <div class="model">${title}</div>
-    <div class="price">${r.price}만원</div>
-    <div class="cond">${r.tag}</div>
-    <div class="sub">${r.sub}</div>
+    <div class="model">${escapeHTML(model)}</div>
+    <div class="price">${escapeHTML(price)}</div>
+    <div class="cond">${escapeHTML(cond || '')}</div>
+    <div class="sub">${escapeHTML(sub || '')}</div>
   </div>`;
+}
+
+function escapeHTML(str){
+  return (str ?? '').toString()
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
 }
 
 tabs.forEach(t=>{
