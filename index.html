@@ -1,124 +1,307 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>복지관2층매장</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>복지관2층매장</title>
 
-<style>
-body{margin:0;background:#f2f3f5;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif}
-.tabs{display:flex;gap:8px;padding:12px}
-.tab{flex:1;text-align:center;padding:14px;border-radius:14px;font-weight:900;background:#eee;cursor:pointer}
-.tab.active{background:#2563eb;color:#fff}
+  <style>
+    :root{
+      --bg:#f5f6f8;
+      --card:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;padding-bottom:140px}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
+      --accent:#2563eb;
+      --danger:#ef4444;
+      --good:#16a34a;
 
-.model{font-size:15px;font-weight:900;margin-bottom:6px}
-.price-phone{font-size:38px;font-weight:900;color:#ef4444}
-.price-tv{font-size:32px;font-weight:900;color:#ef4444}
-.price-mvno{font-size:42px;font-weight:900;color:#ef4444}
+      --kakao:#fee500;
+      --kakaoInk:#3b2f00;
+    }
 
-.sub{font-size:13px;color:#555;margin-top:4px;font-weight:700}
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none;}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 12px 22px;}
 
-.footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ddd}
-.footer-msg{text-align:center;font-weight:800;padding:6px}
-.footer-store{text-align:center;font-size:17px;font-weight:900}
-.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr}
-.footer-actions a{padding:16px 0;text-align:center;font-weight:900;color:#000;text-decoration:none}
-.call{background:#22c55e;color:#fff}
-.sms{background:#38bdf8;color:#fff}
-.kakao{background:#fee500}
-</style>
+    /* ===== Header ===== */
+    .header{
+      background:linear-gradient(180deg,#ffffff, #f7f9ff);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 14px 12px;
+      box-shadow:0 6px 20px rgba(17,24,39,.06);
+    }
+    .brandRow{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;}
+    .brandTitle{
+      font-weight:900;
+      letter-spacing:-0.03em;
+      font-size:30px;
+      line-height:1.05;
+      margin:0;
+    }
+    .brandSub{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .contactRow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:900;
+      letter-spacing:-0.02em;
+      box-shadow:0 4px 14px rgba(17,24,39,.06);
+    }
+    .chip small{font-weight:900;color:var(--muted)}
+    .chip.call{border-color:#d1fae5}
+    .chip.sms{border-color:#dbeafe}
+    .chip.kakao{background:var(--kakao); border-color:#f6e05e; color:var(--kakaoInk)}
+    .chip span.value{font-size:14px}
+    .chip:hover{transform:translateY(-1px)}
+    .chip{transition:.15s ease transform}
+
+    /* ===== Tabs(6 bars) ===== */
+    .tabs{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      padding-bottom:6px;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
+    }
+    .tabBtn{
+      flex:0 0 auto;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      border-radius:999px;
+      padding:11px 14px;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:-0.02em;
+      box-shadow:0 4px 14px rgba(17,24,39,.05);
+      cursor:pointer;
+      white-space:nowrap;
+      transition:.15s ease;
+    }
+    .tabBtn.active{
+      border-color:rgba(37,99,235,.35);
+      background:rgba(37,99,235,.10);
+      color:var(--accent);
+      box-shadow:0 10px 24px rgba(37,99,235,.12);
+      transform:translateY(-1px);
+    }
+
+    /* ===== Section title ===== */
+    .sectionHead{
+      margin-top:12px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .sectionTitle{
+      margin:0;
+      font-size:18px;
+      font-weight:1000;
+      letter-spacing:-0.03em;
+    }
+    .sectionHint{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    /* ===== Cards grid ===== */
+    .grid{
+      margin-top:10px;
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+    @media (min-width:760px){
+      .grid{grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px;}
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:12px 12px 11px;
+      box-shadow:0 10px 24px rgba(17,24,39,.06);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-height:140px;
+    }
+
+    /* Big model + big price */
+    .model{
+      font-size:22px;
+      font-weight:1000;
+      letter-spacing:-0.03em;
+      line-height:1.08;
+      margin:0;
+      word-break:keep-all;
+    }
+    .price{
+      font-size:28px;
+      font-weight:1000;
+      letter-spacing:-0.04em;
+      line-height:1.05;
+      margin:0;
+      color:var(--danger);
+      word-break:keep-all;
+    }
+    .subPrice{
+      font-size:14px;
+      font-weight:900;
+      color:var(--muted);
+      margin:0;
+      letter-spacing:-0.02em;
+    }
+
+    /* InternetTV emphasis */
+    .tvPrice{
+      font-size:30px;
+      font-weight:1000;
+      letter-spacing:-0.04em;
+      margin:0;
+      color:var(--danger);
+      line-height:1.05;
+    }
+    .tvGift{
+      font-size:20px;
+      font-weight:1000;
+      margin:0;
+      color:#0f172a;
+      letter-spacing:-0.03em;
+    }
+
+    /* MVNO emphasis (3,300원 크게) */
+    .mvnoMain{
+      font-size:34px;
+      font-weight:1000;
+      letter-spacing:-0.05em;
+      margin:0;
+      color:var(--danger);
+      line-height:1.0;
+    }
+    .mvnoPlan{
+      font-size:14px;
+      font-weight:900;
+      color:var(--muted);
+      margin:0;
+      letter-spacing:-0.02em;
+    }
+
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+    .tag{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:1000;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#0f172a;
+      letter-spacing:-0.02em;
+    }
+    .tag.blue{border-color:rgba(37,99,235,.25); background:rgba(37,99,235,.08); color:var(--accent);}
+    .tag.gray{color:var(--muted);}
+
+    .note{
+      margin:0;
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
+      letter-spacing:-0.02em;
+      line-height:1.3;
+      word-break:keep-all;
+    }
+
+    /* empty state */
+    .empty{
+      border:1px dashed #cbd5e1;
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+    }
+    .empty .price, .empty .tvPrice, .empty .mvnoMain{color:#94a3b8}
+    .empty .model{color:#334155}
+
+    /* footer spacing */
+    .footerSpace{height:12px;}
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brandRow">
+        <div>
+          <h1 class="brandTitle">복지관2층매장</h1>
+          <p class="brandSub">휴대폰 특가 · 인터넷TV · 알뜰요금제 실시간 안내</p>
+        </div>
 
-<div class="tabs">
-  <div class="tab active" data-tab="PHONE">휴대폰</div>
-  <div class="tab" data-tab="INTV">인터넷TV</div>
-  <div class="tab" data-tab="MVNO">알뜰요금</div>
-</div>
+        <div class="contactRow">
+          <a class="chip call" href="tel:042-821-2272" title="전화">
+            <small>전화</small> <span class="value">042-821-2272</span>
+          </a>
+          <a class="chip sms" href="sms:010-5839-1512" title="문자">
+            <small>문자</small> <span class="value">010-5839-1512</span>
+          </a>
+          <a class="chip kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" title="카톡 오픈채팅">
+            <small>카톡</small> <span class="value">오픈채팅 바로가기</span>
+          </a>
+        </div>
+      </div>
 
-<div class="grid" id="grid"></div>
+      <div class="tabs" id="tabs"></div>
+    </div>
 
-<div class="footer">
-  <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
-  <div class="footer-store">복지관2층매장</div>
-  <div class="footer-actions">
-    <a class="call" href="tel:042-821-2272">전화</a>
-    <a class="sms" href="sms:010-5839-1512">문자</a>
-    <a class="kakao" href="https://open.kakao.com/o/s729bI5h">카톡</a>
+    <div class="sectionHead">
+      <h2 class="sectionTitle" id="sectionTitle">로딩중…</h2>
+      <p class="sectionHint" id="sectionHint">data.csv 수정 → 업로드하면 자동 반영</p>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="footerSpace"></div>
   </div>
-</div>
 
 <script>
-const grid=document.getElementById('grid')
-const tabs=document.querySelectorAll('.tab')
-let rows=[]
+/*
+  =========================
+  CSV 규격 (권장)
+  =========================
+  헤더:
+  type,title,display_price,sub_price,note
 
-fetch('data.csv?v='+Date.now()).then(r=>r.text()).then(t=>{
-  const l=t.trim().split('\n')
-  const h=l.shift().split(',')
-  rows=l.map(v=>{
-    const c=v.split(',')
-    let o={}
-    h.forEach((k,i)=>o[k]=c[i]||'')
-    return o
-  })
-  render('PHONE')
-})
+  type 값(6개 탭 고정):
+  PHONE_SK
+  PHONE_KT
+  PHONE_LG
+  INTERNET_TV
+  MVNO
+  ETC
 
-tabs.forEach(t=>t.onclick=()=>{
-  tabs.forEach(x=>x.classList.remove('active'))
-  t.classList.add('active')
-  render(t.dataset.tab)
-})
-
-function render(type){
-  grid.innerHTML=''
-  rows.filter(r=>r.type===type).forEach(r=>{
-    if(type==='PHONE'){
-      const m=r.display_price.match(/이동\s*([-\d]+).*기변\s*([-\d]+)/)
-      if(!m)return
-      grid.innerHTML+=phoneCard(r.carrier,r.title,m[1],'번호이동')
-      grid.innerHTML+=phoneCard(r.carrier,r.title,m[2],'기기변경')
-    }
-    if(type==='INTV'){
-      grid.innerHTML+=`
-      <div class="card">
-        <div class="model">[${r.carrier}] ${r.title}</div>
-        <div class="price-tv">${r.note}</div>
-        <div class="sub">${r.display_price}</div>
-        <div class="sub">설치비 별도</div>
-      </div>`
-    }
-    if(type==='MVNO'){
-      const p=r.display_price.replace(/[^0-9]/g,'')
-      grid.innerHTML+=`
-      <div class="card">
-        <div class="model">[${r.carrier}] ${r.title}</div>
-        <div class="price-mvno">${p}</div>
-        <div class="sub">가입비 / 유심비 없음</div>
-      </div>`
-    }
-  })
-}
-
-function phoneCard(carrier,title,price,label){
-  const cond={
-    SK:'SK 109요금 6개월 · 부가별도문의',
-    KT:'KT 110요금 6개월 · 부가별도문의',
-    LG:'LG 115요금 6개월 · 부가별도문의'
-  }[carrier]
-  return`
-  <div class="card">
-    <div class="model">[${carrier}] ${title}</div>
-    <div class="price-phone">${price}</div>
-    <div class="sub">${label}</div>
-    <div class="sub">${cond}</div>
-  </div>`
-}
-</script>
-</body>
-</html>
+  예)
+  PHONE_SK,S25 울트라 256,이동 0원 / 기변 19만원,요금조건 문의,재고 문의
+  INTERNET_TV,K_
