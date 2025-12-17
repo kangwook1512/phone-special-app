@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>복지관2층매장</title>
+
+<!-- 🔥 서비스워커 완전 제거 (캐시 문제 종결) -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
+}
+</script>
 
 <style>
 :root{
   --bg:#f5f6f8;
-  --card:#fff;
+  --card:#ffffff;
   --ink:#111827;
   --muted:#6b7280;
   --line:#e5e7eb;
@@ -16,7 +25,11 @@
   --tab:#2563eb;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;}
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+}
 .tabs{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -34,8 +47,13 @@ body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,
   cursor:pointer;
 }
 .tab.active{background:var(--tab);color:#fff}
+
 .main{padding:12px 12px 160px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 .card{
   background:var(--card);
   border-radius:16px;
@@ -51,6 +69,7 @@ body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,
 
 <body>
 
+<!-- ✅ 상품군 기준 탭 -->
 <div class="tabs">
   <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
   <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
@@ -69,9 +88,9 @@ const CSV_URL = 'data.csv?v=' + Date.now();
 const grid = document.getElementById('cards');
 const tabs = document.querySelectorAll('.tab');
 
-/* CSV 파서 */
+/* ✅ 안전한 CSV 파서 (콤마/한글/괄호 OK) */
 function parseCSV(text){
-  const rows=[], cur=[], out=[];
+  const rows=[], cur=[];
   let cell='', inQ=false;
   for(let i=0;i<text.length;i++){
     const c=text[i], n=text[i+1];
@@ -90,13 +109,14 @@ function parseCSV(text){
   });
 }
 
-function phoneSplit(r){
-  const res=[];
+/* 휴대폰 이동/기변 분리 */
+function phoneCards(r){
+  const out=[];
   const m=r.display_price.match(/이동\s*([-\d]+)/);
   const g=r.display_price.match(/기변\s*([-\d]+)/);
-  if(m) res.push(card(r.title,'이동',m[1]));
-  if(g) res.push(card(r.title,'기변',g[1]));
-  return res;
+  if(m) out.push(card(r.title,'이동',m[1]));
+  if(g) out.push(card(r.title,'기변',g[1]));
+  return out;
 }
 
 function card(title,badge,price,sub=''){
@@ -116,17 +136,16 @@ function render(tab){
       const rows=parseCSV(t);
       let show=[];
 
-      if(tab==='SK_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='SK');
-      if(tab==='KT_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='KT');
-      if(tab==='LG_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='LG');
-      if(tab==='SPECIAL') show = rows.filter(r=>r.type==='SPECIAL');
-      if(tab==='INTV') show = rows.filter(r=>r.type==='INTV');
-      if(tab==='MVNO') show = rows.filter(r=>r.type==='MVNO');
+      if(tab==='SK_PHONE') show=rows.filter(r=>r.type==='PHONE'&&r.carrier==='SK');
+      if(tab==='KT_PHONE') show=rows.filter(r=>r.type==='PHONE'&&r.carrier==='KT');
+      if(tab==='LG_PHONE') show=rows.filter(r=>r.type==='PHONE'&&r.carrier==='LG');
+      if(tab==='SPECIAL')  show=rows.filter(r=>r.type==='SPECIAL');
+      if(tab==='INTV')     show=rows.filter(r=>r.type==='INTV');
+      if(tab==='MVNO')     show=rows.filter(r=>r.type==='MVNO');
 
       grid.innerHTML='';
-
       show.forEach(r=>{
-        if(r.type==='PHONE') phoneSplit(r).forEach(c=>grid.innerHTML+=c);
+        if(r.type==='PHONE') phoneCards(r).forEach(c=>grid.innerHTML+=c);
         else grid.innerHTML+=card(r.title,'',r.display_price,r.note);
       });
 
