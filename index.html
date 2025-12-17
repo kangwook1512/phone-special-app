@@ -1,211 +1,124 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>복지관2층매장</title>
 
 <style>
-:root{
-  --bg:#f5f6f8;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --price:#ef4444;
-  --tab:#2563eb;
-  --call:#22c55e;
-  --sms:#38bdf8;
-  --kakao:#fee500;
-}
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-}
+body{margin:0;background:#f2f3f5;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif}
+.tabs{display:flex;gap:8px;padding:12px}
+.tab{flex:1;text-align:center;padding:14px;border-radius:14px;font-weight:900;background:#eee;cursor:pointer}
+.tab.active{background:#2563eb;color:#fff}
 
-/* 상단 탭 (3개 바 원복) */
-.tabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  padding:12px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-}
-.tab{
-  padding:14px 0;
-  text-align:center;
-  font-weight:900;
-  border-radius:12px;
-  background:#f3f4f6;
-  cursor:pointer;
-}
-.tab.active{background:var(--tab);color:#fff;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;padding-bottom:140px}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
 
-/* 카드 */
-.main{padding:12px;padding-bottom:190px;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:18px 16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.04);
-}
-.model{font-size:18px;font-weight:900;margin-bottom:6px;}
-.price{font-size:36px;font-weight:900;color:var(--price);margin-bottom:8px;}
-.cond{font-size:14px;font-weight:800;margin-bottom:4px;}
-.sub{font-size:13px;color:var(--muted);font-weight:700;}
+.model{font-size:15px;font-weight:900;margin-bottom:6px}
+.price-phone{font-size:38px;font-weight:900;color:#ef4444}
+.price-tv{font-size:32px;font-weight:900;color:#ef4444}
+.price-mvno{font-size:42px;font-weight:900;color:#ef4444}
 
-/* 전용 강조 */
-.tv-bonus{font-size:42px;font-weight:900;}
-.mvno-price{font-size:44px;font-weight:900;}
+.sub{font-size:13px;color:#555;margin-top:4px;font-weight:700}
 
-/* 하단 */
-.footer{
-  position:fixed;left:0;right:0;bottom:0;
-  background:#fff;border-top:1px solid var(--line);
-}
-.footer-msg{text-align:center;padding:10px;font-size:14px;font-weight:800;}
-.footer-store{text-align:center;font-size:18px;font-weight:900;padding-bottom:6px;}
-.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr;}
-.footer-actions a{
-  text-align:center;padding:16px 0;
-  font-weight:900;text-decoration:none;color:#111;
-}
-.call{background:var(--call);color:#fff;}
-.sms{background:var(--sms);color:#fff;}
-.kakao{background:var(--kakao);}
+.footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ddd}
+.footer-msg{text-align:center;font-weight:800;padding:6px}
+.footer-store{text-align:center;font-size:17px;font-weight:900}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr}
+.footer-actions a{padding:16px 0;text-align:center;font-weight:900;color:#000;text-decoration:none}
+.call{background:#22c55e;color:#fff}
+.sms{background:#38bdf8;color:#fff}
+.kakao{background:#fee500}
 </style>
 </head>
 
 <body>
 
-<!-- 상단 탭 -->
 <div class="tabs">
   <div class="tab active" data-tab="PHONE">휴대폰</div>
   <div class="tab" data-tab="INTV">인터넷TV</div>
   <div class="tab" data-tab="MVNO">알뜰요금</div>
 </div>
 
-<!-- 카드 영역 -->
-<div class="main">
-  <div class="grid" id="cards"></div>
-</div>
+<div class="grid" id="grid"></div>
 
-<!-- 하단 -->
 <div class="footer">
   <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
   <div class="footer-store">복지관2층매장</div>
   <div class="footer-actions">
     <a class="call" href="tel:042-821-2272">전화</a>
     <a class="sms" href="sms:010-5839-1512">문자</a>
-    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
+    <a class="kakao" href="https://open.kakao.com/o/s729bI5h">카톡</a>
   </div>
 </div>
 
 <script>
-const CSV_URL = 'data.csv?v=' + Date.now();
-const grid = document.getElementById('cards');
-const tabs = document.querySelectorAll('.tab');
+const grid=document.getElementById('grid')
+const tabs=document.querySelectorAll('.tab')
+let rows=[]
 
-const PHONE_PLAN = {
-  SK:'SK 109요금 6개월',
-  KT:'KT 110요금 6개월',
-  LG:'LG 115요금 6개월'
-};
-const PHONE_EXTRA = '부가별도문의';
+fetch('data.csv?v='+Date.now()).then(r=>r.text()).then(t=>{
+  const l=t.trim().split('\n')
+  const h=l.shift().split(',')
+  rows=l.map(v=>{
+    const c=v.split(',')
+    let o={}
+    h.forEach((k,i)=>o[k]=c[i]||'')
+    return o
+  })
+  render('PHONE')
+})
 
-/* CSV 파서 */
-function parseCSV(text){
-  const lines = text.replace(/\r/g,'').trim().split('\n').filter(l=>l && !l.startsWith('#'));
-  const headers = lines.shift().split(',');
-  return lines.map(l=>{
-    const c = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v=>v.replace(/^"|"$/g,''));
-    const o={};
-    headers.forEach((h,i)=>o[h]=c[i]||'');
-    return o;
-  });
+tabs.forEach(t=>t.onclick=()=>{
+  tabs.forEach(x=>x.classList.remove('active'))
+  t.classList.add('active')
+  render(t.dataset.tab)
+})
+
+function render(type){
+  grid.innerHTML=''
+  rows.filter(r=>r.type===type).forEach(r=>{
+    if(type==='PHONE'){
+      const m=r.display_price.match(/이동\s*([-\d]+).*기변\s*([-\d]+)/)
+      if(!m)return
+      grid.innerHTML+=phoneCard(r.carrier,r.title,m[1],'번호이동')
+      grid.innerHTML+=phoneCard(r.carrier,r.title,m[2],'기기변경')
+    }
+    if(type==='INTV'){
+      grid.innerHTML+=`
+      <div class="card">
+        <div class="model">[${r.carrier}] ${r.title}</div>
+        <div class="price-tv">${r.note}</div>
+        <div class="sub">${r.display_price}</div>
+        <div class="sub">설치비 별도</div>
+      </div>`
+    }
+    if(type==='MVNO'){
+      const p=r.display_price.replace(/[^0-9]/g,'')
+      grid.innerHTML+=`
+      <div class="card">
+        <div class="model">[${r.carrier}] ${r.title}</div>
+        <div class="price-mvno">${p}</div>
+        <div class="sub">가입비 / 유심비 없음</div>
+      </div>`
+    }
+  })
 }
 
-function fmt(n){
-  const num = Number(n);
-  return isNaN(num) ? n : num.toLocaleString();
+function phoneCard(carrier,title,price,label){
+  const cond={
+    SK:'SK 109요금 6개월 · 부가별도문의',
+    KT:'KT 110요금 6개월 · 부가별도문의',
+    LG:'LG 115요금 6개월 · 부가별도문의'
+  }[carrier]
+  return`
+  <div class="card">
+    <div class="model">[${carrier}] ${title}</div>
+    <div class="price-phone">${price}</div>
+    <div class="sub">${label}</div>
+    <div class="sub">${cond}</div>
+  </div>`
 }
-
-function render(tabType){
-  fetch(CSV_URL,{cache:'no-store'})
-    .then(r=>r.text())
-    .then(t=>{
-      const rows = parseCSV(t).filter(r=>r.type===tabType);
-      grid.innerHTML='';
-
-      rows.forEach(r=>{
-        /* 휴대폰 (원래 구조) */
-        if(tabType==='PHONE'){
-          const m = r.display_price.match(/이동\s*([-\d]+)\s*\/\s*기변\s*([-\d]+)/);
-          if(m){
-            grid.innerHTML += `
-              <div class="card">
-                <div class="model">[${r.carrier}] ${r.title}</div>
-                <div class="price">${fmt(m[1])}</div>
-                <div class="cond">번호이동</div>
-                <div class="sub">${PHONE_PLAN[r.carrier]} · ${PHONE_EXTRA}</div>
-              </div>
-            `;
-            grid.innerHTML += `
-              <div class="card">
-                <div class="model">[${r.carrier}] ${r.title}</div>
-                <div class="price">${fmt(m[2])}</div>
-                <div class="cond">기기변경</div>
-                <div class="sub">${PHONE_PLAN[r.carrier]} · ${PHONE_EXTRA}</div>
-              </div>
-            `;
-          }
-        }
-
-        /* 인터넷TV */
-        if(tabType==='INTV'){
-          grid.innerHTML += `
-            <div class="card">
-              <div class="model">[${r.carrier}] ${r.title}</div>
-              <div class="price tv-bonus">${r.display_price}</div>
-              <div class="sub">${r.sub_price}</div>
-              <div class="sub">설치비 별도</div>
-            </div>
-          `;
-        }
-
-        /* 알뜰요금 */
-        if(tabType==='MVNO'){
-          grid.innerHTML += `
-            <div class="card">
-              <div class="model">[${r.carrier}] ${r.title}</div>
-              <div class="price mvno-price">${fmt(r.display_price)}</div>
-              <div class="sub">가입비 / 유심비 없음</div>
-            </div>
-          `;
-        }
-      });
-
-      if(!grid.innerHTML){
-        grid.innerHTML='<div class="card" style="grid-column:1/-1;">내용 없음</div>';
-      }
-    });
-}
-
-tabs.forEach(t=>{
-  t.onclick=()=>{
-    tabs.forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    render(t.dataset.tab);
-  };
-});
-
-render('PHONE');
 </script>
-
 </body>
 </html>
