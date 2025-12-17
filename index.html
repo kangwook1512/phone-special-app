@@ -16,11 +16,7 @@
   --tab:#2563eb;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-}
+body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;}
 .tabs{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -38,13 +34,8 @@ body{
   cursor:pointer;
 }
 .tab.active{background:var(--tab);color:#fff}
-
 .main{padding:12px 12px 160px}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .card{
   background:var(--card);
   border-radius:16px;
@@ -61,9 +52,9 @@ body{
 <body>
 
 <div class="tabs">
-  <div class="tab active" data-tab="SK">SK휴대폰</div>
-  <div class="tab" data-tab="KT">KT휴대폰</div>
-  <div class="tab" data-tab="LG">LG휴대폰</div>
+  <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
+  <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
+  <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
   <div class="tab" data-tab="SPECIAL">특가폰</div>
   <div class="tab" data-tab="INTV">인터넷TV</div>
   <div class="tab" data-tab="MVNO">알뜰요금</div>
@@ -78,38 +69,34 @@ const CSV_URL = 'data.csv?v=' + Date.now();
 const grid = document.getElementById('cards');
 const tabs = document.querySelectorAll('.tab');
 
-/* ✅ 제대로 된 CSV 파서 */
+/* CSV 파서 */
 function parseCSV(text){
-  const rows=[];
-  let cur=[], cell='', inQ=false;
-  const pushCell=()=>{cur.push(cell);cell=''};
-  const pushRow=()=>{rows.push(cur);cur=[]};
-
+  const rows=[], cur=[], out=[];
+  let cell='', inQ=false;
   for(let i=0;i<text.length;i++){
     const c=text[i], n=text[i+1];
-    if(c=='"' && n=='"'){cell+='"';i++}
+    if(c=='"'&&n=='"'){cell+='"';i++}
     else if(c=='"'){inQ=!inQ}
-    else if(c==',' && !inQ){pushCell()}
-    else if(c=='\n' && !inQ){pushCell();pushRow()}
+    else if(c==','&&!inQ){cur.push(cell);cell=''}
+    else if(c=='\n'&&!inQ){cur.push(cell);rows.push([...cur]);cur.length=0;cell=''}
     else cell+=c;
   }
-  pushCell(); pushRow();
-  const headers=rows.shift();
+  cur.push(cell); rows.push([...cur]);
+  const header=rows.shift();
   return rows.map(r=>{
     const o={};
-    headers.forEach((h,i)=>o[h]=r[i]||'');
+    header.forEach((h,i)=>o[h]=r[i]||'');
     return o;
   });
 }
 
-/* ✅ 휴대폰 이동/기변 분리 */
-function phoneCards(r){
+function phoneSplit(r){
+  const res=[];
   const m=r.display_price.match(/이동\s*([-\d]+)/);
   const g=r.display_price.match(/기변\s*([-\d]+)/);
-  const out=[];
-  if(m) out.push(card(r.title,"이동",m[1]));
-  if(g) out.push(card(r.title,"기변",g[1]));
-  return out;
+  if(m) res.push(card(r.title,'이동',m[1]));
+  if(g) res.push(card(r.title,'기변',g[1]));
+  return res;
 }
 
 function card(title,badge,price,sub=''){
@@ -127,19 +114,20 @@ function render(tab){
     .then(r=>r.text())
     .then(t=>{
       const rows=parseCSV(t);
+      let show=[];
+
+      if(tab==='SK_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='SK');
+      if(tab==='KT_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='KT');
+      if(tab==='LG_PHONE') show = rows.filter(r=>r.type==='PHONE' && r.carrier==='LG');
+      if(tab==='SPECIAL') show = rows.filter(r=>r.type==='SPECIAL');
+      if(tab==='INTV') show = rows.filter(r=>r.type==='INTV');
+      if(tab==='MVNO') show = rows.filter(r=>r.type==='MVNO');
+
       grid.innerHTML='';
 
-      rows.forEach(r=>{
-        if(tab==='SK'||tab==='KT'||tab==='LG'){
-          if(r.type==='PHONE' && r.carrier===tab)
-            grid.innerHTML+=phoneCards(r).join('');
-        }
-        if(tab==='SPECIAL' && r.type==='SPECIAL')
-          grid.innerHTML+=card(r.title,'특가',r.display_price);
-        if(tab==='INTV' && r.type==='INTV')
-          grid.innerHTML+=card(r.title,'인터넷TV',r.display_price,r.note);
-        if(tab==='MVNO' && r.type==='MVNO')
-          grid.innerHTML+=card(r.title,'알뜰요금',r.display_price,r.note);
+      show.forEach(r=>{
+        if(r.type==='PHONE') phoneSplit(r).forEach(c=>grid.innerHTML+=c);
+        else grid.innerHTML+=card(r.title,'',r.display_price,r.note);
       });
 
       if(!grid.innerHTML)
@@ -155,7 +143,7 @@ tabs.forEach(t=>{
   };
 });
 
-render('SK');
+render('SK_PHONE');
 </script>
 
 </body>
