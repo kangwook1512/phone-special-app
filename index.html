@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>복지관2층매장</title>
 
-<!-- ✅ 서비스워커 완전 무력화 -->
+<!-- 서비스워커 완전 무력화 -->
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs=>{
@@ -28,7 +28,6 @@ if ('serviceWorker' in navigator) {
   --call:#22c55e;
   --sms:#38bdf8;
   --kakao:#fee500;
-  --kakaoInk:#3b2f00;
 }
 
 *{box-sizing:border-box;}
@@ -39,18 +38,52 @@ body{
   color:var(--ink);
 }
 
-/* ===== 탭 (위 3 / 아래 1) ===== */
+/* ===============================
+   🔥 네온 광고배너 (최상단)
+================================ */
+.neon-banner{
+  margin:12px;
+  padding:16px 14px;
+  background:linear-gradient(135deg,#fff200,#ffe066);
+  border-radius:16px;
+  border:2px solid #fff6a3;
+  box-shadow:
+    0 0 8px rgba(255,242,0,.9),
+    0 0 18px rgba(255,242,0,.7),
+    0 0 32px rgba(255,242,0,.5);
+  pointer-events:none; /* 클릭 완전 차단 */
+}
+.neon-title{
+  font-size:18px;
+  font-weight:1000;
+  text-align:center;
+  letter-spacing:-0.02em;
+}
+.neon-points{
+  margin-top:10px;
+  display:grid;
+  gap:6px;
+}
+.neon-point{
+  font-size:15px;
+  font-weight:900;
+  text-align:center;
+}
+.neon-point b{
+  font-weight:1000;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+/* ===============================
+   탭 (SK / KT / LG)
+================================ */
 .tabs{
   display:flex;
-  flex-direction:column;
   gap:8px;
   padding:12px;
   background:#fff;
   border-bottom:1px solid var(--line);
-}
-.tabs-row{
-  display:flex;
-  gap:8px;
 }
 .tab{
   flex:1;
@@ -65,12 +98,6 @@ body{
 .tab.active{
   background:var(--tab);
   color:#fff;
-}
-.tab.kakao{
-  background:var(--kakao);
-  color:var(--kakaoInk);
-  border:1px solid #f6e05e;
-  text-decoration:none;
 }
 
 /* 카드 */
@@ -109,20 +136,6 @@ body{
   margin-top: 6px;
 }
 
-/* 인터넷TV */
-.card.intv .sub{
-  font-size: clamp(16px, 4.6vw, 24px);
-  font-weight: 900;
-  color: var(--ink);
-  margin-top: 10px;
-}
-
-/* 알뜰 */
-.card.mvno .price{
-  font-size: clamp(30px, 7.2vw, 44px);
-  font-weight: 900;
-}
-
 /* 하단 */
 .footer{
   position:fixed;left:0;right:0;bottom:0;
@@ -143,21 +156,20 @@ body{
 
 <body>
 
-<!-- ✅ 탭 -->
+<!-- 🔥 네온 광고판 -->
+<div class="neon-banner">
+  <div class="neon-title">인터넷TV·알뜰요금은 카톡문의</div>
+  <div class="neon-points">
+    <div class="neon-point">💰 인터넷TV : <b>현금 최대 지원</b></div>
+    <div class="neon-point">🔥 알뜰요금 : <b>최저요금 3,300원~</b></div>
+  </div>
+</div>
+
+<!-- SK / KT / LG -->
 <div class="tabs">
-  <div class="tabs-row">
-    <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
-    <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
-    <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
-  </div>
-  <div class="tabs-row">
-    <a class="tab kakao"
-       href="https://open.kakao.com/o/s729bI5h"
-       target="_blank"
-       rel="noopener">
-      인터넷TV 알뜰요금 혜택은 카톡문의
-    </a>
-  </div>
+  <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
+  <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
+  <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
 </div>
 
 <!-- 카드 -->
@@ -177,10 +189,9 @@ body{
 </div>
 
 <script>
-/* ======== 여기서부터 JS는 네 원본 그대로 ======== */
 const CSV_URL = 'data.csv?v=' + Date.now();
 const grid = document.getElementById('cards');
-const tabs = document.querySelectorAll('.tab[data-tab]');
+const tabs = document.querySelectorAll('.tab');
 
 const PHONE_PLAN = {
   SK: 'SK 109요금 6개월',
@@ -193,7 +204,6 @@ function parseCSV(text){
   const t = (text || '').replace(/\r/g,'');
   const rows=[], cur=[];
   let cell='', inQ=false;
-
   for(let i=0;i<t.length;i++){
     const c=t[i], n=t[i+1];
     if(c === '"' && n === '"'){ cell+='"'; i++; }
@@ -205,16 +215,11 @@ function parseCSV(text){
     } else cell += c;
   }
   cur.push(cell); rows.push([...cur]);
-
   if(!rows.length) return [];
   const header = rows.shift().map(h => (h||'').trim());
-  return rows
-    .filter(r => r.some(v => (v||'').trim() !== ''))
-    .map(r=>{
-      const o={};
-      header.forEach((h,i)=> o[h] = (r[i] ?? '').trim());
-      return o;
-    });
+  return rows.filter(r => r.some(v => (v||'').trim() !== '')).map(r=>{
+    const o={}; header.forEach((h,i)=> o[h]=(r[i]??'').trim()); return o;
+  });
 }
 
 function phonePrice(nStr){
@@ -228,17 +233,14 @@ function phoneCards(r){
   const m = (r.display_price||'').match(/이동\s*([-\d.,]+)/);
   const g = (r.display_price||'').match(/기변\s*([-\d.,]+)/);
   const plan = PHONE_PLAN[r.carrier] || '';
-  const subLine = `${plan}`;
-  const extraLine = PHONE_EXTRA;
-
   if(m){
     out.push(`
       <div class="card phone">
         <div class="badge">이동</div>
         <div class="model">${escapeHTML(r.title)}</div>
-        <div class="price">${escapeHTML(phonePrice(m[1]))}</div>
-        <div class="sub">${escapeHTML(subLine)}</div>
-        <div class="sub">${escapeHTML(extraLine)}</div>
+        <div class="price">${phonePrice(m[1])}</div>
+        <div class="sub">${plan}</div>
+        <div class="sub">${PHONE_EXTRA}</div>
       </div>
     `);
   }
@@ -247,23 +249,13 @@ function phoneCards(r){
       <div class="card phone">
         <div class="badge">기변</div>
         <div class="model">${escapeHTML(r.title)}</div>
-        <div class="price">${escapeHTML(phonePrice(g[1]))}</div>
-        <div class="sub">${escapeHTML(subLine)}</div>
-        <div class="sub">${escapeHTML(extraLine)}</div>
+        <div class="price">${phonePrice(g[1])}</div>
+        <div class="sub">${plan}</div>
+        <div class="sub">${PHONE_EXTRA}</div>
       </div>
     `);
   }
   return out;
-}
-
-function cardHTML(title, price, sub, cls){
-  return `
-    <div class="card ${cls||''}">
-      <div class="model">${escapeHTML(title)}</div>
-      <div class="price">${escapeHTML(price)}</div>
-      ${sub ? `<div class="sub">${escapeHTML(sub)}</div>` : ``}
-    </div>
-  `;
 }
 
 function filterRows(rows, tab){
@@ -279,13 +271,10 @@ function render(tab){
     .then(t=>{
       const rows = parseCSV(t);
       const show = filterRows(rows, tab);
-
       grid.innerHTML='';
-
       show.forEach(r=>{
-        phoneCards(r).forEach(html => grid.innerHTML += html);
+        phoneCards(r).forEach(h=>grid.innerHTML+=h);
       });
-
       if(!grid.innerHTML.trim()){
         grid.innerHTML = `
           <div class="card" style="grid-column:1 / -1;">
