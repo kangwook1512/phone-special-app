@@ -1,171 +1,33 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>복지관2층매장</title>
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
 
-  <style>
-    :root{
-      --bg:#f5f6f8;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --accent:#2563eb;
-      --price:#ef4444;
-      --kakao:#fee500;
-      --kakaoInk:#3b2f00;
-    }
+.tabs-row {
+  display: flex;
+  gap: 8px;
+}
 
-    *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-      background:var(--bg);
-      color:var(--ink);
-    }
+.tabBtn {
+  flex: 1;
+  padding: 11px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
 
-    .wrap{max-width:1100px;margin:0 auto;padding:14px 12px 22px;}
+.tabBtn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
 
-    .top{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      box-shadow:0 6px 18px rgba(0,0,0,.06);
-    }
-
-    .title{margin:0;font-size:30px;font-weight:900;}
-    .sub{margin:6px 0 0;font-size:13px;color:var(--muted);font-weight:700;}
-
-    /* ===== 바(탭) ===== */
-    .tabs{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding-bottom:6px;
-    }
-    .tabBtn{
-      flex:0 0 auto;
-      padding:11px 14px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-size:14px;
-      font-weight:900;
-      cursor:pointer;
-      white-space:nowrap;
-      box-shadow:0 4px 12px rgba(0,0,0,.05);
-    }
-    .tabBtn.active{
-      border-color:rgba(37,99,235,.35);
-      background:rgba(37,99,235,.10);
-      color:var(--accent);
-    }
-
-    .tabBtn.kakao{
-      background:var(--kakao);
-      border-color:#f6e05e;
-      color:var(--kakaoInk);
-    }
-
-    /* ===== 카드 ===== */
-    .grid{
-      margin-top:14px;
-      display:grid;
-      gap:10px;
-      grid-template-columns:repeat(2,1fr);
-    }
-    @media(min-width:760px){
-      .grid{grid-template-columns:repeat(3,1fr);}
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px;
-      box-shadow:0 10px 22px rgba(0,0,0,.06);
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .model{font-size:22px;font-weight:900;}
-    .price{font-size:28px;font-weight:900;color:var(--price);}
-    .subPrice{font-size:14px;color:var(--muted);font-weight:700;}
-  </style>
-</head>
-
-<body>
-<div class="wrap">
-
-  <div class="top">
-    <h1 class="title">복지관2층매장</h1>
-    <p class="sub">휴대폰 특가 안내</p>
-
-    <!-- ✅ 바 4개 -->
-    <div class="tabs">
-      <button class="tabBtn active" data-key="SK">SK 휴대폰</button>
-      <button class="tabBtn" data-key="KT">KT 휴대폰</button>
-      <button class="tabBtn" data-key="LG">LG 휴대폰</button>
-
-      <!-- 카톡 문의 바 (카드 연결 없음) -->
-      <a class="tabBtn kakao"
-         href="https://open.kakao.com/o/s729bI5h"
-         target="_blank"
-         rel="noopener">
-        💬 인터넷TV·알뜰요금 카톡문의
-      </a>
-    </div>
-  </div>
-
-  <!-- 카드 영역 -->
-  <div class="grid" id="grid"></div>
-
-</div>
-
-<script>
-  const data = {
-    SK:[
-      {m:'SK 휴대폰 모델', p:'가격 문의', s:'109요금 6개월'},
-    ],
-    KT:[
-      {m:'KT 휴대폰 모델', p:'가격 문의', s:'110요금 6개월'},
-    ],
-    LG:[
-      {m:'LG 휴대폰 모델', p:'가격 문의', s:'115요금 6개월'},
-    ]
-  };
-
-  const grid = document.getElementById('grid');
-  const tabs = document.querySelectorAll('.tabBtn[data-key]');
-
-  function render(key){
-    grid.innerHTML = '';
-    data[key].forEach(v=>{
-      grid.innerHTML += `
-        <div class="card">
-          <div class="model">${v.m}</div>
-          <div class="price">${v.p}</div>
-          <div class="subPrice">${v.s}</div>
-        </div>
-      `;
-    });
-  }
-
-  tabs.forEach(btn=>{
-    btn.onclick=()=>{
-      tabs.forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      render(btn.dataset.key);
-    };
-  });
-
-  render('SK');
-</script>
-
-</body>
-</html>
+.tabBtn.kakao {
+  background: #fee500;
+  color: #3b2f00;
+  border-color: #f6e05e;
+}
