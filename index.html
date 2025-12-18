@@ -182,7 +182,7 @@ async function render(tab){
         badgeClass:tab.toLowerCase(),
         model:x["기종"],
         move:hasMove?mv:"",
-        change:(!hasMove && hasChange)?ch:"",
+        change:hasChange?ch:"",
         infoText:fixedInfoLine(tab)
       });
     });
