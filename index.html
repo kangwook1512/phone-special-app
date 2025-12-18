@@ -1,169 +1,162 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>복지관2층매장</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>복지관2층매장</title>
 
-<style>
-  :root{
-    --bg:#f5f6f8;
-    --ink:#0f172a;
-    --muted:#64748b;
-    --line:#e5e7eb;
+  <style>
+    :root{
+      --bg:#f5f6f8;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
 
-    --sk:#2563eb;
-    --kt:#111827;
-    --lg:#16a34a;
-    --hot:#f97316;
-    --low:#7c3aed;
+      --sk:#2563eb;
+      --kt:#111827;
+      --lg:#16a34a;
+      --hot:#f97316;
+      --low:#7c3aed;
 
-    --call:#22c55e;
-    --sms:#38bdf8;
-    --kakao:#fee500;
-  }
+      --call:#22c55e;
+      --sms:#38bdf8;
+      --kakao:#fee500;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-  }
+    .hero{
+      background:#ffe866;
+      border:2px solid #ffeb3b;
+      border-radius:14px;
+      padding:14px;
+      text-align:center;
+      font-weight:900;
+      box-shadow:0 6px 16px rgba(0,0,0,.08);
+    }
+    .hero .sub{margin-top:6px;font-weight:800;font-size:14px;}
+    .hero .sub b{text-decoration:underline;}
 
-  .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
+    .tabs.nice{display:flex;gap:8px;margin-top:14px;}
+    .tabs.nice .tabBtn{
+      flex:1;
+      padding:12px 0;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:1000;
+      font-size:14px;
+      cursor:pointer;
+      transition:all .15s ease;
+    }
+    .tabs.nice .tabBtn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
+    }
+    .tabs.nice .tabBtn.active{color:#fff;border-color:transparent;}
+    .tabs.nice .tabBtn.sk.active{background:var(--sk);}
+    .tabs.nice .tabBtn.kt.active{background:var(--kt);}
+    .tabs.nice .tabBtn.lg.active{background:var(--lg);}
+    .tabs.nice .tabBtn.hot.active{background:var(--hot);}
+    .tabs.nice .tabBtn.low.active{background:var(--low);}
 
-  .hero{
-    background:#ffe866;
-    border:2px solid #ffeb3b;
-    border-radius:14px;
-    padding:14px;
-    text-align:center;
-    font-weight:900;
-    box-shadow:0 6px 16px rgba(0,0,0,.08);
-  }
-  .hero .sub{margin-top:6px;font-weight:800;font-size:14px;}
-  .hero .sub b{text-decoration:underline;}
+    .panel{
+      margin-top:14px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+    .emptyTitle{font-weight:1000;font-size:16px;margin-bottom:6px;}
+    .emptyDesc{color:var(--muted);font-weight:800;font-size:13px;}
 
-  .tabs.nice{display:flex;gap:8px;margin-top:14px;}
-  .tabs.nice .tabBtn{
-    flex:1;
-    padding:12px 0;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:#fff;
-    font-weight:1000;
-    font-size:14px;
-    cursor:pointer;
-    transition:all .15s ease;
-  }
-  .tabs.nice .tabBtn.active{color:#fff;border-color:transparent;}
-  .tabs.nice .tabBtn.sk.active{background:var(--sk);}
-  .tabs.nice .tabBtn.kt.active{background:var(--kt);}
-  .tabs.nice .tabBtn.lg.active{background:var(--lg);}
-  .tabs.nice .tabBtn.hot.active{background:var(--hot);}
-  .tabs.nice .tabBtn.low.active{background:var(--low);}
+    .list{display:flex;flex-direction:column;gap:10px;}
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+      background:#fff;
+    }
+    .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+    .model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
+    .badge{
+      font-weight:1000;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      color:#fff;
+      white-space:nowrap;
+    }
+    .badge.sk{background:var(--sk);}
+    .badge.kt{background:var(--kt);}
+    .badge.lg{background:var(--lg);}
+    .badge.hot{background:var(--hot);}
+    .badge.low{background:var(--low);}
 
-  .panel{
-    margin-top:14px;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:14px;
-  }
+    .infoLine{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-weight:1000;
+      font-size:12px;
+    }
+    .priceRow{display:flex;gap:10px;}
+    .pill{
+      flex:1;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 10px;
+      text-align:center;
+      background:#fafafa;
+    }
+    .pill .k{color:var(--muted);font-weight:1000;font-size:12px;margin-bottom:4px;}
+    .pill .v{font-weight:1000;font-size:20px;letter-spacing:-.4px;}
+    .neg{color:#dc2626;}
+    .zero{color:#0ea5e9;}
+    .pos{color:#0f172a;}
 
-  /* ✅ 상태/에러를 항상 보여주기 위한 영역 */
-  .status{
-    display:block;
-    background:#f8fafc;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:10px 12px;
-    font-weight:900;
-    font-size:13px;
-    color:#0f172a;
-    margin-bottom:12px;
-  }
-  .status small{display:block;color:var(--muted);font-weight:800;margin-top:4px;}
-
-  .list{display:flex;flex-direction:column;gap:10px;}
-  .card{
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
-  }
-  .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
-  .model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
-
-  .badge{
-    font-weight:1000;
-    font-size:12px;
-    padding:6px 10px;
-    border-radius:999px;
-    color:#fff;
-    white-space:nowrap;
-  }
-  .badge.sk{background:var(--sk);}
-  .badge.kt{background:var(--kt);}
-  .badge.lg{background:var(--lg);}
-  .badge.hot{background:var(--hot);}
-  .badge.low{background:var(--low);}
-
-  .infoLine{
-    margin:0 0 10px;
-    color:var(--muted);
-    font-weight:1000;
-    font-size:12px;
-  }
-
-  .priceRow{display:flex;gap:10px;}
-  .pill{
-    flex:1;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:10px 10px;
-    text-align:center;
-    background:#fafafa;
-  }
-  .pill .k{color:var(--muted);font-weight:1000;font-size:12px;margin-bottom:4px;}
-  .pill .v{font-weight:1000;font-size:20px;letter-spacing:-.4px;}
-  .neg{color:#dc2626;}
-  .zero{color:#0ea5e9;}
-  .pos{color:#0f172a;}
-
-  .fixedNotice{
-    position:fixed; bottom:60px; left:0; right:0;
-    background:#fff;
-    border-top:1px solid var(--line);
-    text-align:center;
-    font-weight:1000;
-    padding:10px 12px;
-    z-index:998;
-    line-height:1.25;
-  }
-
-  .bottomBar{
-    position:fixed; left:0; right:0; bottom:0;
-    background:#fff;
-    border-top:1px solid var(--line);
-    display:flex; height:60px;
-    z-index:999;
-  }
-  .action{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:1000;
-    text-decoration:none;
-    color:#0b1220;
-    font-size:16px;
-  }
-  .action.call{background:var(--call);color:#fff;}
-  .action.sms{background:var(--sms);color:#05202b;}
-  .action.kakao{background:var(--kakao);color:#3b2f00;}
-</style>
+    .fixedNotice{
+      position:fixed;
+      bottom:60px;
+      left:0; right:0;
+      background:#fff;
+      border-top:1px solid var(--line);
+      text-align:center;
+      font-weight:1000;
+      padding:10px 12px;
+      z-index:998;
+      line-height:1.25;
+    }
+    .bottomBar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      background:#fff;
+      border-top:1px solid var(--line);
+      display:flex;
+      height:60px;
+      z-index:999;
+    }
+    .action{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      text-decoration:none;
+      color:#0b1220;
+      font-size:16px;
+    }
+    .action.call{background:var(--call);color:#fff;}
+    .action.sms{background:var(--sms);color:#05202b;}
+    .action.kakao{background:var(--kakao);color:#3b2f00;}
+  </style>
 </head>
 
 <body>
@@ -183,9 +176,9 @@
     </div>
 
     <div class="panel">
-      <div class="status" id="status">
-        상태: 대기
-        <small id="statusSub">JS 로딩 확인용</small>
+      <div id="empty" style="display:none;">
+        <div class="emptyTitle">표시할 항목 없음</div>
+        <div class="emptyDesc" id="emptyDesc">data.csv에 항목이 없습니다.</div>
       </div>
       <div class="list" id="list"></div>
     </div>
@@ -202,288 +195,286 @@
     <a class="action kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
   </div>
 
-<script>
-/* ===== 상태표시 ===== */
-function setStatus(title, sub){
-  const el = document.getElementById("status");
-  const subEl = document.getElementById("statusSub");
-  el.firstChild.nodeValue = `상태: ${title}`;
-  subEl.textContent = sub || "";
-}
+  <script>
+    function parseCSV(text){
+      text = text.replace(/^\uFEFF/, "");
+      const rows = [];
+      let row = [], cur = "", inQuotes = false;
 
-/* ✅ 콤마 CSV + 탭 TSV 자동 판별 파서 */
-function parseCSV(text){
-  text = text.replace(/^\uFEFF/, "");
-  const firstLine = (text.split(/\r?\n/).find(l => l.trim() !== "") || "");
-  const commaCount = (firstLine.match(/,/g) || []).length;
-  const tabCount   = (firstLine.match(/\t/g) || []).length;
+      for (let i=0; i<text.length; i++){
+        const ch = text[i];
+        const next = text[i+1];
 
-  console.log("[CSV] firstLine:", firstLine);
-  console.log("[CSV] commaCount:", commaCount, "tabCount:", tabCount);
-
-  if (tabCount > commaCount){
-    return text
-      .split(/\r?\n/)
-      .map(l => l.replace(/\r/g,""))
-      .filter(l => l.trim() !== "")
-      .map(l => l.split("\t"));
-  }
-
-  const rows = [];
-  let row = [], cur = "", inQuotes = false;
-
-  for (let i=0; i<text.length; i++){
-    const ch = text[i];
-    const next = text[i+1];
-
-    if (inQuotes){
-      if (ch === '"' && next === '"'){ cur += '"'; i++; }
-      else if (ch === '"'){ inQuotes = false; }
-      else { cur += ch; }
-    } else {
-      if (ch === '"'){ inQuotes = true; }
-      else if (ch === ','){ row.push(cur); cur = ""; }
-      else if (ch === '\n'){
-        row.push(cur);
-        if (row.some(v => String(v).trim() !== "")) rows.push(row);
-        row = []; cur = "";
-      } else if (ch === '\r'){
-        // ignore
-      } else {
-        cur += ch;
+        if (inQuotes){
+          if (ch === '"' && next === '"'){ cur += '"'; i++; }
+          else if (ch === '"'){ inQuotes = false; }
+          else { cur += ch; }
+        } else {
+          if (ch === '"'){ inQuotes = true; }
+          else if (ch === ','){ row.push(cur); cur = ""; }
+          else if (ch === '\n'){
+            row.push(cur);
+            if (row.some(v => String(v).trim() !== "")) rows.push(row);
+            row = []; cur = "";
+          } else if (ch === '\r'){
+            // ignore
+          } else {
+            cur += ch;
+          }
+        }
       }
+
+      row.push(cur);
+      if (row.some(v => String(v).trim() !== "")) rows.push(row);
+      return rows;
     }
-  }
-  row.push(cur);
-  if (row.some(v => String(v).trim() !== "")) rows.push(row);
-  return rows;
-}
 
-async function fetchCSV(path){
-  const url = `${path}?v=${Date.now()}`;
-  console.log("[FETCH]", url);
-  const res = await fetch(url, { cache: "no-store" });
-  console.log("[FETCH RES]", res.status, res.statusText);
-  if (!res.ok) throw new Error(`${path} 로드 실패 (HTTP ${res.status})`);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  if (!rows.length) return [];
-  const header = rows.shift().map(h => String(h).trim());
-  console.log("[HEADER]", header);
+    async function fetchCSV(path){
+      const url = `${path}?v=${Date.now()}`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${path} 로드 실패`);
+      const text = await res.text();
 
-  return rows.map(r => {
-    const o = {};
-    header.forEach((h, i) => o[h] = (r[i] ?? "").trim());
-    return o;
-  });
-}
+      const rows = parseCSV(text);
+      if (!rows.length) return [];
 
-function asNum(x){
-  const s = String(x ?? "")
-    .replace(/[−-–—‒﹣－]/g, "-")
-    .replace(/,/g,"")
-    .trim();
-  if (s === "") return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
-}
-function vClass(n){
-  if (n === null) return "";
-  if (n < 0) return "neg";
-  if (n === 0) return "zero";
-  return "pos";
-}
-function clearList(){ document.getElementById("list").innerHTML = ""; }
+      const header = rows.shift().map(h => String(h).trim());
+      return rows.map(r => {
+        const o = {};
+        header.forEach((h, i) => o[h] = String(r[i] ?? "").trim());
+        return o;
+      });
+    }
 
-function infoLineFromRow(carrier, row){
-  const plan = asNum(row?.[`${carrier}_요금제`]);
-  const defaultPlan = (carrier==="SK") ? 109 : (carrier==="KT") ? 110 : 115;
-  const usePlan = (plan !== null && plan > 0) ? plan : defaultPlan;
-  return `${carrier} ${usePlan}요금 6개월 / 부가필수 문의`;
-}
+    function asNum(x){
+      const s = String(x ?? "")
+        .replace(/[−-–—‒﹣－]/g, "-")
+        .replace(/,/g,"")
+        .trim();
+      if (s === "") return null;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    }
 
-function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
-  const list = document.getElementById("list");
-  const moveNum = asNum(move);
-  const chgNum  = asNum(change);
-  const discountFlag = String(item?.["요금할인"] || "").trim().toUpperCase() === "O";
+    function vClass(n){
+      if (n === null) return "";
+      if (n < 0) return "neg";
+      if (n === 0) return "zero";
+      return "pos";
+    }
 
-  const card = document.createElement("div");
-  card.className = "card";
-  card.innerHTML = `
-    <div class="titleRow">
-      <div class="model">${model}</div>
-      <div class="badge ${badgeClass}">${badgeText}</div>
-    </div>
-    <div class="infoLine">${infoText}</div>
-    ${discountFlag ? `<div class="infoLine" style="color:#2563eb;font-weight:1000;">요금할인도 가능</div>` : ``}
-    <div class="priceRow">
-      <div class="pill">
-        <div class="k">이동</div>
-        <div class="v ${vClass(moveNum)}">${(move ?? "").trim()==="" ? "-" : move}</div>
-      </div>
-      <div class="pill">
-        <div class="k">기변</div>
-        <div class="v ${vClass(chgNum)}">${(change ?? "").trim()==="" ? "-" : change}</div>
-      </div>
-    </div>
-  `;
-  list.appendChild(card);
-}
+    function setEmpty(show, msg){
+      const empty = document.getElementById("empty");
+      const desc = document.getElementById("emptyDesc");
+      empty.style.display = show ? "block" : "none";
+      desc.textContent = msg || "";
+    }
 
-function pickHotBest(x){
-  const candidates = [
-    { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]) },
-    { c:"KT", move:asNum(x["KT_이동"]), change:asNum(x["KT_기변"]) },
-    { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]) }
-  ];
+    function clearList(){
+      document.getElementById("list").innerHTML = "";
+    }
 
-  let best = null;
-  candidates.forEach(o=>{
-    const vals = [o.move, o.change].filter(v=>v!==null);
-    if (!vals.length) return;
-    const score = Math.min(...vals);
-    if (best === null || score < best.score){
-      best = {
-        c: o.c,
-        score,
-        moveStr: x[`${o.c}_이동`] ?? "",
-        changeStr: x[`${o.c}_기변`] ?? ""
+    function infoLineFromRow(carrier, row){
+      const planKey = `${carrier}_요금제`;
+      const plan = asNum(row?.[planKey]);
+
+      const defaultPlan = (carrier==="SK") ? 109 : (carrier==="KT") ? 110 : 115;
+      const usePlan = (plan !== null && plan > 0) ? plan : defaultPlan;
+
+      return `${carrier} ${usePlan}요금 6개월 / 부가필수 문의`;
+    }
+
+    function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
+      const list = document.getElementById("list");
+
+      const moveNum = asNum(move);
+      const chgNum = asNum(change);
+      const discountFlag = String(item?.["요금할인"] || "").trim().toUpperCase() === "O";
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const extra = discountFlag
+        ? `<div class="infoLine" style="color:#2563eb;font-weight:1000;">요금할인도 가능</div>`
+        : "";
+
+      card.innerHTML = `
+        <div class="titleRow">
+          <div class="model">${escapeHtml(model)}</div>
+          <div class="badge ${badgeClass}">${escapeHtml(badgeText)}</div>
+        </div>
+        <div class="infoLine">${escapeHtml(infoText)}</div>
+        ${extra}
+        <div class="priceRow">
+          <div class="pill">
+            <div class="k">이동</div>
+            <div class="v ${vClass(moveNum)}">${escapeHtml((String(move ?? "").trim()==="") ? "-" : String(move))}</div>
+          </div>
+          <div class="pill">
+            <div class="k">기변</div>
+            <div class="v ${vClass(chgNum)}">${escapeHtml((String(change ?? "").trim()==="") ? "-" : String(change))}</div>
+          </div>
+        </div>
+      `;
+      list.appendChild(card);
+    }
+
+    function pickHotBest(x){
+      const candidates = [
+        { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]) },
+        { c:"KT", move:asNum(x["KT_이동"]), change:asNum(x["KT_기변"]) },
+        { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]) }
+      ];
+
+      let best = null;
+      candidates.forEach(o=>{
+        const vals = [o.move, o.change].filter(v=>v!==null);
+        if (!vals.length) return;
+        const score = Math.min(...vals);
+        if (best === null || score < best.score){
+          best = {
+            c: o.c,
+            score,
+            moveStr: x[`${o.c}_이동`] ?? "",
+            changeStr: x[`${o.c}_기변`] ?? ""
+          };
+        }
+      });
+      return best;
+    }
+
+    function pickLowBest(x){
+      const opts = [
+        { c:"SK", plan:asNum(x["SK_요금제"]), limit:109 },
+        { c:"KT", plan:asNum(x["KT_요금제"]), limit:110 },
+        { c:"LG", plan:asNum(x["LG_요금제"]), limit:115 }
+      ].filter(o => o.plan !== null && o.plan > 0 && o.plan < o.limit);
+
+      if (!opts.length) return null;
+      opts.sort((a,b)=>a.plan-b.plan);
+      const best = opts[0];
+
+      return {
+        c: best.c,
+        plan: best.plan,
+        moveStr: x[`${best.c}_이동`] ?? "",
+        changeStr: x[`${best.c}_기변`] ?? ""
       };
     }
-  });
-  return best;
-}
 
-function pickLowBest(x){
-  const opts = [
-    { c:"SK", plan:asNum(x["SK_요금제"]), limit:109 },
-    { c:"KT", plan:asNum(x["KT_요금제"]), limit:110 },
-    { c:"LG", plan:asNum(x["LG_요금제"]), limit:115 }
-  ].filter(o => o.plan !== null && o.plan > 0 && o.plan < o.limit);
+    async function renderTab(tab){
+      clearList();
+      setEmpty(false,"");
 
-  if (!opts.length) return null;
-  opts.sort((a,b)=>a.plan-b.plan);
-  const best = opts[0];
-  return {
-    c: best.c,
-    plan: best.plan,
-    moveStr: x[`${best.c}_이동`] ?? "",
-    changeStr: x[`${best.c}_기변`] ?? ""
-  };
-}
+      try{
+        const items = await fetchCSV("data.csv");
+        const valid = items.filter(x => x["기종"] && String(x["기종"]).trim() !== "");
 
-const CSV_PATH = "./data.csv";  // ✅ 경로 고정(여기가 핵심)
+        if (!valid.length){
+          setEmpty(true, "data.csv에 휴대폰 항목이 없습니다.");
+          return;
+        }
 
-async function renderTab(tab){
-  clearList();
-  setStatus("data.csv 읽는 중...", `경로: ${CSV_PATH}`);
+        if (tab === "SK" || tab === "KT" || tab === "LG"){
+          const badgeClass = tab === "SK" ? "sk" : (tab === "KT" ? "kt" : "lg");
+          valid.forEach(x=>{
+            addCard({
+              badgeText: tab,
+              badgeClass,
+              model: x["기종"],
+              move: x[`${tab}_이동`] ?? "",
+              change: x[`${tab}_기변`] ?? "",
+              infoText: infoLineFromRow(tab, x),
+              item: x
+            });
+          });
+          return;
+        }
 
-  try{
-    const items = await fetchCSV(CSV_PATH);
-    const valid = items.filter(x => x["기종"] && String(x["기종"]).trim() !== "");
+        if (tab === "HOT"){
+          const hot = valid.filter(x=>{
+            const nums = [
+              asNum(x["SK_이동"]), asNum(x["SK_기변"]),
+              asNum(x["KT_이동"]), asNum(x["KT_기변"]),
+              asNum(x["LG_이동"]), asNum(x["LG_기변"])
+            ].filter(n=>n!==null);
+            return nums.some(n => n < 0);
+          });
 
-    setStatus("로드 성공", `총 ${items.length}행 / 유효 ${valid.length}행`);
+          if (!hot.length){
+            setEmpty(true, "핫딜(이동/기변 마이너스) 항목이 없습니다.");
+            return;
+          }
 
-    if (!valid.length){
-      setStatus("데이터 0건", "헤더(기종, SK_이동 등) 이름/구분자(콤마/탭) 확인 필요");
-      return;
-    }
+          hot.forEach(x=>{
+            const best = pickHotBest(x);
+            if (!best) return;
+            addCard({
+              badgeText: `핫딜 ${best.c}`,
+              badgeClass: "hot",
+              model: x["기종"],
+              move: best.moveStr,
+              change: best.changeStr,
+              infoText: infoLineFromRow(best.c, x),
+              item: x
+            });
+          });
+          return;
+        }
 
-    if (tab === "SK" || tab === "KT" || tab === "LG"){
-      const badgeClass = tab === "SK" ? "sk" : (tab === "KT" ? "kt" : "lg");
-      valid.forEach(x=>{
-        addCard({
-          badgeText: tab,
-          badgeClass,
-          model: x["기종"],
-          move: x[`${tab}_이동`] ?? "",
-          change: x[`${tab}_기변`] ?? "",
-          infoText: infoLineFromRow(tab, x),
-          item: x
-        });
-      });
-      return;
-    }
+        if (tab === "LOW"){
+          const low = valid.filter(x=>{
+            const sk = asNum(x["SK_요금제"]);
+            const kt = asNum(x["KT_요금제"]);
+            const lg = asNum(x["LG_요금제"]);
+            return (sk!==null && sk>0 && sk<109) || (kt!==null && kt>0 && kt<110) || (lg!==null && lg>0 && lg<115);
+          });
 
-    if (tab === "HOT"){
-      const hot = valid.filter(x=>{
-        const nums = [
-          asNum(x["SK_이동"]), asNum(x["SK_기변"]),
-          asNum(x["KT_이동"]), asNum(x["KT_기변"]),
-          asNum(x["LG_이동"]), asNum(x["LG_기변"])
-        ].filter(n=>n!==null);
-        return nums.some(n => n < 0);
-      });
+          if (!low.length){
+            setEmpty(true, "저가요금제(109/110/115 미만) 항목이 없습니다.");
+            return;
+          }
 
-      setStatus("핫딜 필터", `전체 ${valid.length}개 중 핫딜 ${hot.length}개`);
+          low.forEach(x=>{
+            const best = pickLowBest(x);
+            if (!best) return;
+            addCard({
+              badgeText: `저가 ${best.c} (${best.plan})`,
+              badgeClass: "low",
+              model: x["기종"],
+              move: best.moveStr,
+              change: best.changeStr,
+              infoText: `${best.c} ${best.plan}요금 6개월 / 부가필수 문의`,
+              item: x
+            });
+          });
+          return;
+        }
 
-      if (!hot.length){
-        return;
+      } catch(e){
+        console.log(e);
+        setEmpty(true, "CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)");
       }
-
-      hot.forEach(x=>{
-        const best = pickHotBest(x);
-        if (!best) return;
-        addCard({
-          badgeText: `핫딜 ${best.c}`,
-          badgeClass: "hot",
-          model: x["기종"],
-          move: best.moveStr,
-          change: best.changeStr,
-          infoText: infoLineFromRow(best.c, x),
-          item: x
-        });
-      });
-      return;
     }
 
-    if (tab === "LOW"){
-      const low = valid.filter(x=>{
-        const sk = asNum(x["SK_요금제"]);
-        const kt = asNum(x["KT_요금제"]);
-        const lg = asNum(x["LG_요금제"]);
-        return (sk!==null && sk>0 && sk<109) || (kt!==null && kt>0 && kt<110) || (lg!==null && lg>0 && lg<115);
-      });
-
-      setStatus("저가 필터", `전체 ${valid.length}개 중 저가 ${low.length}개`);
-
-      if (!low.length){
-        return;
-      }
-
-      low.forEach(x=>{
-        const best = pickLowBest(x);
-        if (!best) return;
-        addCard({
-          badgeText: `저가 ${best.c} (${best.plan})`,
-          badgeClass: "low",
-          model: x["기종"],
-          move: best.moveStr,
-          change: best.changeStr,
-          infoText: `${best.c} ${best.plan}요금 6개월 / 부가필수 문의`,
-          item: x
-        });
-      });
-      return;
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
     }
 
-  }catch(e){
-    console.log(e);
-    setStatus("실패", String(e?.message || e));
-  }
-}
+    document.querySelectorAll(".tabBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        renderTab(btn.dataset.tab);
+      });
+    });
 
-document.querySelectorAll(".tabBtn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    renderTab(btn.dataset.tab);
-  });
-});
-
-setStatus("JS 실행됨", "초기 탭(SK) 로딩 시작");
-renderTab("SK");
-</script>
+    renderTab("SK");
+  </script>
 </body>
 </html>
