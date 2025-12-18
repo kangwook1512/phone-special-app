@@ -35,15 +35,14 @@
 
   .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
 
-  /* top highlight */
   .hero{
-    background: #ffe866;
-    border: 2px solid #ffeb3b;
-    border-radius: 14px;
-    padding: 14px 14px;
+    background:#ffe866;
+    border:2px solid #ffeb3b;
+    border-radius:14px;
+    padding:14px;
     text-align:center;
     font-weight:900;
-    box-shadow: 0 6px 16px rgba(0,0,0,.08);
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
   }
   .hero .sub{
     margin-top:6px;
@@ -52,7 +51,6 @@
   }
   .hero .sub b{ text-decoration: underline; }
 
-  /* tabs */
   .tabs{
     display:flex;
     gap:10px;
@@ -64,22 +62,16 @@
     border-radius:14px;
     border:1px solid var(--line);
     background:#fff;
-    font-weight:900;
+    font-weight:1000;
     cursor:pointer;
-    transition:transform .08s ease;
   }
-  .tabBtn:active{ transform:scale(.99); }
-  .tabBtn.active{
-    color:#fff;
-    border-color:transparent;
-  }
+  .tabBtn.active{ color:#fff; border-color:transparent; }
   .tabBtn[data-tab="SK"].active{ background:var(--sk); }
   .tabBtn[data-tab="KT"].active{ background:var(--kt); }
   .tabBtn[data-tab="LG"].active{ background:var(--lg); }
   .tabBtn[data-tab="HOT"].active{ background:var(--hot); }
   .tabBtn[data-tab="LOW"].active{ background:var(--low); }
 
-  /* content area */
   .panel{
     margin-top:14px;
     background:#fff;
@@ -87,18 +79,18 @@
     border-radius:16px;
     padding:14px;
   }
+
   .emptyTitle{
-    font-weight:900;
+    font-weight:1000;
     font-size:16px;
     margin-bottom:6px;
   }
   .emptyDesc{
     color:var(--muted);
-    font-weight:700;
+    font-weight:800;
     font-size:13px;
   }
 
-  /* cards */
   .list{
     display:flex;
     flex-direction:column;
@@ -115,7 +107,7 @@
     align-items:center;
     justify-content:space-between;
     gap:10px;
-    margin-bottom:10px;
+    margin-bottom:8px;
   }
   .model{
     font-weight:1000;
@@ -136,6 +128,13 @@
   .badge.hot{background:var(--hot);}
   .badge.low{background:var(--low);}
 
+  .infoLine{
+    margin:0 0 10px;
+    color:var(--muted);
+    font-weight:1000;
+    font-size:12px;
+  }
+
   .priceRow{
     display:flex;
     gap:10px;
@@ -150,7 +149,7 @@
   }
   .pill .k{
     color:var(--muted);
-    font-weight:900;
+    font-weight:1000;
     font-size:12px;
     margin-bottom:4px;
   }
@@ -160,24 +159,22 @@
     letter-spacing:-.4px;
   }
   .neg{ color:#dc2626; }
-  .pos{ color:#0f172a; }
   .zero{ color:#0ea5e9; }
+  .pos{ color:#0f172a; }
 
-  /* fixed notice above bottom buttons */
   .fixedNotice{
     position:fixed;
-    bottom:60px; /* above bottomBar */
-    left:0;
-    right:0;
-    background:#ffffff;
+    bottom:60px;
+    left:0; right:0;
+    background:#fff;
     border-top:1px solid var(--line);
     text-align:center;
     font-weight:1000;
     padding:10px 12px;
     z-index:998;
+    line-height:1.25;
   }
 
-  /* bottom actions */
   .bottomBar{
     position:fixed;
     left:0; right:0; bottom:0;
@@ -216,20 +213,23 @@
       <button class="tabBtn" data-tab="KT">KT</button>
       <button class="tabBtn" data-tab="LG">LG</button>
       <button class="tabBtn" data-tab="HOT">핫딜</button>
-      <button class="tabBtn" data-tab="LOW">저가</button>
+      <button class="tabBtn" data-tab="LOW">저가요금제</button>
     </div>
 
-    <div class="panel" id="panel">
+    <div class="panel">
       <div id="empty" style="display:none;">
         <div class="emptyTitle">표시할 항목 없음</div>
-        <div class="emptyDesc" id="emptyDesc">data.csv에 휴대폰 항목이 없습니다.</div>
+        <div class="emptyDesc" id="emptyDesc">data.csv에 항목이 없습니다.</div>
       </div>
       <div class="list" id="list"></div>
     </div>
   </div>
 
-  <!-- 고정 안내 문구 -->
-  <div class="fixedNotice">가입요금제 &amp; 부가필수 문의주세요</div>
+  <!-- 하단 고정 안내 -->
+  <div class="fixedNotice">
+    액정필름 무료교체<br>
+    카톡 주문 후 복지관2층 매장 방문
+  </div>
 
   <!-- 하단 고정 버튼 -->
   <div class="bottomBar">
@@ -288,7 +288,7 @@ async function fetchCSV(path){
 }
 
 function asNum(x){
-  const n = Number(String(x).replace(/,/g,"").trim());
+  const n = Number(String(x ?? "").replace(/,/g,"").trim());
   return Number.isFinite(n) ? n : null;
 }
 
@@ -310,7 +310,17 @@ function clearList(){
   document.getElementById("list").innerHTML = "";
 }
 
-function addCard({badgeText, badgeClass, model, move, change}){
+function carrierInfoLine(carrier, plan){
+  // 일반 탭(SK/KT/LG)에서는 고정 문구
+  if (carrier === "SK") return "SK 109요금 6개월 / 부가필수 문의";
+  if (carrier === "KT") return "KT 110요금 6개월 / 부가필수 문의";
+  if (carrier === "LG") return "LG 115요금 6개월 / 부가필수 문의";
+  // 저가탭/핫딜 탭에서 carrier + plan을 같이 보여주고 싶을 때
+  if (plan !== null) return `${carrier} ${plan}요금 / 부가필수 문의`;
+  return "부가필수 문의";
+}
+
+function addCard({badgeText, badgeClass, model, move, change, infoText}){
   const list = document.getElementById("list");
 
   const moveNum = asNum(move);
@@ -323,19 +333,15 @@ function addCard({badgeText, badgeClass, model, move, change}){
       <div class="model">${model}</div>
       <div class="badge ${badgeClass}">${badgeText}</div>
     </div>
-
-    <div style="margin:-4px 0 10px;color:var(--muted);font-weight:1000;font-size:12px;">
-      가입요금제 &amp; 부가필수 문의주세요
-    </div>
-
+    <div class="infoLine">${infoText}</div>
     <div class="priceRow">
       <div class="pill">
         <div class="k">이동</div>
-        <div class="v ${vClass(moveNum)}">${move === "" ? "-" : move}</div>
+        <div class="v ${vClass(moveNum)}">${(move ?? "").trim() === "" ? "-" : move}</div>
       </div>
       <div class="pill">
         <div class="k">기변</div>
-        <div class="v ${vClass(chgNum)}">${change === "" ? "-" : change}</div>
+        <div class="v ${vClass(chgNum)}">${(change ?? "").trim() === "" ? "-" : change}</div>
       </div>
     </div>
   `;
@@ -348,7 +354,10 @@ async function renderTab(tab){
   setEmpty(false, "");
 
   try{
+    // 기대 data.csv 구조:
+    // 기종,SK_요금제,SK_이동,SK_기변,KT_요금제,KT_이동,KT_기변,LG_요금제,LG_이동,LG_기변
     const items = await fetchCSV("data.csv");
+
     const valid = items.filter(x =>
       x["기종"] &&
       (x["SK_이동"] || x["SK_기변"] || x["KT_이동"] || x["KT_기변"] || x["LG_이동"] || x["LG_기변"])
@@ -367,39 +376,41 @@ async function renderTab(tab){
           badgeClass,
           model: x["기종"],
           move: x[`${tab}_이동`] ?? "",
-          change: x[`${tab}_기변`] ?? ""
+          change: x[`${tab}_기변`] ?? "",
+          infoText: carrierInfoLine(tab, null)
         });
       });
       return;
     }
 
     if (tab === "HOT"){
-      const hot = valid.map(x => {
+      // 핫딜 기준: 3사 이동/기변 중 하나라도 0 이하
+      const scored = valid.map(x => {
         const nums = ["SK_이동","SK_기변","KT_이동","KT_기변","LG_이동","LG_기변"]
           .map(k => asNum(x[k])).filter(n => n !== null);
         const min = nums.length ? Math.min(...nums) : 999999;
         return { x, min };
       }).filter(t => t.min <= 0)
-        .sort((a,b) => a.min - b.min)
-        .map(t => t.x);
+        .sort((a,b) => a.min - b.min);
 
-      if (!hot.length){
+      if (!scored.length){
         setEmpty(true, "핫딜 기준(0 이하)이 없습니다.");
         return;
       }
 
-      hot.forEach(x => {
+      scored.forEach(({x}) => {
+        // 가장 좋은 통신사(이동/기변 중 최소값) 1개만 표시
         const options = [
-          {c:"SK", m:asNum(x["SK_이동"]), g:asNum(x["SK_기변"])},
-          {c:"KT", m:asNum(x["KT_이동"]), g:asNum(x["KT_기변"])},
-          {c:"LG", m:asNum(x["LG_이동"]), g:asNum(x["LG_기변"])}
+          {c:"SK", m:asNum(x["SK_이동"]), g:asNum(x["SK_기변"]), plan:asNum(x["SK_요금제"])},
+          {c:"KT", m:asNum(x["KT_이동"]), g:asNum(x["KT_기변"]), plan:asNum(x["KT_요금제"])},
+          {c:"LG", m:asNum(x["LG_이동"]), g:asNum(x["LG_기변"]), plan:asNum(x["LG_요금제"])}
         ];
 
         let best = null;
         options.forEach(o=>{
           [o.m, o.g].forEach(v=>{
             if(v !== null && (best === null || v < best.v)){
-              best = {carrier:o.c, v, move:x[`${o.c}_이동`], change:x[`${o.c}_기변`]};
+              best = {carrier:o.c, v, move:x[`${o.c}_이동`], change:x[`${o.c}_기변`], plan:o.plan};
             }
           });
         });
@@ -409,51 +420,50 @@ async function renderTab(tab){
           badgeClass: "hot",
           model: x["기종"],
           move: best?.move ?? "",
-          change: best?.change ?? ""
+          change: best?.change ?? "",
+          infoText: carrierInfoLine(best?.carrier || "", best?.plan ?? null)
         });
       });
       return;
     }
 
     if (tab === "LOW"){
-      // 저가 기준: 3사 이동/기변 중 하나라도 30 이하이면 저가로 분류
+      // 저가요금제 기준:
+      // SK_요금제 < 109 OR KT_요금제 < 110 OR LG_요금제 < 115
       const low = valid.filter(x => {
-        const vals = [
-          asNum(x["SK_이동"]), asNum(x["SK_기변"]),
-          asNum(x["KT_이동"]), asNum(x["KT_기변"]),
-          asNum(x["LG_이동"]), asNum(x["LG_기변"])
-        ].filter(v => v !== null);
-        return vals.some(v => v <= 30);
+        const skPlan = asNum(x["SK_요금제"]);
+        const ktPlan = asNum(x["KT_요금제"]);
+        const lgPlan = asNum(x["LG_요금제"]);
+        return (skPlan !== null && skPlan < 109) ||
+               (ktPlan !== null && ktPlan < 110) ||
+               (lgPlan !== null && lgPlan < 115);
       });
 
       if (!low.length){
-        setEmpty(true, "저가 기준(30 이하)이 없습니다.");
+        setEmpty(true, "저가요금제(109/110/115 미만) 항목이 없습니다.");
         return;
       }
 
       low.forEach(x => {
-        // 가장 싼 통신사 자동 선택
-        const options = [
-          {c:"SK", m:asNum(x["SK_이동"]), g:asNum(x["SK_기변"])},
-          {c:"KT", m:asNum(x["KT_이동"]), g:asNum(x["KT_기변"])},
-          {c:"LG", m:asNum(x["LG_이동"]), g:asNum(x["LG_기변"])}
-        ];
+        // 저가 조건을 만족하는 통신사들 중 "가장 낮은 요금제"를 대표로 표시
+        const candidates = [
+          { c:"SK", plan: asNum(x["SK_요금제"]), move:x["SK_이동"], change:x["SK_기변"], limit:109 },
+          { c:"KT", plan: asNum(x["KT_요금제"]), move:x["KT_이동"], change:x["KT_기변"], limit:110 },
+          { c:"LG", plan: asNum(x["LG_요금제"]), move:x["LG_이동"], change:x["LG_기변"], limit:115 }
+        ].filter(o => o.plan !== null && o.plan < o.limit);
 
-        let best = null;
-        options.forEach(o=>{
-          [o.m, o.g].forEach(v=>{
-            if(v !== null && (best === null || v < best.v)){
-              best = {carrier:o.c, v, move:x[`${o.c}_이동`], change:x[`${o.c}_기변`]};
-            }
-          });
-        });
+        if (!candidates.length) return;
+
+        candidates.sort((a,b) => a.plan - b.plan);
+        const best = candidates[0];
 
         addCard({
-          badgeText: `저가 ${best?.carrier || ""}`,
+          badgeText: `저가 ${best.c} (${best.plan})`,
           badgeClass: "low",
           model: x["기종"],
-          move: best?.move ?? "",
-          change: best?.change ?? ""
+          move: best.move ?? "",
+          change: best.change ?? "",
+          infoText: carrierInfoLine(best.c, best.plan)
         });
       });
       return;
