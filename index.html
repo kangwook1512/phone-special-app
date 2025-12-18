@@ -46,7 +46,6 @@
   .hero .sub{margin-top:6px;font-weight:800;font-size:14px;}
   .hero .sub b{text-decoration:underline;}
 
-  /* ===== 예쁜 탭 5개 ===== */
   .tabs.nice{display:flex;gap:8px;margin-top:14px;}
   .tabs.nice .tabBtn{
     flex:1;
@@ -198,7 +197,6 @@
   </div>
 
 <script>
-/* ===== CSV 파서(따옴표/콤마/UTF-8 BOM 대응) ===== */
 function parseCSV(text){
   text = text.replace(/^\uFEFF/, "");
   const rows = [];
@@ -246,11 +244,11 @@ async function fetchCSV(path){
   });
 }
 
-/* ✅ 숫자 변환 강화: 유니코드 마이너스(−)도 정상 처리 */
+/* ✅ 핵심: 특수 마이너스/대시까지 전부 숫자로 인식 */
 function asNum(x){
   const s = String(x ?? "")
-    .replace(/\u2212/g, "-")   // − -> -
-    .replace(/,/g, "")
+    .replace(/[−-–—‒﹣－]/g, "-")  // 여러 종류의 대시/마이너스를 '-'로 통일
+    .replace(/,/g,"")
     .trim();
   if (s === "") return null;
   const n = Number(s);
@@ -271,11 +269,12 @@ function setEmpty(show, msg){
 }
 function clearList(){ document.getElementById("list").innerHTML = ""; }
 
-function fixedInfoLine(carrier){
-  if (carrier === "SK") return "SK 109요금 6개월 / 부가필수 문의";
-  if (carrier === "KT") return "KT 110요금 6개월 / 부가필수 문의";
-  if (carrier === "LG") return "LG 115요금 6개월 / 부가필수 문의";
-  return "부가필수 문의";
+/* ✅ 요금제는 CSV 실제값 우선 사용 (저가 33이면 33 표시) */
+function infoLineFromRow(carrier, row){
+  const plan = asNum(row?.[`${carrier}_요금제`]);
+  const defaultPlan = (carrier==="SK") ? 109 : (carrier==="KT") ? 110 : 115;
+  const usePlan = (plan !== null && plan > 0) ? plan : defaultPlan;
+  return `${carrier} ${usePlan}요금 6개월 / 부가필수 문의`;
 }
 
 function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
@@ -307,7 +306,7 @@ function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
   list.appendChild(card);
 }
 
-/* ===== 핫딜 대표 선택: 3사 이동/기변 중 최저값(가장 마이너스) 통신사 ===== */
+/* 핫딜 대표 선택: 3사 이동/기변 중 "최저값" 통신사 선택 */
 function pickHotBest(x){
   const candidates = [
     { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]) },
@@ -315,11 +314,11 @@ function pickHotBest(x){
     { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]) }
   ];
 
-  let best = null; // {c, score, moveStr, changeStr}
+  let best = null;
   candidates.forEach(o=>{
     const vals = [o.move, o.change].filter(v=>v!==null);
     if (!vals.length) return;
-    const score = Math.min(...vals); // 더 작은 값(마이너스 우선)
+    const score = Math.min(...vals);
     if (best === null || score < best.score){
       best = {
         c: o.c,
@@ -332,7 +331,6 @@ function pickHotBest(x){
   return best;
 }
 
-/* ===== 저가 대표 선택: (0 제외) 요금제 낮은 통신사 ===== */
 function pickLowBest(x){
   const opts = [
     { c:"SK", plan:asNum(x["SK_요금제"]), limit:109 },
@@ -351,7 +349,6 @@ function pickLowBest(x){
   };
 }
 
-/* ===== 렌더 ===== */
 async function renderTab(tab){
   clearList();
   setEmpty(false,"");
@@ -374,7 +371,7 @@ async function renderTab(tab){
           model: x["기종"],
           move: x[`${tab}_이동`] ?? "",
           change: x[`${tab}_기변`] ?? "",
-          infoText: fixedInfoLine(tab),
+          infoText: infoLineFromRow(tab, x),   // ✅ 실제 요금제 표시
           item: x
         });
       });
@@ -382,14 +379,14 @@ async function renderTab(tab){
     }
 
     if (tab === "HOT"){
-      // ✅ 기준: SK/KT/LG 이동/기변 중 하나라도 "마이너스"면 핫딜
+      // ✅ 이동/기변 중 마이너스 하나라도 있으면 무조건 핫딜
       const hot = valid.filter(x=>{
         const nums = [
           asNum(x["SK_이동"]), asNum(x["SK_기변"]),
           asNum(x["KT_이동"]), asNum(x["KT_기변"]),
           asNum(x["LG_이동"]), asNum(x["LG_기변"])
         ].filter(n=>n!==null);
-        return nums.some(n=>n < 0);
+        return nums.some(n => n < 0);
       });
 
       if (!hot.length){
@@ -400,15 +397,13 @@ async function renderTab(tab){
       hot.forEach(x=>{
         const best = pickHotBest(x);
         if (!best) return;
-
         addCard({
           badgeText: `핫딜 ${best.c}`,
           badgeClass: "hot",
           model: x["기종"],
           move: best.moveStr,
           change: best.changeStr,
-          /* ✅ 내부 판정 문구 노출 금지: 요금제/부가 문의 문구만 */
-          infoText: fixedInfoLine(best.c),
+          infoText: infoLineFromRow(best.c, x), // ✅ 저가폰이면 33요금 그대로 표시
           item: x
         });
       });
@@ -450,7 +445,6 @@ async function renderTab(tab){
   }
 }
 
-/* ===== 탭 이벤트 ===== */
 document.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
