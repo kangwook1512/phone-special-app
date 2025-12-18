@@ -5,188 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>복지관2층매장</title>
 
-<!-- 서비스워커 완전 무력화 -->
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs=>{
-    regs.forEach(r=>r.unregister());
-  });
+  navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
 }
 </script>
 
 <style>
 :root{
-  --bg:#f5f6f8;
-  --card:#ffffff;
-  --ink:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
+  --bg:#f5f6f8; --card:#fff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb;
+  --price:#ef4444; --tab:#2563eb; --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
 
-  --price:#ef4444;
-  --tab:#2563eb;
+/* 네온 배너 */
+.neon-banner{margin:12px;padding:16px 14px;background:linear-gradient(135deg,#fff200,#ffe066);
+border-radius:16px;border:2px solid #fff6a3;
+box-shadow:0 0 8px rgba(255,242,0,.9),0 0 18px rgba(255,242,0,.7),0 0 32px rgba(255,242,0,.5);pointer-events:none}
+.neon-title{font-size:18px;font-weight:1000;text-align:center}
+.neon-points{margin-top:10px;display:grid;gap:6px}
+.neon-point{font-size:15px;font-weight:900;text-align:center}
+.neon-point b{text-decoration:underline}
 
-  --call:#22c55e;
-  --sms:#38bdf8;
-  --kakao:#fee500;
-}
-
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-}
-
-/* 🔥 네온 광고배너 */
-.neon-banner{
-  margin:12px;
-  padding:16px 14px;
-  background:linear-gradient(135deg,#fff200,#ffe066);
-  border-radius:16px;
-  border:2px solid #fff6a3;
-  box-shadow:
-    0 0 8px rgba(255,242,0,.9),
-    0 0 18px rgba(255,242,0,.7),
-    0 0 32px rgba(255,242,0,.5);
-  pointer-events:none;
-}
-.neon-title{
-  font-size:18px;
-  font-weight:1000;
-  text-align:center;
-  letter-spacing:-0.02em;
-}
-.neon-points{
-  margin-top:10px;
-  display:grid;
-  gap:6px;
-}
-.neon-point{
-  font-size:15px;
-  font-weight:900;
-  text-align:center;
-}
-.neon-point b{
-  font-weight:1000;
-  text-decoration:underline;
-  text-underline-offset:3px;
-}
-
-/* ✅ 탭: 1줄 + 스크롤 */
-.tabs{
-  display:flex;
-  gap:8px;
-  padding:12px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  white-space:nowrap;
-}
-.tab{
-  flex:0 0 auto;
-  min-width:76px;
-  padding:14px 12px;
-  text-align:center;
-  font-weight:900;
-  border-radius:12px;
-  background:#f3f4f6;
-  cursor:pointer;
-  user-select:none;
-}
-.tab.active{
-  background:var(--tab);
-  color:#fff;
-}
+/* 탭 (압축 1줄) */
+.tabs{display:flex;gap:6px;padding:10px 8px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{flex:1 1 0;min-width:0;padding:12px 0;font-size:14px;font-weight:900;
+text-align:center;border-radius:12px;background:#f3f4f6;cursor:pointer}
+.tab.active{background:var(--tab);color:#fff}
 
 /* 카드 */
-.main{padding:12px;padding-bottom:190px;}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.05);
-}
-.badge{font-size:12px;font-weight:900;color:#2563eb;margin-bottom:6px;}
-.model{font-size:16px;font-weight:900;margin-bottom:6px;line-height:1.15;}
-.price{font-size:26px;font-weight:900;color:var(--price);line-height:1.05;}
-.sub{font-size:13px;color:var(--muted);font-weight:700;margin-top:6px;line-height:1.25;}
+.main{padding:12px;padding-bottom:190px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.badge{font-size:12px;font-weight:900;color:#2563eb;margin-bottom:6px}
+.model{font-size:16px;font-weight:900;margin-bottom:6px}
+.price{font-size:26px;font-weight:900;color:var(--price)}
+.sub{font-size:13px;font-weight:700;margin-top:6px}
 
 /* 휴대폰 강조 */
-.card.phone .model{
-  font-size: clamp(18px, 4.8vw, 26px);
-  font-weight: 900;
-  margin-bottom: 10px;
-}
-.card.phone .price{
-  font-size: clamp(30px, 7.2vw, 44px);
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-.card.phone .sub{
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--ink);
-  margin-top: 6px;
-}
+.card.phone .model{font-size:clamp(18px,4.8vw,26px)}
+.card.phone .price{font-size:clamp(30px,7.2vw,44px)}
+.card.phone .sub{color:var(--ink)}
 
-/* ✅ 준비중 카드 */
-.card--soon{
-  opacity:.55;
-  filter:grayscale(1);
-  pointer-events:none;
-}
-.card--soon .model{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.card--soon .soonIcon{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:26px;
-  height:26px;
-  border-radius:999px;
-  border:1px solid #d1d5db;
-  background:#fff;
-  font-size:16px;
-  line-height:1;
-}
-
-/* ✅ 저가요금폰 가격 표시 */
-.lowPrice{ display:grid; gap:6px; }
-.lowLine{
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:10px;
-}
-.lowLabel{ font-weight:900; opacity:.95; }
-.lowNum{ font-weight:1000; letter-spacing:-0.02em; }
-.lowSuffix{ font-weight:900; }
+/* 준비중 */
+.card--soon{opacity:.5;filter:grayscale(1);pointer-events:none}
+.soonIcon{display:inline-flex;width:24px;height:24px;border-radius:50%;border:1px solid #ccc;align-items:center;justify-content:center}
 
 /* 하단 */
-.footer{
-  position:fixed;left:0;right:0;bottom:0;
-  background:#fff;border-top:1px solid var(--line);
-}
-.footer-msg{text-align:center;padding:10px;font-size:14px;font-weight:900;}
-.footer-store{text-align:center;font-size:18px;font-weight:900;padding-bottom:6px;}
-.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr;}
-.footer-actions a{
-  text-align:center;padding:16px 0;
-  font-weight:900;text-decoration:none;color:#111;
-}
-.call{background:var(--call);color:#fff;}
-.sms{background:var(--sms);color:#fff;}
-.kakao{background:var(--kakao);}
+.footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}
+.footer-msg{text-align:center;padding:10px;font-weight:900}
+.footer-store{text-align:center;font-size:18px;font-weight:900}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr 1fr}
+.footer-actions a{padding:16px 0;text-align:center;font-weight:900;text-decoration:none;color:#111}
+.call{background:var(--call);color:#fff}
+.sms{background:var(--sms);color:#fff}
+.kakao{background:var(--kakao)}
 </style>
 </head>
 
@@ -195,23 +70,20 @@ body{
 <div class="neon-banner">
   <div class="neon-title">인터넷TV·알뜰요금은 카톡문의</div>
   <div class="neon-points">
-    <div class="neon-point">💰 인터넷TV : <b>현금 최대 지원</b></div>
-    <div class="neon-point">🔥 알뜰요금 : <b>최저요금 3,300원~</b></div>
+    <div class="neon-point">💰 인터넷TV <b>현금 최대</b></div>
+    <div class="neon-point">🔥 알뜰요금 <b>3,300원~</b></div>
   </div>
 </div>
 
-<!-- ✅ SK · KT · LG · 저가 · 핫딜 (5개, 1줄 스크롤) -->
 <div class="tabs">
   <div class="tab active" data-tab="SK_PHONE">SK</div>
   <div class="tab" data-tab="KT_PHONE">KT</div>
   <div class="tab" data-tab="LG_PHONE">LG</div>
-  <div class="tab" data-tab="LOW_PHONE">저가</div>
   <div class="tab" data-tab="HOT_DEAL">핫딜</div>
+  <div class="tab" data-tab="LOW_PHONE">저가</div>
 </div>
 
-<div class="main">
-  <div class="grid" id="cards"></div>
-</div>
+<div class="main"><div class="grid" id="cards"></div></div>
 
 <div class="footer">
   <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
@@ -219,269 +91,79 @@ body{
   <div class="footer-actions">
     <a class="call" href="tel:042-821-2272">전화</a>
     <a class="sms" href="sms:010-5839-1512">문자</a>
-    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
+    <a class="kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
   </div>
 </div>
 
 <script>
-const CSV_URL = 'data.csv?v=' + Date.now();
-const grid = document.getElementById('cards');
-const tabs = document.querySelectorAll('.tab');
+const CSV_URL='data.csv?v='+Date.now();
+const grid=document.getElementById('cards');
+const tabs=document.querySelectorAll('.tab');
 
-const PHONE_PLAN = {
-  SK: 'SK 109요금 6개월',
-  KT: 'KT 110요금 6개월',
-  LG: 'LG 115요금 6개월'
-};
-const PHONE_EXTRA = '부가별도문의';
-
-function parseCSV(text){
-  const t = (text || '').replace(/\r/g,'');
-  const rows=[], cur=[];
-  let cell='', inQ=false;
+function parseCSV(t){
+  t=(t||'').replace(/\r/g,'');
+  const r=[],c=[];let s='',q=false;
   for(let i=0;i<t.length;i++){
-    const c=t[i], n=t[i+1];
-    if(c === '"' && n === '"'){ cell+='"'; i++; }
-    else if(c === '"'){ inQ = !inQ; }
-    else if(c === ',' && !inQ){ cur.push(cell); cell=''; }
-    else if(c === '\n' && !inQ){
-      cur.push(cell); rows.push([...cur]);
-      cur.length=0; cell='';
-    } else cell += c;
+    const a=t[i],b=t[i+1];
+    if(a=='"'&&b=='"'){s+='"';i++}
+    else if(a=='"'){q=!q}
+    else if(a==','&&!q){c.push(s);s=''}
+    else if(a=='\n'&&!q){c.push(s);r.push([...c]);c.length=0;s=''}
+    else s+=a
   }
-  cur.push(cell); rows.push([...cur]);
-  if(!rows.length) return [];
-  const header = rows.shift().map(h => (h||'').trim());
-  return rows
-    .filter(r => r.some(v => (v||'').trim() !== ''))
-    .map(r=>{
-      const o={};
-      header.forEach((h,i)=> o[h]=(r[i]??'').trim());
-      return o;
-    });
+  c.push(s);r.push([...c]);
+  const h=r.shift().map(x=>x.trim());
+  return r.filter(x=>x.some(v=>v.trim())).map(x=>{
+    const o={};h.forEach((k,i)=>o[k]=(x[i]||'').trim());return o});
 }
 
-function escapeHTML(str){
-  return (str ?? '').toString()
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
-}
-
-/* ✅ 0/마이너스도 그대로 표기 */
-function phonePrice(nStr){
-  const n = Number(String(nStr||'').replace(/,/g,'').trim());
-  if(!isFinite(n)) return '문의';
-  return `${n}만원`;
-}
+const numFrom=s=>Number(String(s||'').replace(/,/g,''));
+const isHot=r=>/(-\d+)|(\b0\b)/.test(r.display_price||'');
 
 function phoneCards(r){
-  const out=[];
-  const m = (r.display_price||'').match(/이동\s*([-\d.,]+)/);
-  const g = (r.display_price||'').match(/기변\s*([-\d.,]+)/);
-  const plan = PHONE_PLAN[r.carrier] || '';
-  if(m){
-    out.push(`
-      <div class="card phone">
-        <div class="badge">이동</div>
-        <div class="model">${escapeHTML(r.title)}</div>
-        <div class="price">${phonePrice(m[1])}</div>
-        <div class="sub">${plan}</div>
-        <div class="sub">${PHONE_EXTRA}</div>
-      </div>
-    `);
-  }
-  if(g){
-    out.push(`
-      <div class="card phone">
-        <div class="badge">기변</div>
-        <div class="model">${escapeHTML(r.title)}</div>
-        <div class="price">${phonePrice(g[1])}</div>
-        <div class="sub">${plan}</div>
-        <div class="sub">${PHONE_EXTRA}</div>
-      </div>
-    `);
-  }
+  const out=[],m=r.display_price.match(/이동\s*([-\d]+)/),g=r.display_price.match(/기변\s*([-\d]+)/);
+  if(m) out.push(card('이동',r.title,m[1]));
+  if(g) out.push(card('기변',r.title,g[1]));
   return out;
 }
-
-/* ✅ 저가요금폰: 이동/기변 분해 */
-function parseMoveChange(text){
-  const s = String(text||'').replace(/\s+/g,' ').trim();
-  const m = s.match(/이동\s*([-\d.,]+)/);
-  const g = s.match(/기변\s*([-\d.,]+)/);
-  if(m || g){
-    const lines = [];
-    if(m) lines.push({label:'이동', num:String(m[1]).replace(/,/g,'').trim()});
-    if(g) lines.push({label:'기변', num:String(g[1]).replace(/,/g,'').trim()});
-    return {type:'split', lines};
-  }
-  return {type:'raw', raw:s};
-}
-
-/* ✅ 숫자 추출(이동/기변만) */
-function numsFromMoveChange(display_price){
-  const p = parseMoveChange(display_price);
-  if(p.type !== 'split') return [];
-  return p.lines
-    .map(x => Number(String(x.num).replace(/,/g,'').trim()))
-    .filter(n => Number.isFinite(n));
-}
-
-/* ✅ 핫딜 판정: 이동/기변 값 중 0 또는 마이너스 있으면 TRUE */
-function isHotDealPhoneRow(r){
-  if(r.type !== 'PHONE') return false;
-  const nums = numsFromMoveChange(r.display_price);
-  if(!nums.length) return false; // PHONE은 이동/기변 형식 전제
-  return nums.some(n => n <= 0);
-}
-
-/* ✅ 핫딜 정렬 기준: 마이너스가 있으면 가장 큰 혜택(예:-20)을 우선 */
-function bestHotValue(display_price){
-  const nums = numsFromMoveChange(display_price);
-  const negatives = nums.filter(n => n < 0);
-  if(negatives.length) return Math.min(...negatives); // -20이 제일 앞
-  return 0; // 0원폰은 뒤쪽
-}
-
-/* ✅ 저가요금폰 가격 표시 */
-function lowPriceHTML(display_price){
-  const p = parseMoveChange(display_price);
-  if(p.type === 'split'){
-    const rows = p.lines.map(x=>{
-      return `
-        <div class="lowLine">
-          <span class="lowLabel">${escapeHTML(x.label)}</span>
-          <span class="lowNum">${escapeHTML(x.num)}</span>
-          <span class="lowSuffix">만원</span>
-        </div>
-      `;
-    }).join('');
-    return `<div class="lowPrice">${rows}</div>`;
-  }
-  const raw = p.raw || '';
-  return `
-    <div class="lowPrice">
-      <div class="lowLine">
-        <span class="lowLabel">조건</span>
-        <span class="lowNum">${escapeHTML(raw)}</span>
-      </div>
-    </div>
-  `;
-}
-
-/* ✅ 저가요금폰: 1행=1카드 */
-function lowOneCard(r){
-  const plan = PHONE_PLAN[r.carrier] || '';
-  const carrierLabel = (r.carrier || '').toUpperCase();
-
-  // 배지 자동추가(0/마이너스)
-  const nums = numsFromMoveChange(r.display_price);
-  const hasMinus = nums.some(n => n < 0);
-  const hasZero  = nums.some(n => n === 0);
-  const extraBadge = hasMinus ? ' · 마이너스폰' : (hasZero ? ' · 0원폰' : '');
-
-  return `
-    <div class="card phone">
-      <div class="badge">${escapeHTML(carrierLabel)} · 저가${escapeHTML(extraBadge)}</div>
-      <div class="model">${escapeHTML(r.title)}</div>
-      <div class="price">${lowPriceHTML(r.display_price)}</div>
-      <div class="sub">${plan}</div>
-      <div class="sub">${PHONE_EXTRA}</div>
-    </div>
-  `;
-}
-
-/* ✅ 준비중 카드 */
-function soonCard(){
-  return `
-    <div class="card phone card--soon">
-      <div class="badge">준비중</div>
-      <div class="model"><span class="soonIcon">⏳</span>저가요금폰 준비중</div>
-      <div class="price">COMING</div>
-      <div class="sub">곧 추가됩니다</div>
-      <div class="sub">카톡문의</div>
-    </div>
-  `;
-}
-
-function filterRows(rows, tab){
-  // ✅ 일반폰: 핫딜(0/마이너스) 제외하고 통신사별로만
-  if(tab==='SK_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='SK' && !isHotDealPhoneRow(r));
-  if(tab==='KT_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='KT' && !isHotDealPhoneRow(r));
-  if(tab==='LG_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='LG' && !isHotDealPhoneRow(r));
-
-  // ✅ 저가요금폰
-  if(tab==='LOW_PHONE') return rows.filter(r=>r.type==='PHONE_LOW' && (r.carrier==='SK' || r.carrier==='KT' || r.carrier==='LG'));
-
-  // ✅ 핫딜: 0/마이너스 포함된 PHONE만
-  if(tab==='HOT_DEAL') return rows.filter(r=>isHotDealPhoneRow(r));
-
-  return [];
-}
+const card=(b,t,p)=>`
+<div class="card phone">
+  <div class="badge">${b}</div>
+  <div class="model">${t}</div>
+  <div class="price">${p}만원</div>
+  <div class="sub">부가별도문의</div>
+</div>`;
 
 function render(tab){
-  fetch(CSV_URL,{cache:'no-store'})
-    .then(r=>r.text())
-    .then(t=>{
-      const rows = parseCSV(t);
-      let show = filterRows(rows, tab);
-      grid.innerHTML='';
-
-      if(tab === 'LOW_PHONE'){
-        // 저가요금폰: 1행=1카드
-        show.forEach(r=>{ grid.innerHTML += lowOneCard(r); });
-
-        // 항상 6칸: 부족분 준비중
-        const currentCount = grid.querySelectorAll('.card').length;
-        const need = Math.max(0, 6 - currentCount);
-        for(let i=0;i<need;i++){ grid.innerHTML += soonCard(); }
-
-      } else if(tab === 'HOT_DEAL'){
-
-        // ✅ 핫딜: 마이너스 큰 순(=-20 먼저) → 0원은 아래
-        const indexed = show.map((r,i)=>({r,i}));
-        indexed.sort((a,b)=>{
-          const av = bestHotValue(a.r.display_price);
-          const bv = bestHotValue(b.r.display_price);
-          if(av !== bv) return av - bv; // -20이 먼저
-          return a.i - b.i; // 동일이면 CSV 순서 유지
+  fetch(CSV_URL).then(r=>r.text()).then(t=>{
+    const rows=parseCSV(t);
+    let show=[];
+    if(tab==='HOT_DEAL'){
+      show=rows.filter(r=>r.type==='PHONE'&&isHot(r))
+        .sort((a,b)=>{
+          const av=Math.min(...a.display_price.match(/-?\d+/g).map(Number));
+          const bv=Math.min(...b.display_price.match(/-?\d+/g).map(Number));
+          return av-bv;
         });
-        show = indexed.map(x=>x.r);
-
-        // 기존 PHONE 카드(이동/기변 2장 세트 그대로)
-        show.forEach(r=>{
-          phoneCards(r).forEach(h=>grid.innerHTML+=h);
-        });
-
-      } else {
-        // SK/KT/LG: 기존 PHONE 카드(이동/기변 2장 세트)
-        show.forEach(r=>{
-          phoneCards(r).forEach(h=>grid.innerHTML+=h);
-        });
-      }
-
-      if(!grid.innerHTML.trim()){
-        grid.innerHTML = `
-          <div class="card" style="grid-column:1 / -1;">
-            <div class="model">표시할 항목 없음</div>
-            <div class="sub">data.csv에 해당 항목이 없습니다.</div>
-          </div>
-        `;
-      }
-    });
+    }else if(tab==='LOW_PHONE'){
+      show=rows.filter(r=>r.type==='PHONE_LOW');
+      show.forEach(r=>grid.innerHTML+=card('저가',r.title,r.display_price));
+      for(let i=show.length;i<6;i++)
+        grid.innerHTML+=`<div class="card card--soon"><div class="model"><span class="soonIcon">⏳</span> 준비중</div></div>`;
+      return;
+    }else{
+      show=rows.filter(r=>r.type==='PHONE'&&r.carrier===tab.split('_')[0]&&!isHot(r));
+    }
+    grid.innerHTML='';
+    show.forEach(r=>phoneCards(r).forEach(h=>grid.innerHTML+=h));
+  });
 }
 
-tabs.forEach(t=>{
-  t.onclick=()=>{
-    tabs.forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    render(t.dataset.tab);
-  };
+tabs.forEach(t=>t.onclick=()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  render(t.dataset.tab);
 });
-
 render('SK_PHONE');
 </script>
 
