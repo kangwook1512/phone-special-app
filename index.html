@@ -38,9 +38,7 @@ body{
   color:var(--ink);
 }
 
-/* ===============================
-   🔥 네온 광고배너 (최상단)
-================================ */
+/* 🔥 네온 광고배너 */
 .neon-banner{
   margin:12px;
   padding:16px 14px;
@@ -51,7 +49,7 @@ body{
     0 0 8px rgba(255,242,0,.9),
     0 0 18px rgba(255,242,0,.7),
     0 0 32px rgba(255,242,0,.5);
-  pointer-events:none; /* 클릭 완전 차단 */
+  pointer-events:none;
 }
 .neon-title{
   font-size:18px;
@@ -75,19 +73,21 @@ body{
   text-underline-offset:3px;
 }
 
-/* ===============================
-   탭 (SK / KT / LG / 저가요금폰)
-================================ */
+/* ✅ 탭: 1줄 + 스크롤 */
 .tabs{
   display:flex;
   gap:8px;
   padding:12px;
   background:#fff;
   border-bottom:1px solid var(--line);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  white-space:nowrap;
 }
 .tab{
-  flex:1;
-  padding:14px 0;
+  flex:0 0 auto;
+  min-width:76px;
+  padding:14px 12px;
   text-align:center;
   font-weight:900;
   border-radius:12px;
@@ -160,7 +160,7 @@ body{
   line-height:1;
 }
 
-/* ✅ 저가요금폰 가격 가독성(탭 LOW 전용) */
+/* ✅ 저가요금폰 가격 표시 */
 .lowPrice{ display:grid; gap:6px; }
 .lowLine{
   display:flex;
@@ -192,7 +192,6 @@ body{
 
 <body>
 
-<!-- 🔥 네온 광고판 -->
 <div class="neon-banner">
   <div class="neon-title">인터넷TV·알뜰요금은 카톡문의</div>
   <div class="neon-points">
@@ -201,20 +200,19 @@ body{
   </div>
 </div>
 
-<!-- SK / KT / LG / 저가요금폰 -->
+<!-- ✅ SK · KT · LG · 저가 · 핫딜 (5개, 1줄 스크롤) -->
 <div class="tabs">
-  <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
-  <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
-  <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
-  <div class="tab" data-tab="LOW_PHONE">저가요금폰</div>
+  <div class="tab active" data-tab="SK_PHONE">SK</div>
+  <div class="tab" data-tab="KT_PHONE">KT</div>
+  <div class="tab" data-tab="LG_PHONE">LG</div>
+  <div class="tab" data-tab="LOW_PHONE">저가</div>
+  <div class="tab" data-tab="HOT_DEAL">핫딜</div>
 </div>
 
-<!-- 카드 -->
 <div class="main">
   <div class="grid" id="cards"></div>
 </div>
 
-<!-- 하단 -->
 <div class="footer">
   <div class="footer-msg">액정필름 무료교체 (카톡주문필수)</div>
   <div class="footer-store">복지관2층매장</div>
@@ -254,14 +252,28 @@ function parseCSV(text){
   cur.push(cell); rows.push([...cur]);
   if(!rows.length) return [];
   const header = rows.shift().map(h => (h||'').trim());
-  return rows.filter(r => r.some(v => (v||'').trim() !== '')).map(r=>{
-    const o={}; header.forEach((h,i)=> o[h]=(r[i]??'').trim()); return o;
-  });
+  return rows
+    .filter(r => r.some(v => (v||'').trim() !== ''))
+    .map(r=>{
+      const o={};
+      header.forEach((h,i)=> o[h]=(r[i]??'').trim());
+      return o;
+    });
 }
 
+function escapeHTML(str){
+  return (str ?? '').toString()
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+/* ✅ 0/마이너스도 그대로 표기 */
 function phonePrice(nStr){
   const n = Number(String(nStr||'').replace(/,/g,'').trim());
-  if(!isFinite(n) || n <= 0) return '문의';
+  if(!isFinite(n)) return '문의';
   return `${n}만원`;
 }
 
@@ -309,8 +321,8 @@ function parseMoveChange(text){
   return {type:'raw', raw:s};
 }
 
-/* ✅ 숫자 추출(배지 자동추가용) */
-function lowNumsFromDisplay(display_price){
+/* ✅ 숫자 추출(이동/기변만) */
+function numsFromMoveChange(display_price){
   const p = parseMoveChange(display_price);
   if(p.type !== 'split') return [];
   return p.lines
@@ -318,7 +330,23 @@ function lowNumsFromDisplay(display_price){
     .filter(n => Number.isFinite(n));
 }
 
-/* ✅ 저가요금폰 가격 표시(0/마이너스 포함 그대로 표기) */
+/* ✅ 핫딜 판정: 이동/기변 값 중 0 또는 마이너스 있으면 TRUE */
+function isHotDealPhoneRow(r){
+  if(r.type !== 'PHONE') return false;
+  const nums = numsFromMoveChange(r.display_price);
+  if(!nums.length) return false; // PHONE은 이동/기변 형식 전제
+  return nums.some(n => n <= 0);
+}
+
+/* ✅ 핫딜 정렬 기준: 마이너스가 있으면 가장 큰 혜택(예:-20)을 우선 */
+function bestHotValue(display_price){
+  const nums = numsFromMoveChange(display_price);
+  const negatives = nums.filter(n => n < 0);
+  if(negatives.length) return Math.min(...negatives); // -20이 제일 앞
+  return 0; // 0원폰은 뒤쪽
+}
+
+/* ✅ 저가요금폰 가격 표시 */
 function lowPriceHTML(display_price){
   const p = parseMoveChange(display_price);
   if(p.type === 'split'){
@@ -344,19 +372,20 @@ function lowPriceHTML(display_price){
   `;
 }
 
-/* ✅ 저가요금폰: 1행=1카드 + 배지 자동추가(0원폰/마이너스폰) */
+/* ✅ 저가요금폰: 1행=1카드 */
 function lowOneCard(r){
   const plan = PHONE_PLAN[r.carrier] || '';
   const carrierLabel = (r.carrier || '').toUpperCase();
 
-  const nums = lowNumsFromDisplay(r.display_price);
+  // 배지 자동추가(0/마이너스)
+  const nums = numsFromMoveChange(r.display_price);
   const hasMinus = nums.some(n => n < 0);
   const hasZero  = nums.some(n => n === 0);
   const extraBadge = hasMinus ? ' · 마이너스폰' : (hasZero ? ' · 0원폰' : '');
 
   return `
     <div class="card phone">
-      <div class="badge">${escapeHTML(carrierLabel)} · 저가요금폰${escapeHTML(extraBadge)}</div>
+      <div class="badge">${escapeHTML(carrierLabel)} · 저가${escapeHTML(extraBadge)}</div>
       <div class="model">${escapeHTML(r.title)}</div>
       <div class="price">${lowPriceHTML(r.display_price)}</div>
       <div class="sub">${plan}</div>
@@ -379,12 +408,16 @@ function soonCard(){
 }
 
 function filterRows(rows, tab){
-  if(tab==='SK_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='SK');
-  if(tab==='KT_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='KT');
-  if(tab==='LG_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='LG');
+  // ✅ 일반폰: 핫딜(0/마이너스) 제외하고 통신사별로만
+  if(tab==='SK_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='SK' && !isHotDealPhoneRow(r));
+  if(tab==='KT_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='KT' && !isHotDealPhoneRow(r));
+  if(tab==='LG_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='LG' && !isHotDealPhoneRow(r));
 
-  // ✅ 저가요금폰: PHONE_LOW 전체(SK/KT/LG)
+  // ✅ 저가요금폰
   if(tab==='LOW_PHONE') return rows.filter(r=>r.type==='PHONE_LOW' && (r.carrier==='SK' || r.carrier==='KT' || r.carrier==='LG'));
+
+  // ✅ 핫딜: 0/마이너스 포함된 PHONE만
+  if(tab==='HOT_DEAL') return rows.filter(r=>isHotDealPhoneRow(r));
 
   return [];
 }
@@ -394,19 +427,37 @@ function render(tab){
     .then(r=>r.text())
     .then(t=>{
       const rows = parseCSV(t);
-      const show = filterRows(rows, tab);
+      let show = filterRows(rows, tab);
       grid.innerHTML='';
 
       if(tab === 'LOW_PHONE'){
         // 저가요금폰: 1행=1카드
         show.forEach(r=>{ grid.innerHTML += lowOneCard(r); });
 
-        // 항상 6칸: 부족분 준비중 카드 채움
+        // 항상 6칸: 부족분 준비중
         const currentCount = grid.querySelectorAll('.card').length;
         const need = Math.max(0, 6 - currentCount);
         for(let i=0;i<need;i++){ grid.innerHTML += soonCard(); }
+
+      } else if(tab === 'HOT_DEAL'){
+
+        // ✅ 핫딜: 마이너스 큰 순(=-20 먼저) → 0원은 아래
+        const indexed = show.map((r,i)=>({r,i}));
+        indexed.sort((a,b)=>{
+          const av = bestHotValue(a.r.display_price);
+          const bv = bestHotValue(b.r.display_price);
+          if(av !== bv) return av - bv; // -20이 먼저
+          return a.i - b.i; // 동일이면 CSV 순서 유지
+        });
+        show = indexed.map(x=>x.r);
+
+        // 기존 PHONE 카드(이동/기변 2장 세트 그대로)
+        show.forEach(r=>{
+          phoneCards(r).forEach(h=>grid.innerHTML+=h);
+        });
+
       } else {
-        // 기존 휴대폰(이동/기변 분리)
+        // SK/KT/LG: 기존 PHONE 카드(이동/기변 2장 세트)
         show.forEach(r=>{
           phoneCards(r).forEach(h=>grid.innerHTML+=h);
         });
@@ -416,20 +467,11 @@ function render(tab){
         grid.innerHTML = `
           <div class="card" style="grid-column:1 / -1;">
             <div class="model">표시할 항목 없음</div>
-            <div class="sub">data.csv에 휴대폰 항목이 없습니다.</div>
+            <div class="sub">data.csv에 해당 항목이 없습니다.</div>
           </div>
         `;
       }
     });
-}
-
-function escapeHTML(str){
-  return (str ?? '').toString()
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
 }
 
 tabs.forEach(t=>{
