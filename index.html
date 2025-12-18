@@ -53,6 +53,7 @@ body{
 .model{font-weight:1000;font-size:16px;}
 .badge{
   font-size:12px;font-weight:1000;padding:6px 10px;border-radius:999px;color:#fff;
+  white-space:nowrap;
 }
 .badge.sk{background:var(--sk);}
 .badge.kt{background:var(--kt);}
@@ -60,7 +61,8 @@ body{
 .badge.hot{background:var(--hot);}
 .badge.low{background:var(--low);}
 
-.infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin-bottom:8px;}
+.infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin-bottom:6px;}
+.discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin-bottom:6px;}
 
 .priceRow{display:flex;gap:10px;}
 .pill{
@@ -84,7 +86,7 @@ body{
 }
 .action{
   flex:1;display:flex;align-items:center;justify-content:center;
-  font-weight:1000;text-decoration:none;color:#000;
+  font-weight:1000;text-decoration:none;color:#000;font-size:16px;
 }
 .action.call{background:var(--call);color:#fff;}
 .action.sms{background:var(--sms);}
@@ -124,26 +126,27 @@ body{
 </div>
 
 <script>
-const list=document.getElementById("list");
+const list = document.getElementById("list");
 
-const asNum=x=>{
-  const s=String(x??"").replace(/\u2212/g,"-").replace(/,/g,"").trim();
-  if(s==="")return null;
-  const n=Number(s); return isFinite(n)?n:null;
+const asNum = x=>{
+  const s = String(x ?? "").replace(/\u2212/g,"-").replace(/,/g,"").trim();
+  if(s==="") return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
 };
-const vClass=n=>n<0?"neg":n===0?"zero":"pos";
+const vClass = n => n<0?"neg":n===0?"zero":"pos";
 
-const fixedInfoLine=c=>{
-  if(c==="SK")return "SK 109요금 6개월 / 부가필수 문의";
-  if(c==="KT")return "KT 110요금 6개월 / 부가필수 문의";
+const fixedInfoLine = c=>{
+  if(c==="SK") return "SK 109요금 6개월 / 부가필수 문의";
+  if(c==="KT") return "KT 110요금 6개월 / 부가필수 문의";
   return "LG 115요금 6개월 / 부가필수 문의";
 };
-const infoLineWithPlan=(c,x)=>{
-  const p=asNum(x[`${c}_요금제`]);
-  return (p&&p>0)?`${c} ${p}요금 6개월 / 부가필수 문의`:fixedInfoLine(c);
+const infoLineWithPlan = (c,x)=>{
+  const p = asNum(x[`${c}_요금제`]);
+  return (p && p>0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
 };
 
-function addCard({badgeText,badgeClass,model,move,change,infoText}){
+function addCard({badgeText,badgeClass,model,move,change,infoText,discount}){
   list.insertAdjacentHTML("beforeend",`
     <div class="card">
       <div class="titleRow">
@@ -151,39 +154,44 @@ function addCard({badgeText,badgeClass,model,move,change,infoText}){
         <div class="badge ${badgeClass}">${badgeText}</div>
       </div>
       <div class="infoLine">${infoText}</div>
+      ${discount ? `<div class="discountLine">요금할인 25% 가능</div>` : ``}
       <div class="priceRow">
-        ${move!==""?`<div class="pill"><div class="k">이동</div><div class="v ${vClass(asNum(move))}">${move}</div></div>`:""}
-        ${change!==""?`<div class="pill"><div class="k">기변</div><div class="v ${vClass(asNum(change))}">${change}</div></div>`:""}
+        ${move!=="" ? `<div class="pill"><div class="k">이동</div><div class="v ${vClass(asNum(move))}">${move}</div></div>` : ``}
+        ${change!=="" ? `<div class="pill"><div class="k">기변</div><div class="v ${vClass(asNum(change))}">${change}</div></div>` : ``}
       </div>
     </div>
   `);
 }
 
 async function fetchCSV(){
-  const r=await fetch(`data.csv?v=${Date.now()}`,{cache:"no-store"});
-  const t=await r.text();
-  const rows=t.trim().split("\n").map(r=>r.split(","));
-  const h=rows.shift();
-  return rows.map(r=>{const o={};h.forEach((k,i)=>o[k]=r[i]??"");return o});
+  const r = await fetch(`data.csv?v=${Date.now()}`,{cache:"no-store"});
+  const t = await r.text();
+  const lines = t.replace(/^\uFEFF/,"").trim().split(/\r?\n/);
+  const header = lines.shift().split(",").map(s=>s.trim());
+  return lines.map(l=>{
+    const cols = l.split(",");
+    const o={};
+    header.forEach((h,i)=>o[h]=(cols[i]??"").trim());
+    return o;
+  });
 }
 
 async function render(tab){
   list.innerHTML="";
-  const items=(await fetchCSV()).filter(x=>x["기종"]);
+  const items = (await fetchCSV()).filter(x=>x["기종"]);
 
   if(["SK","KT","LG"].includes(tab)){
     items.forEach(x=>{
       const mv=x[`${tab}_이동`]||"", ch=x[`${tab}_기변`]||"";
-      const hasMove=mv!=="", hasChange=ch!=="";
-      if(!hasMove && !hasChange) return;
-
+      if(mv==="" && ch==="") return;
       addCard({
         badgeText:tab,
         badgeClass:tab.toLowerCase(),
         model:x["기종"],
-        move:hasMove?mv:"",
-        change:hasChange?ch:"",
-        infoText:fixedInfoLine(tab)
+        move:mv,
+        change:ch,
+        infoText:fixedInfoLine(tab),
+        discount:String(x["요금할인"]||"").toUpperCase()==="O"
       });
     });
     return;
@@ -192,16 +200,18 @@ async function render(tab){
   if(tab==="HOT"){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
-        if(asNum(x[`${c}_이동`])<0||asNum(x[`${c}_기변`])<0){
-          addCard({
-            badgeText:`핫딜 ${c}`,
-            badgeClass:"hot",
-            model:x["기종"],
-            move:x[`${c}_이동`]||"",
-            change:"",
-            infoText:infoLineWithPlan(c,x)
-          });
-        }
+        const mv=x[`${c}_이동`]||"", ch=x[`${c}_기변`]||"";
+        const mvN=asNum(mv), chN=asNum(ch);
+        if(!(mvN<0 || chN<0)) return;
+        addCard({
+          badgeText:`핫딜 ${c}`,
+          badgeClass:"hot",
+          model:x["기종"],
+          move:(mvN<0)?mv:"",
+          change:(chN<0)?ch:"",
+          infoText:infoLineWithPlan(c,x),
+          discount:String(x["요금할인"]||"").toUpperCase()==="O"
+        });
       });
     });
     return;
@@ -212,16 +222,18 @@ async function render(tab){
       ["SK","KT","LG"].forEach(c=>{
         const p=asNum(x[`${c}_요금제`]);
         const lim=c==="SK"?109:c==="KT"?110:115;
-        if(p&&p>0&&p<lim){
-          addCard({
-            badgeText:`저가 ${c} (${p})`,
-            badgeClass:"low",
-            model:x["기종"],
-            move:x[`${c}_이동`]||"",
-            change:"",
-            infoText:`${c} ${p}요금 6개월 / 부가필수 문의`
-          });
-        }
+        if(!(p && p<lim)) return;
+        const mv=x[`${c}_이동`]||"", ch=x[`${c}_기변`]||"";
+        if(mv==="" && ch==="") return;
+        addCard({
+          badgeText:`저가 ${c} (${p})`,
+          badgeClass:"low",
+          model:x["기종"],
+          move:mv,
+          change:ch,
+          infoText:`${c} ${p}요금 6개월 / 부가필수 문의`,
+          discount:String(x["요금할인"]||"").toUpperCase()==="O"
+        });
       });
     });
   }
