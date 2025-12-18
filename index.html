@@ -76,7 +76,7 @@ body{
 }
 
 /* ===============================
-   탭 (SK / KT / LG)
+   탭 (SK / KT / LG / 저가요금폰)
 ================================ */
 .tabs{
   display:flex;
@@ -136,6 +136,42 @@ body{
   margin-top: 6px;
 }
 
+/* ✅ 준비중 카드 */
+.card--soon{
+  opacity:.55;
+  filter:grayscale(1);
+  pointer-events:none;
+}
+.card--soon .model{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card--soon .soonIcon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  border:1px solid #d1d5db;
+  background:#fff;
+  font-size:16px;
+  line-height:1;
+}
+
+/* ✅ 저가요금폰 가격 가독성(탭 LOW 전용) */
+.lowPrice{ display:grid; gap:6px; }
+.lowLine{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:10px;
+}
+.lowLabel{ font-weight:900; opacity:.95; }
+.lowNum{ font-weight:1000; letter-spacing:-0.02em; }
+.lowSuffix{ font-weight:900; }
+
 /* 하단 */
 .footer{
   position:fixed;left:0;right:0;bottom:0;
@@ -165,11 +201,12 @@ body{
   </div>
 </div>
 
-<!-- SK / KT / LG -->
+<!-- SK / KT / LG / 저가요금폰 -->
 <div class="tabs">
   <div class="tab active" data-tab="SK_PHONE">SK휴대폰</div>
   <div class="tab" data-tab="KT_PHONE">KT휴대폰</div>
   <div class="tab" data-tab="LG_PHONE">LG휴대폰</div>
+  <div class="tab" data-tab="LOW_PHONE">저가요금폰</div>
 </div>
 
 <!-- 카드 -->
@@ -258,10 +295,97 @@ function phoneCards(r){
   return out;
 }
 
+/* ✅ 저가요금폰: 이동/기변 분해 */
+function parseMoveChange(text){
+  const s = String(text||'').replace(/\s+/g,' ').trim();
+  const m = s.match(/이동\s*([-\d.,]+)/);
+  const g = s.match(/기변\s*([-\d.,]+)/);
+  if(m || g){
+    const lines = [];
+    if(m) lines.push({label:'이동', num:String(m[1]).replace(/,/g,'').trim()});
+    if(g) lines.push({label:'기변', num:String(g[1]).replace(/,/g,'').trim()});
+    return {type:'split', lines};
+  }
+  return {type:'raw', raw:s};
+}
+
+/* ✅ 숫자 추출(배지 자동추가용) */
+function lowNumsFromDisplay(display_price){
+  const p = parseMoveChange(display_price);
+  if(p.type !== 'split') return [];
+  return p.lines
+    .map(x => Number(String(x.num).replace(/,/g,'').trim()))
+    .filter(n => Number.isFinite(n));
+}
+
+/* ✅ 저가요금폰 가격 표시(0/마이너스 포함 그대로 표기) */
+function lowPriceHTML(display_price){
+  const p = parseMoveChange(display_price);
+  if(p.type === 'split'){
+    const rows = p.lines.map(x=>{
+      return `
+        <div class="lowLine">
+          <span class="lowLabel">${escapeHTML(x.label)}</span>
+          <span class="lowNum">${escapeHTML(x.num)}</span>
+          <span class="lowSuffix">만원</span>
+        </div>
+      `;
+    }).join('');
+    return `<div class="lowPrice">${rows}</div>`;
+  }
+  const raw = p.raw || '';
+  return `
+    <div class="lowPrice">
+      <div class="lowLine">
+        <span class="lowLabel">조건</span>
+        <span class="lowNum">${escapeHTML(raw)}</span>
+      </div>
+    </div>
+  `;
+}
+
+/* ✅ 저가요금폰: 1행=1카드 + 배지 자동추가(0원폰/마이너스폰) */
+function lowOneCard(r){
+  const plan = PHONE_PLAN[r.carrier] || '';
+  const carrierLabel = (r.carrier || '').toUpperCase();
+
+  const nums = lowNumsFromDisplay(r.display_price);
+  const hasMinus = nums.some(n => n < 0);
+  const hasZero  = nums.some(n => n === 0);
+  const extraBadge = hasMinus ? ' · 마이너스폰' : (hasZero ? ' · 0원폰' : '');
+
+  return `
+    <div class="card phone">
+      <div class="badge">${escapeHTML(carrierLabel)} · 저가요금폰${escapeHTML(extraBadge)}</div>
+      <div class="model">${escapeHTML(r.title)}</div>
+      <div class="price">${lowPriceHTML(r.display_price)}</div>
+      <div class="sub">${plan}</div>
+      <div class="sub">${PHONE_EXTRA}</div>
+    </div>
+  `;
+}
+
+/* ✅ 준비중 카드 */
+function soonCard(){
+  return `
+    <div class="card phone card--soon">
+      <div class="badge">준비중</div>
+      <div class="model"><span class="soonIcon">⏳</span>저가요금폰 준비중</div>
+      <div class="price">COMING</div>
+      <div class="sub">곧 추가됩니다</div>
+      <div class="sub">카톡문의</div>
+    </div>
+  `;
+}
+
 function filterRows(rows, tab){
   if(tab==='SK_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='SK');
   if(tab==='KT_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='KT');
   if(tab==='LG_PHONE') return rows.filter(r=>r.type==='PHONE' && r.carrier==='LG');
+
+  // ✅ 저가요금폰: PHONE_LOW 전체(SK/KT/LG)
+  if(tab==='LOW_PHONE') return rows.filter(r=>r.type==='PHONE_LOW' && (r.carrier==='SK' || r.carrier==='KT' || r.carrier==='LG'));
+
   return [];
 }
 
@@ -272,9 +396,22 @@ function render(tab){
       const rows = parseCSV(t);
       const show = filterRows(rows, tab);
       grid.innerHTML='';
-      show.forEach(r=>{
-        phoneCards(r).forEach(h=>grid.innerHTML+=h);
-      });
+
+      if(tab === 'LOW_PHONE'){
+        // 저가요금폰: 1행=1카드
+        show.forEach(r=>{ grid.innerHTML += lowOneCard(r); });
+
+        // 항상 6칸: 부족분 준비중 카드 채움
+        const currentCount = grid.querySelectorAll('.card').length;
+        const need = Math.max(0, 6 - currentCount);
+        for(let i=0;i<need;i++){ grid.innerHTML += soonCard(); }
+      } else {
+        // 기존 휴대폰(이동/기변 분리)
+        show.forEach(r=>{
+          phoneCards(r).forEach(h=>grid.innerHTML+=h);
+        });
+      }
+
       if(!grid.innerHTML.trim()){
         grid.innerHTML = `
           <div class="card" style="grid-column:1 / -1;">
