@@ -246,10 +246,17 @@ async function fetchCSV(path){
   });
 }
 
+/* ✅ 숫자 변환 강화: 유니코드 마이너스(−)도 정상 처리 */
 function asNum(x){
-  const n = Number(String(x ?? "").replace(/,/g,"").trim());
+  const s = String(x ?? "")
+    .replace(/\u2212/g, "-")   // − -> -
+    .replace(/,/g, "")
+    .trim();
+  if (s === "") return null;
+  const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
+
 function vClass(n){
   if (n === null) return "";
   if (n < 0) return "neg";
@@ -303,13 +310,12 @@ function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
 /* ===== 핫딜 대표 선택: 3사 이동/기변 중 최저값(가장 마이너스) 통신사 ===== */
 function pickHotBest(x){
   const candidates = [
-    { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]), plan:asNum(x["SK_요금제"]) },
-    { c:"KT", move:asNum(x["KT_이동"]), change:asNum(x["KT_기변"]), plan:asNum(x["KT_요금제"]) },
-    { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]), plan:asNum(x["LG_요금제"]) }
+    { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]) },
+    { c:"KT", move:asNum(x["KT_이동"]), change:asNum(x["KT_기변"]) },
+    { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]) }
   ];
 
-  // 각 통신사에서 move/change 중 더 작은 값을 기준으로 비교
-  let best = null; // {c, score, moveStr, changeStr, plan}
+  let best = null; // {c, score, moveStr, changeStr}
   candidates.forEach(o=>{
     const vals = [o.move, o.change].filter(v=>v!==null);
     if (!vals.length) return;
@@ -319,8 +325,7 @@ function pickHotBest(x){
         c: o.c,
         score,
         moveStr: x[`${o.c}_이동`] ?? "",
-        changeStr: x[`${o.c}_기변`] ?? "",
-        plan: o.plan
+        changeStr: x[`${o.c}_기변`] ?? ""
       };
     }
   });
@@ -377,7 +382,7 @@ async function renderTab(tab){
     }
 
     if (tab === "HOT"){
-      // 기준: 이동/기변 중 하나라도 마이너스인 경우만
+      // ✅ 기준: SK/KT/LG 이동/기변 중 하나라도 "마이너스"면 핫딜
       const hot = valid.filter(x=>{
         const nums = [
           asNum(x["SK_이동"]), asNum(x["SK_기변"]),
@@ -394,15 +399,16 @@ async function renderTab(tab){
 
       hot.forEach(x=>{
         const best = pickHotBest(x);
-        // best가 없을 수는 거의 없지만 방어
         if (!best) return;
+
         addCard({
           badgeText: `핫딜 ${best.c}`,
           badgeClass: "hot",
           model: x["기종"],
           move: best.moveStr,
           change: best.changeStr,
-          infoText: `이동/기변 중 마이너스 발생 (${best.c})`,
+          /* ✅ 내부 판정 문구 노출 금지: 요금제/부가 문의 문구만 */
+          infoText: fixedInfoLine(best.c),
           item: x
         });
       });
