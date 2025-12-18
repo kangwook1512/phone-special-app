@@ -21,18 +21,28 @@ html,body{margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
 
 /* 네온 배너 */
-.neon-banner{margin:12px;padding:16px 14px;background:linear-gradient(135deg,#fff200,#ffe066);
-border-radius:16px;border:2px solid #fff6a3;
-box-shadow:0 0 8px rgba(255,242,0,.9),0 0 18px rgba(255,242,0,.7),0 0 32px rgba(255,242,0,.5);pointer-events:none}
+.neon-banner{
+  margin:12px;padding:16px 14px;background:linear-gradient(135deg,#fff200,#ffe066);
+  border-radius:16px;border:2px solid #fff6a3;
+  box-shadow:0 0 8px rgba(255,242,0,.9),0 0 18px rgba(255,242,0,.7),0 0 32px rgba(255,242,0,.5);
+  pointer-events:none
+}
 .neon-title{font-size:18px;font-weight:1000;text-align:center}
 .neon-points{margin-top:10px;display:grid;gap:6px}
 .neon-point{font-size:15px;font-weight:900;text-align:center}
 .neon-point b{text-decoration:underline}
 
-/* 탭 (압축 1줄) */
-.tabs{display:flex;gap:6px;padding:10px 8px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto}
-.tab{flex:1 1 0;min-width:0;padding:12px 0;font-size:14px;font-weight:900;
-text-align:center;border-radius:12px;background:#f3f4f6;cursor:pointer}
+/* 탭 */
+.tabs{
+  display:flex;gap:6px;padding:10px 8px;background:#fff;
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;white-space:nowrap
+}
+.tab{
+  flex:1 1 0;min-width:0;padding:12px 0;
+  font-size:14px;font-weight:900;text-align:center;
+  border-radius:12px;background:#f3f4f6;cursor:pointer
+}
 .tab.active{background:var(--tab);color:#fff}
 
 /* 카드 */
@@ -51,7 +61,11 @@ text-align:center;border-radius:12px;background:#f3f4f6;cursor:pointer}
 
 /* 준비중 */
 .card--soon{opacity:.5;filter:grayscale(1);pointer-events:none}
-.soonIcon{display:inline-flex;width:24px;height:24px;border-radius:50%;border:1px solid #ccc;align-items:center;justify-content:center}
+.soonIcon{
+  display:inline-flex;width:24px;height:24px;
+  border-radius:50%;border:1px solid #ccc;
+  align-items:center;justify-content:center
+}
 
 /* 하단 */
 .footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}
@@ -102,26 +116,28 @@ const tabs=document.querySelectorAll('.tab');
 
 function parseCSV(t){
   t=(t||'').replace(/\r/g,'');
-  const r=[],c=[];let s='',q=false;
+  const rows=[], cur=[]; let cell='', q=false;
   for(let i=0;i<t.length;i++){
-    const a=t[i],b=t[i+1];
-    if(a=='"'&&b=='"'){s+='"';i++}
-    else if(a=='"'){q=!q}
-    else if(a==','&&!q){c.push(s);s=''}
-    else if(a=='\n'&&!q){c.push(s);r.push([...c]);c.length=0;s=''}
-    else s+=a
+    const c=t[i], n=t[i+1];
+    if(c=='"'&&n=='"'){cell+='"';i++}
+    else if(c=='"'){q=!q}
+    else if(c==','&&!q){cur.push(cell);cell=''}
+    else if(c=='\n'&&!q){cur.push(cell);rows.push([...cur]);cur.length=0;cell=''}
+    else cell+=c
   }
-  c.push(s);r.push([...c]);
-  const h=r.shift().map(x=>x.trim());
-  return r.filter(x=>x.some(v=>v.trim())).map(x=>{
-    const o={};h.forEach((k,i)=>o[k]=(x[i]||'').trim());return o});
+  cur.push(cell); rows.push([...cur]);
+  const h=rows.shift().map(x=>x.trim());
+  return rows.filter(r=>r.some(v=>v.trim())).map(r=>{
+    const o={}; h.forEach((k,i)=>o[k]=(r[i]||'').trim()); return o;
+  });
 }
 
-const numFrom=s=>Number(String(s||'').replace(/,/g,''));
-const isHot=r=>/(-\d+)|(\b0\b)/.test(r.display_price||'');
+const isHot=r=>/(-\s*\d+)|(\b0\b)/.test(r.display_price||'');
 
 function phoneCards(r){
-  const out=[],m=r.display_price.match(/이동\s*([-\d]+)/),g=r.display_price.match(/기변\s*([-\d]+)/);
+  const out=[];
+  const m=r.display_price.match(/이동\s*([-\d]+)/);
+  const g=r.display_price.match(/기변\s*([-\d]+)/);
   if(m) out.push(card('이동',r.title,m[1]));
   if(g) out.push(card('기변',r.title,g[1]));
   return out;
@@ -137,32 +153,45 @@ const card=(b,t,p)=>`
 function render(tab){
   fetch(CSV_URL).then(r=>r.text()).then(t=>{
     const rows=parseCSV(t);
-    let show=[];
-    if(tab==='HOT_DEAL'){
-      show=rows.filter(r=>r.type==='PHONE'&&isHot(r))
-        .sort((a,b)=>{
-          const av=Math.min(...a.display_price.match(/-?\d+/g).map(Number));
-          const bv=Math.min(...b.display_price.match(/-?\d+/g).map(Number));
-          return av-bv;
-        });
-    }else if(tab==='LOW_PHONE'){
-      show=rows.filter(r=>r.type==='PHONE_LOW');
-      show.forEach(r=>grid.innerHTML+=card('저가',r.title,r.display_price));
-      for(let i=show.length;i<6;i++)
-        grid.innerHTML+=`<div class="card card--soon"><div class="model"><span class="soonIcon">⏳</span> 준비중</div></div>`;
-      return;
-    }else{
-      show=rows.filter(r=>r.type==='PHONE'&&r.carrier===tab.split('_')[0]&&!isHot(r));
-    }
+
+    /* ✅ 핵심: 탭 전환 시 항상 초기화 */
     grid.innerHTML='';
-    show.forEach(r=>phoneCards(r).forEach(h=>grid.innerHTML+=h));
+
+    if(tab==='HOT_DEAL'){
+      rows.filter(r=>r.type==='PHONE'&&isHot(r))
+        .sort((a,b)=>{
+          const av=Math.min(...(a.display_price.match(/-?\d+/g)||[]).map(Number));
+          const bv=Math.min(...(b.display_price.match(/-?\d+/g)||[]).map(Number));
+          return av-bv;
+        })
+        .forEach(r=>phoneCards(r).forEach(h=>grid.innerHTML+=h));
+      return;
+    }
+
+    if(tab==='LOW_PHONE'){
+      const lows=rows.filter(r=>r.type==='PHONE_LOW');
+      lows.forEach(r=>grid.innerHTML+=card('저가',r.title,r.display_price));
+      for(let i=lows.length;i<6;i++){
+        grid.innerHTML+=`
+          <div class="card card--soon">
+            <div class="model"><span class="soonIcon">⏳</span> 준비중</div>
+            <div class="sub">곧 추가됩니다</div>
+          </div>`;
+      }
+      return;
+    }
+
+    rows.filter(r=>r.type==='PHONE'&&r.carrier===tab.split('_')[0]&&!isHot(r))
+      .forEach(r=>phoneCards(r).forEach(h=>grid.innerHTML+=h));
   });
 }
 
-tabs.forEach(t=>t.onclick=()=>{
-  tabs.forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  render(t.dataset.tab);
+tabs.forEach(t=>{
+  t.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    render(t.dataset.tab);
+  };
 });
 render('SK_PHONE');
 </script>
