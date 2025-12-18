@@ -1,48 +1,166 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>복지관2층매장</title>
-  <style>
-    :root{
-      --bg:#f5f6f8; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e5e7eb;
-      --sk:#2563eb; --kt:#111827; --lg:#16a34a; --hot:#f97316; --low:#7c3aed;
-      --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
-    }
-    *{box-sizing:border-box;} html,body{margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:var(--ink);}
-    .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
-    .hero{background:#ffe866;border:2px solid #ffeb3b;border-radius:14px;padding:14px;text-align:center;font-weight:900;box-shadow:0 6px 16px rgba(0,0,0,.08);}
-    .hero .sub{margin-top:6px;font-weight:800;font-size:14px;} .hero .sub b{text-decoration:underline;}
-    .tabs.nice{display:flex;gap:8px;margin-top:14px;}
-    .tabs.nice .tabBtn{flex:1;padding:12px 0;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:1000;font-size:14px;cursor:pointer;transition:all .15s ease;}
-    .tabs.nice .tabBtn.active{color:#fff;border-color:transparent;}
-    .tabs.nice .tabBtn.sk.active{background:var(--sk);} .tabs.nice .tabBtn.kt.active{background:var(--kt);}
-    .tabs.nice .tabBtn.lg.active{background:var(--lg);} .tabs.nice .tabBtn.hot.active{background:var(--hot);}
-    .tabs.nice .tabBtn.low.active{background:var(--low);}
-    .panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
-    .emptyTitle{font-weight:1000;font-size:16px;margin-bottom:6px;}
-    .emptyDesc{color:var(--muted);font-weight:800;font-size:13px;white-space:pre-line;}
-    .list{display:flex;flex-direction:column;gap:10px;}
-    .card{border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.05);background:#fff;}
-    .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
-    .model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
-    .badge{font-weight:1000;font-size:12px;padding:6px 10px;border-radius:999px;color:#fff;white-space:nowrap;}
-    .badge.sk{background:var(--sk);} .badge.kt{background:var(--kt);} .badge.lg{background:var(--lg);}
-    .badge.hot{background:var(--hot);} .badge.low{background:var(--low);}
-    .infoLine{margin:0 0 10px;color:var(--muted);font-weight:1000;font-size:12px;}
-    .priceRow{display:flex;gap:10px;}
-    .pill{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px 10px;text-align:center;background:#fafafa;}
-    .pill .k{color:var(--muted);font-weight:1000;font-size:12px;margin-bottom:4px;}
-    .pill .v{font-weight:1000;font-size:20px;letter-spacing:-.4px;}
-    .neg{color:#dc2626;} .zero{color:#0ea5e9;} .pos{color:#0f172a;}
-    .fixedNotice{position:fixed;bottom:60px;left:0;right:0;background:#fff;border-top:1px solid var(--line);text-align:center;font-weight:1000;padding:10px 12px;z-index:998;line-height:1.25;}
-    .bottomBar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;height:60px;z-index:999;}
-    .action{flex:1;display:flex;align-items:center;justify-content:center;font-weight:1000;text-decoration:none;color:#0b1220;font-size:16px;}
-    .action.call{background:var(--call);color:#fff;} .action.sms{background:var(--sms);color:#05202b;} .action.kakao{background:var(--kakao);color:#3b2f00;}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>복지관2층매장</title>
+
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e5e7eb;
+
+    --sk:#2563eb;
+    --kt:#111827;
+    --lg:#16a34a;
+    --hot:#f97316;
+    --low:#7c3aed;
+
+    --call:#22c55e;
+    --sms:#38bdf8;
+    --kakao:#fee500;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+  }
+
+  .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
+
+  .hero{
+    background:#ffe866;
+    border:2px solid #ffeb3b;
+    border-radius:14px;
+    padding:14px;
+    text-align:center;
+    font-weight:900;
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
+  }
+  .hero .sub{margin-top:6px;font-weight:800;font-size:14px;}
+  .hero .sub b{text-decoration:underline;}
+
+  /* ===== 예쁜 탭 5개 ===== */
+  .tabs.nice{display:flex;gap:8px;margin-top:14px;}
+  .tabs.nice .tabBtn{
+    flex:1;
+    padding:12px 0;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-weight:1000;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tabs.nice .tabBtn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+  }
+  .tabs.nice .tabBtn.active{color:#fff;border-color:transparent;}
+  .tabs.nice .tabBtn.sk.active{background:var(--sk);}
+  .tabs.nice .tabBtn.kt.active{background:var(--kt);}
+  .tabs.nice .tabBtn.lg.active{background:var(--lg);}
+  .tabs.nice .tabBtn.hot.active{background:var(--hot);}
+  .tabs.nice .tabBtn.low.active{background:var(--low);}
+
+  .panel{
+    margin-top:14px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+  }
+
+  .emptyTitle{font-weight:1000;font-size:16px;margin-bottom:6px;}
+  .emptyDesc{color:var(--muted);font-weight:800;font-size:13px;}
+
+  .list{display:flex;flex-direction:column;gap:10px;}
+  .card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+  }
+  .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+  .model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
+
+  .badge{
+    font-weight:1000;
+    font-size:12px;
+    padding:6px 10px;
+    border-radius:999px;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .badge.sk{background:var(--sk);}
+  .badge.kt{background:var(--kt);}
+  .badge.lg{background:var(--lg);}
+  .badge.hot{background:var(--hot);}
+  .badge.low{background:var(--low);}
+
+  .infoLine{
+    margin:0 0 10px;
+    color:var(--muted);
+    font-weight:1000;
+    font-size:12px;
+  }
+
+  .priceRow{display:flex;gap:10px;}
+  .pill{
+    flex:1;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px 10px;
+    text-align:center;
+    background:#fafafa;
+  }
+  .pill .k{color:var(--muted);font-weight:1000;font-size:12px;margin-bottom:4px;}
+  .pill .v{font-weight:1000;font-size:20px;letter-spacing:-.4px;}
+  .neg{color:#dc2626;}
+  .zero{color:#0ea5e9;}
+  .pos{color:#0f172a;}
+
+  .fixedNotice{
+    position:fixed; bottom:60px; left:0; right:0;
+    background:#fff;
+    border-top:1px solid var(--line);
+    text-align:center;
+    font-weight:1000;
+    padding:10px 12px;
+    z-index:998;
+    line-height:1.25;
+  }
+
+  .bottomBar{
+    position:fixed; left:0; right:0; bottom:0;
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex; height:60px;
+    z-index:999;
+  }
+  .action{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:1000;
+    text-decoration:none;
+    color:#0b1220;
+    font-size:16px;
+  }
+  .action.call{background:var(--call);color:#fff;}
+  .action.sms{background:var(--sms);color:#05202b;}
+  .action.kakao{background:var(--kakao);color:#3b2f00;}
+</style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="hero">
@@ -62,13 +180,17 @@
     <div class="panel">
       <div id="empty" style="display:none;">
         <div class="emptyTitle">표시할 항목 없음</div>
-        <div class="emptyDesc" id="emptyDesc"></div>
+        <div class="emptyDesc" id="emptyDesc">data.csv에 항목이 없습니다.</div>
       </div>
       <div class="list" id="list"></div>
     </div>
   </div>
 
-  <div class="fixedNotice">액정필름 무료교체<br>카톡 주문 후 복지관2층 매장 방문</div>
+  <div class="fixedNotice">
+    액정필름 무료교체<br>
+    카톡 주문 후 복지관2층 매장 방문
+  </div>
+
   <div class="bottomBar">
     <a class="action call" href="tel:042-821-2272">전화</a>
     <a class="action sms" href="sms:010-5839-1512">문자</a>
@@ -76,241 +198,268 @@
   </div>
 
 <script>
-  function parseCSV(text){
-    text = text.replace(/^\uFEFF/, "");
-    const rows = [];
-    let row = [], cur = "", inQuotes = false;
-    for (let i=0; i<text.length; i++){
-      const ch = text[i], next = text[i+1];
-      if (inQuotes){
-        if (ch === '"' && next === '"'){ cur += '"'; i++; }
-        else if (ch === '"'){ inQuotes = false; }
-        else cur += ch;
+/* ===== CSV 파서(따옴표/콤마/UTF-8 BOM 대응) ===== */
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/, "");
+  const rows = [];
+  let row = [], cur = "", inQuotes = false;
+
+  for (let i=0; i<text.length; i++){
+    const ch = text[i];
+    const next = text[i+1];
+
+    if (inQuotes){
+      if (ch === '"' && next === '"'){ cur += '"'; i++; }
+      else if (ch === '"'){ inQuotes = false; }
+      else { cur += ch; }
+    } else {
+      if (ch === '"'){ inQuotes = true; }
+      else if (ch === ','){ row.push(cur); cur = ""; }
+      else if (ch === '\n'){
+        row.push(cur);
+        if (row.some(v => String(v).trim() !== "")) rows.push(row);
+        row = []; cur = "";
+      } else if (ch === '\r'){
+        // ignore
       } else {
-        if (ch === '"') inQuotes = true;
-        else if (ch === ','){ row.push(cur); cur = ""; }
-        else if (ch === '\n'){ row.push(cur); if (row.some(v=>String(v).trim()!=="")) rows.push(row); row=[]; cur=""; }
-        else if (ch === '\r'){}
-        else cur += ch;
+        cur += ch;
       }
     }
-    row.push(cur);
-    if (row.some(v=>String(v).trim()!=="")) rows.push(row);
-    return rows;
   }
+  row.push(cur);
+  if (row.some(v => String(v).trim() !== "")) rows.push(row);
+  return rows;
+}
 
-  async function fetchCSV(path){
-    const url = `${path}?v=${Date.now()}`;
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`CSV HTTP ${res.status} (경로/파일명 확인)`);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    if (!rows.length) return { items: [], header: [] };
-    const header = rows.shift().map(h => String(h).trim());
-    const items = rows.map(r => {
-      const o = {};
-      header.forEach((h,i)=> o[h] = String(r[i] ?? "").trim());
-      return o;
-    });
-    return { items, header };
-  }
-
-  function asNum(x){
-    const s = String(x ?? "").replace(/[−-–—‒﹣－]/g,"-").replace(/,/g,"").trim();
-    if (s==="") return null;
-    const n = Number(s);
-    return Number.isFinite(n) ? n : null;
-  }
-  function vClass(n){ if (n===null) return ""; if (n<0) return "neg"; if (n===0) return "zero"; return "pos"; }
-  function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;"); }
-
-  function setEmpty(show, msg){
-    const empty = document.getElementById("empty");
-    const desc = document.getElementById("emptyDesc");
-    empty.style.display = show ? "block" : "none";
-    desc.textContent = msg || "";
-  }
-  function clearList(){ document.getElementById("list").innerHTML = ""; }
-
-  // ✅ 헤더 자동 매핑 (기종/모델명 어떤 이름이 와도 대응)
-  function findKey(header, candidates){
-    const norm = s => String(s).replace(/\s+/g,"").toLowerCase();
-    const hnorm = header.map(h=>({raw:h, n:norm(h)}));
-    for (const c of candidates){
-      const cn = norm(c);
-      const hit = hnorm.find(x=>x.n===cn);
-      if (hit) return hit.raw;
-    }
-    return null;
-  }
-  function mkCarrierKeys(header, carrier){
-    const base = carrier.toLowerCase();
-    const move = findKey(header, [`${carrier}_이동`, `${carrier}이동`, `${base}_이동`, `${base}이동`, `${carrier}_m`, `${carrier}move`]);
-    const chg  = findKey(header, [`${carrier}_기변`, `${carrier}기변`, `${base}_기변`, `${base}기변`, `${carrier}_c`, `${carrier}change`]);
-    const plan = findKey(header, [`${carrier}_요금제`, `${carrier}요금제`, `${base}_요금제`, `${base}요금제`, `${carrier}_plan`]);
-    return { move, chg, plan };
-  }
-
-  function infoLine(carrier, row, planKey){
-    const plan = planKey ? asNum(row[planKey]) : null;
-    const def = (carrier==="SK")?109:(carrier==="KT")?110:115;
-    const use = (plan!==null && plan>0) ? plan : def;
-    return `${carrier} ${use}요금 6개월 / 부가필수 문의`;
-  }
-
-  function addCard({badgeText, badgeClass, model, move, change, infoText, discountFlag}){
-    const list = document.getElementById("list");
-    const moveNum = asNum(move), chgNum = asNum(change);
-
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="titleRow">
-        <div class="model">${escapeHtml(model)}</div>
-        <div class="badge ${badgeClass}">${escapeHtml(badgeText)}</div>
-      </div>
-      <div class="infoLine">${escapeHtml(infoText)}</div>
-      ${discountFlag ? `<div class="infoLine" style="color:#2563eb;">요금할인도 가능</div>` : ``}
-      <div class="priceRow">
-        <div class="pill"><div class="k">이동</div><div class="v ${vClass(moveNum)}">${escapeHtml((String(move??"").trim()==="")?"-":String(move))}</div></div>
-        <div class="pill"><div class="k">기변</div><div class="v ${vClass(chgNum)}">${escapeHtml((String(change??"").trim()==="")?"-":String(change))}</div></div>
-      </div>
-    `;
-    list.appendChild(card);
-  }
-
-  async function renderTab(tab){
-    clearList();
-    setEmpty(false,"");
-
-    try{
-      const { items, header } = await fetchCSV("data.csv");
-      if (!items.length){
-        setEmpty(true, "data.csv가 비어 있습니다.");
-        return;
-      }
-
-      const modelKey = findKey(header, ["기종","모델","모델명","model","device"]);
-      if (!modelKey){
-        setEmpty(true, `CSV 헤더에 '기종(모델명)' 컬럼을 찾지 못했습니다.\n현재 헤더:\n- ${header.join("\n- ")}`);
-        return;
-      }
-
-      const sk = mkCarrierKeys(header,"SK");
-      const kt = mkCarrierKeys(header,"KT");
-      const lg = mkCarrierKeys(header,"LG");
-
-      const valid = items.filter(x => String(x[modelKey] ?? "").trim() !== "");
-      if (!valid.length){
-        setEmpty(true, "모델(기종) 값이 있는 행이 없습니다.");
-        return;
-      }
-
-      const discountKey = findKey(header, ["요금할인","discount"]);
-
-      if (tab==="SK" || tab==="KT" || tab==="LG"){
-        const k = (tab==="SK")?sk:(tab==="KT")?kt:lg;
-        const badgeClass = (tab==="SK")?"sk":(tab==="KT")?"kt":"lg";
-
-        valid.forEach(x=>{
-          addCard({
-            badgeText: tab,
-            badgeClass,
-            model: x[modelKey],
-            move: k.move ? x[k.move] : "",
-            change: k.chg ? x[k.chg] : "",
-            infoText: infoLine(tab, x, k.plan),
-            discountFlag: discountKey ? (String(x[discountKey]).trim().toUpperCase()==="O") : false
-          });
-        });
-        return;
-      }
-
-      if (tab==="HOT"){
-        const hot = valid.filter(x=>{
-          const nums = [
-            sk.move?asNum(x[sk.move]):null, sk.chg?asNum(x[sk.chg]):null,
-            kt.move?asNum(x[kt.move]):null, kt.chg?asNum(x[kt.chg]):null,
-            lg.move?asNum(x[lg.move]):null, lg.chg?asNum(x[lg.chg]):null
-          ].filter(n=>n!==null);
-          return nums.some(n=>n<0);
-        });
-        if (!hot.length){ setEmpty(true, "핫딜(마이너스) 항목이 없습니다."); return; }
-
-        hot.forEach(x=>{
-          // 최저값 통신사 선택
-          const cand = [
-            {c:"SK", move: sk.move?asNum(x[sk.move]):null, chg: sk.chg?asNum(x[sk.chg]):null, k:sk},
-            {c:"KT", move: kt.move?asNum(x[kt.move]):null, chg: kt.chg?asNum(x[kt.chg]):null, k:kt},
-            {c:"LG", move: lg.move?asNum(x[lg.move]):null, chg: lg.chg?asNum(x[lg.chg]):null, k:lg},
-          ];
-          let best=null;
-          for (const o of cand){
-            const vals=[o.move,o.chg].filter(v=>v!==null);
-            if (!vals.length) continue;
-            const s=Math.min(...vals);
-            if (!best || s<best.s) best={...o,s};
-          }
-          if (!best) return;
-          addCard({
-            badgeText: `핫딜 ${best.c}`,
-            badgeClass:"hot",
-            model:x[modelKey],
-            move: best.k.move ? x[best.k.move] : "",
-            change: best.k.chg ? x[best.k.chg] : "",
-            infoText: infoLine(best.c, x, best.k.plan),
-            discountFlag: discountKey ? (String(x[discountKey]).trim().toUpperCase()==="O") : false
-          });
-        });
-        return;
-      }
-
-      if (tab==="LOW"){
-        const isLow = (k, limit, x) => {
-          if (!k.plan) return false;
-          const p = asNum(x[k.plan]);
-          return p!==null && p>0 && p<limit;
-        };
-        const low = valid.filter(x => isLow(sk,109,x) || isLow(kt,110,x) || isLow(lg,115,x));
-        if (!low.length){ setEmpty(true, "저가요금제(109/110/115 미만) 항목이 없습니다."); return; }
-
-        low.forEach(x=>{
-          const opts = [];
-          if (sk.plan){ const p=asNum(x[sk.plan]); if (p!==null && p>0 && p<109) opts.push({c:"SK",p,k:sk}); }
-          if (kt.plan){ const p=asNum(x[kt.plan]); if (p!==null && p>0 && p<110) opts.push({c:"KT",p,k:kt}); }
-          if (lg.plan){ const p=asNum(x[lg.plan]); if (p!==null && p>0 && p<115) opts.push({c:"LG",p,k:lg}); }
-          opts.sort((a,b)=>a.p-b.p);
-          const best = opts[0];
-          if (!best) return;
-
-          addCard({
-            badgeText:`저가 ${best.c} (${best.p})`,
-            badgeClass:"low",
-            model:x[modelKey],
-            move: best.k.move ? x[best.k.move] : "",
-            change: best.k.chg ? x[best.k.chg] : "",
-            infoText:`${best.c} ${best.p}요금 6개월 / 부가필수 문의`,
-            discountFlag: discountKey ? (String(x[discountKey]).trim().toUpperCase()==="O") : false
-          });
-        });
-        return;
-      }
-
-    } catch(e){
-      setEmpty(true, `CSV를 읽지 못했습니다.\n- 실행주소가 file:/// 이면 안 됩니다.\n- data.csv 경로/파일명 확인\n오류: ${String(e.message || e)}`);
-      console.log(e);
-    }
-  }
-
-  document.querySelectorAll(".tabBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      renderTab(btn.dataset.tab);
-    });
+async function fetchCSV(path){
+  const url = `${path}?v=${Date.now()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`${path} 로드 실패`);
+  const text = await res.text();
+  const rows = parseCSV(text);
+  if (!rows.length) return [];
+  const header = rows.shift().map(h => String(h).trim());
+  return rows.map(r => {
+    const o = {};
+    header.forEach((h, i) => o[h] = (r[i] ?? "").trim());
+    return o;
   });
+}
 
-  renderTab("SK");
+/* ✅ 숫자 변환 강화: 유니코드 마이너스(−)도 정상 처리 */
+function asNum(x){
+  const s = String(x ?? "")
+    .replace(/\u2212/g, "-")   // − -> -
+    .replace(/,/g, "")
+    .trim();
+  if (s === "") return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+function vClass(n){
+  if (n === null) return "";
+  if (n < 0) return "neg";
+  if (n === 0) return "zero";
+  return "pos";
+}
+function setEmpty(show, msg){
+  const empty = document.getElementById("empty");
+  const desc = document.getElementById("emptyDesc");
+  empty.style.display = show ? "block" : "none";
+  desc.textContent = msg || "";
+}
+function clearList(){ document.getElementById("list").innerHTML = ""; }
+
+function fixedInfoLine(carrier){
+  if (carrier === "SK") return "SK 109요금 6개월 / 부가필수 문의";
+  if (carrier === "KT") return "KT 110요금 6개월 / 부가필수 문의";
+  if (carrier === "LG") return "LG 115요금 6개월 / 부가필수 문의";
+  return "부가필수 문의";
+}
+
+function addCard({badgeText, badgeClass, model, move, change, infoText, item}){
+  const list = document.getElementById("list");
+  const moveNum = asNum(move);
+  const chgNum  = asNum(change);
+  const discountFlag = String(item?.["요금할인"] || "").trim().toUpperCase() === "O";
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="titleRow">
+      <div class="model">${model}</div>
+      <div class="badge ${badgeClass}">${badgeText}</div>
+    </div>
+    <div class="infoLine">${infoText}</div>
+    ${discountFlag ? `<div class="infoLine" style="color:#2563eb;font-weight:1000;">요금할인도 가능</div>` : ``}
+    <div class="priceRow">
+      <div class="pill">
+        <div class="k">이동</div>
+        <div class="v ${vClass(moveNum)}">${(move ?? "").trim()==="" ? "-" : move}</div>
+      </div>
+      <div class="pill">
+        <div class="k">기변</div>
+        <div class="v ${vClass(chgNum)}">${(change ?? "").trim()==="" ? "-" : change}</div>
+      </div>
+    </div>
+  `;
+  list.appendChild(card);
+}
+
+/* ===== 핫딜 대표 선택: 3사 이동/기변 중 최저값(가장 마이너스) 통신사 ===== */
+function pickHotBest(x){
+  const candidates = [
+    { c:"SK", move:asNum(x["SK_이동"]), change:asNum(x["SK_기변"]) },
+    { c:"KT", move:asNum(x["KT_이동"]), change:asNum(x["KT_기변"]) },
+    { c:"LG", move:asNum(x["LG_이동"]), change:asNum(x["LG_기변"]) }
+  ];
+
+  let best = null; // {c, score, moveStr, changeStr}
+  candidates.forEach(o=>{
+    const vals = [o.move, o.change].filter(v=>v!==null);
+    if (!vals.length) return;
+    const score = Math.min(...vals); // 더 작은 값(마이너스 우선)
+    if (best === null || score < best.score){
+      best = {
+        c: o.c,
+        score,
+        moveStr: x[`${o.c}_이동`] ?? "",
+        changeStr: x[`${o.c}_기변`] ?? ""
+      };
+    }
+  });
+  return best;
+}
+
+/* ===== 저가 대표 선택: (0 제외) 요금제 낮은 통신사 ===== */
+function pickLowBest(x){
+  const opts = [
+    { c:"SK", plan:asNum(x["SK_요금제"]), limit:109 },
+    { c:"KT", plan:asNum(x["KT_요금제"]), limit:110 },
+    { c:"LG", plan:asNum(x["LG_요금제"]), limit:115 }
+  ].filter(o => o.plan !== null && o.plan > 0 && o.plan < o.limit);
+
+  if (!opts.length) return null;
+  opts.sort((a,b)=>a.plan-b.plan);
+  const best = opts[0];
+  return {
+    c: best.c,
+    plan: best.plan,
+    moveStr: x[`${best.c}_이동`] ?? "",
+    changeStr: x[`${best.c}_기변`] ?? ""
+  };
+}
+
+/* ===== 렌더 ===== */
+async function renderTab(tab){
+  clearList();
+  setEmpty(false,"");
+
+  try{
+    const items = await fetchCSV("data.csv");
+    const valid = items.filter(x => x["기종"] && String(x["기종"]).trim() !== "");
+
+    if (!valid.length){
+      setEmpty(true, "data.csv에 휴대폰 항목이 없습니다.");
+      return;
+    }
+
+    if (tab === "SK" || tab === "KT" || tab === "LG"){
+      const badgeClass = tab === "SK" ? "sk" : (tab === "KT" ? "kt" : "lg");
+      valid.forEach(x=>{
+        addCard({
+          badgeText: tab,
+          badgeClass,
+          model: x["기종"],
+          move: x[`${tab}_이동`] ?? "",
+          change: x[`${tab}_기변`] ?? "",
+          infoText: fixedInfoLine(tab),
+          item: x
+        });
+      });
+      return;
+    }
+
+    if (tab === "HOT"){
+      // ✅ 기준: SK/KT/LG 이동/기변 중 하나라도 "마이너스"면 핫딜
+      const hot = valid.filter(x=>{
+        const nums = [
+          asNum(x["SK_이동"]), asNum(x["SK_기변"]),
+          asNum(x["KT_이동"]), asNum(x["KT_기변"]),
+          asNum(x["LG_이동"]), asNum(x["LG_기변"])
+        ].filter(n=>n!==null);
+        return nums.some(n=>n < 0);
+      });
+
+      if (!hot.length){
+        setEmpty(true, "핫딜(이동/기변 마이너스) 항목이 없습니다.");
+        return;
+      }
+
+      hot.forEach(x=>{
+        const best = pickHotBest(x);
+        if (!best) return;
+
+        addCard({
+          badgeText: `핫딜 ${best.c}`,
+          badgeClass: "hot",
+          model: x["기종"],
+          move: best.moveStr,
+          change: best.changeStr,
+          /* ✅ 내부 판정 문구 노출 금지: 요금제/부가 문의 문구만 */
+          infoText: fixedInfoLine(best.c),
+          item: x
+        });
+      });
+      return;
+    }
+
+    if (tab === "LOW"){
+      const low = valid.filter(x=>{
+        const sk = asNum(x["SK_요금제"]);
+        const kt = asNum(x["KT_요금제"]);
+        const lg = asNum(x["LG_요금제"]);
+        return (sk!==null && sk>0 && sk<109) || (kt!==null && kt>0 && kt<110) || (lg!==null && lg>0 && lg<115);
+      });
+
+      if (!low.length){
+        setEmpty(true, "저가요금제(109/110/115 미만) 항목이 없습니다.");
+        return;
+      }
+
+      low.forEach(x=>{
+        const best = pickLowBest(x);
+        if (!best) return;
+        addCard({
+          badgeText: `저가 ${best.c} (${best.plan})`,
+          badgeClass: "low",
+          model: x["기종"],
+          move: best.moveStr,
+          change: best.changeStr,
+          infoText: `${best.c} ${best.plan}요금 6개월 / 부가필수 문의`,
+          item: x
+        });
+      });
+      return;
+    }
+
+  }catch(e){
+    console.log(e);
+    setEmpty(true, "CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)");
+  }
+}
+
+/* ===== 탭 이벤트 ===== */
+document.querySelectorAll(".tabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    renderTab(btn.dataset.tab);
+  });
+});
+
+renderTab("SK");
 </script>
 </body>
 </html>
