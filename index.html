@@ -49,8 +49,8 @@ body{
   border:1px solid var(--line);border-radius:14px;padding:12px;
   box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
-.titleRow{display:flex;justify-content:space-between;margin-bottom:8px;}
-.model{font-weight:1000;font-size:16px;}
+.titleRow{display:flex;justify-content:space-between;margin-bottom:8px;gap:10px;align-items:center;}
+.model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
 .badge{
   font-size:12px;font-weight:1000;padding:6px 10px;border-radius:999px;color:#fff;
   white-space:nowrap;
@@ -61,16 +61,16 @@ body{
 .badge.hot{background:var(--hot);}
 .badge.low{background:var(--low);}
 
-.infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin-bottom:6px;}
-.discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin-bottom:6px;}
+.infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin:0 0 6px;}
+.discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin:0 0 8px;}
 
 .priceRow{display:flex;gap:10px;}
 .pill{
   flex:1;border:1px solid var(--line);border-radius:12px;
   padding:10px;text-align:center;background:#fafafa;
 }
-.pill .k{font-size:12px;color:var(--muted);font-weight:1000;}
-.pill .v{font-size:20px;font-weight:1000;}
+.pill .k{font-size:12px;color:var(--muted);font-weight:1000;margin-bottom:4px;}
+.pill .v{font-size:20px;font-weight:1000;letter-spacing:-.4px;}
 .neg{color:#dc2626;}
 .zero{color:#0ea5e9;}
 .pos{color:#0f172a;}
@@ -79,18 +79,20 @@ body{
   position:fixed;left:0;right:0;bottom:60px;
   background:#fff;border-top:1px solid var(--line);
   text-align:center;font-weight:1000;padding:10px;
+  z-index:998; line-height:1.25;
 }
 .bottomBar{
   position:fixed;left:0;right:0;bottom:0;height:60px;
   display:flex;border-top:1px solid var(--line);background:#fff;
+  z-index:999;
 }
 .action{
   flex:1;display:flex;align-items:center;justify-content:center;
   font-weight:1000;text-decoration:none;color:#000;font-size:16px;
 }
 .action.call{background:var(--call);color:#fff;}
-.action.sms{background:var(--sms);}
-.action.kakao{background:var(--kakao);}
+.action.sms{background:var(--sms);color:#05202b;}
+.action.kakao{background:var(--kakao);color:#3b2f00;}
 </style>
 </head>
 
@@ -122,130 +124,188 @@ body{
 <div class="bottomBar">
   <a class="action call" href="tel:042-821-2272">전화</a>
   <a class="action sms" href="sms:010-5839-1512">문자</a>
-  <a class="action kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank">카톡</a>
+  <a class="action kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
 </div>
 
 <script>
 const list = document.getElementById("list");
 
-const asNum = x=>{
-  const s = String(x ?? "").replace(/\u2212/g,"-").replace(/,/g,"").trim();
-  if(s==="") return null;
+/* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
+const asNum = (x) => {
+  const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
+  if (s === "") return null;
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 };
-const vClass = n => n<0?"neg":n===0?"zero":"pos";
+const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
 
-const fixedInfoLine = c=>{
-  if(c==="SK") return "SK 109요금 6개월 / 부가필수 문의";
-  if(c==="KT") return "KT 110요금 6개월 / 부가필수 문의";
+/* ✅ 핵심 정책: 0은 고객에게 오해 유발 → 화면에 노출하지 않음 */
+const showVal = (raw) => {
+  const n = asNum(raw);
+  if (n === null) return "";    // 빈값
+  if (n === 0) return "";       // 0은 숨김
+  return String(raw).trim();    // -/양수는 그대로
+};
+
+const fixedInfoLine = (c) => {
+  if (c === "SK") return "SK 109요금 6개월 / 부가필수 문의";
+  if (c === "KT") return "KT 110요금 6개월 / 부가필수 문의";
   return "LG 115요금 6개월 / 부가필수 문의";
 };
-const infoLineWithPlan = (c,x)=>{
+/* 요금제 실제값 우선 (예: 33요금) */
+const infoLineWithPlan = (c, x) => {
   const p = asNum(x[`${c}_요금제`]);
-  return (p && p>0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
+  return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
 };
 
-function addCard({badgeText,badgeClass,model,move,change,infoText,discount}){
-  list.insertAdjacentHTML("beforeend",`
+function addCard({badgeText, badgeClass, model, move, change, infoText, discount}){
+  const mvNum = asNum(move);
+  const chNum = asNum(change);
+
+  list.insertAdjacentHTML("beforeend", `
     <div class="card">
       <div class="titleRow">
         <div class="model">${model}</div>
         <div class="badge ${badgeClass}">${badgeText}</div>
       </div>
-      <div class="infoLine">${infoText}</div>
-      ${discount ? `<div class="discountLine">요금할인 25% 가능</div>` : ``}
+      <p class="infoLine">${infoText}</p>
+      ${discount ? `<p class="discountLine">요금할인 25% 가능</p>` : ``}
       <div class="priceRow">
-        ${move!=="" ? `<div class="pill"><div class="k">이동</div><div class="v ${vClass(asNum(move))}">${move}</div></div>` : ``}
-        ${change!=="" ? `<div class="pill"><div class="k">기변</div><div class="v ${vClass(asNum(change))}">${change}</div></div>` : ``}
+        ${move !== "" ? `
+          <div class="pill">
+            <div class="k">이동</div>
+            <div class="v ${vClass(mvNum)}">${move}</div>
+          </div>` : ``}
+        ${change !== "" ? `
+          <div class="pill">
+            <div class="k">기변</div>
+            <div class="v ${vClass(chNum)}">${change}</div>
+          </div>` : ``}
       </div>
     </div>
   `);
 }
 
+/* CSV fetch + 간단 파싱(콤마/따옴표가 복잡하지 않은 CSV 전제) */
 async function fetchCSV(){
-  const r = await fetch(`data.csv?v=${Date.now()}`,{cache:"no-store"});
+  const r = await fetch(`data.csv?v=${Date.now()}`, { cache: "no-store" });
+  if (!r.ok) throw new Error("data.csv 로드 실패");
   const t = await r.text();
+
   const lines = t.replace(/^\uFEFF/,"").trim().split(/\r?\n/);
-  const header = lines.shift().split(",").map(s=>s.trim());
-  return lines.map(l=>{
-    const cols = l.split(",");
-    const o={};
-    header.forEach((h,i)=>o[h]=(cols[i]??"").trim());
+  if (!lines.length) return [];
+  const header = lines.shift().split(",").map(s => s.trim());
+
+  return lines.map(line => {
+    const cols = line.split(",");
+    const o = {};
+    header.forEach((h,i)=> o[h] = (cols[i] ?? "").trim());
     return o;
   });
 }
 
 async function render(tab){
-  list.innerHTML="";
-  const items = (await fetchCSV()).filter(x=>x["기종"]);
+  list.innerHTML = "";
+  let items = [];
+  try{
+    items = (await fetchCSV()).filter(x => String(x["기종"] ?? "").trim() !== "");
+  }catch(e){
+    list.insertAdjacentHTML("beforeend", `<p class="infoLine">CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)</p>`);
+    return;
+  }
+  if (!items.length){
+    list.insertAdjacentHTML("beforeend", `<p class="infoLine">표시할 항목이 없습니다.</p>`);
+    return;
+  }
 
-  if(["SK","KT","LG"].includes(tab)){
+  const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
+
+  /* SK/KT/LG 탭: 이동/기변 둘 다 있으면 둘 다 표시, 둘 다 없으면 숨김 (0은 숨김) */
+  if (["SK","KT","LG"].includes(tab)){
     items.forEach(x=>{
-      const mv=x[`${tab}_이동`]||"", ch=x[`${tab}_기변`]||"";
-      if(mv==="" && ch==="") return;
+      const mv = showVal(x[`${tab}_이동`]);
+      const ch = showVal(x[`${tab}_기변`]);
+      if (mv === "" && ch === "") return;
+
       addCard({
-        badgeText:tab,
-        badgeClass:tab.toLowerCase(),
-        model:x["기종"],
-        move:mv,
-        change:ch,
-        infoText:fixedInfoLine(tab),
-        discount:String(x["요금할인"]||"").toUpperCase()==="O"
+        badgeText: tab,
+        badgeClass: tab.toLowerCase(),
+        model: x["기종"],
+        move: mv,
+        change: ch,
+        infoText: fixedInfoLine(tab),
+        discount: discountOf(x)
       });
     });
     return;
   }
 
-  if(tab==="HOT"){
+  /* HOT 탭: 마이너스가 나온 "쪽"만 표시 (이동 0 같은 착시 방지) + 0 숨김 */
+  if (tab === "HOT"){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
-        const mv=x[`${c}_이동`]||"", ch=x[`${c}_기변`]||"";
-        const mvN=asNum(mv), chN=asNum(ch);
-        if(!(mvN<0 || chN<0)) return;
+        const rawMv = x[`${c}_이동`] ?? "";
+        const rawCh = x[`${c}_기변`] ?? "";
+        const mvNum = asNum(rawMv);
+        const chNum = asNum(rawCh);
+
+        const isHot = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
+        if (!isHot) return;
+
+        const mv = (mvNum !== null && mvNum < 0) ? showVal(rawMv) : "";
+        const ch = (chNum !== null && chNum < 0) ? showVal(rawCh) : "";
+        if (mv === "" && ch === "") return; // 안전
+
         addCard({
-          badgeText:`핫딜 ${c}`,
-          badgeClass:"hot",
-          model:x["기종"],
-          move:(mvN<0)?mv:"",
-          change:(chN<0)?ch:"",
-          infoText:infoLineWithPlan(c,x),
-          discount:String(x["요금할인"]||"").toUpperCase()==="O"
+          badgeText: `핫딜 ${c}`,
+          badgeClass: "hot",
+          model: x["기종"],
+          move: mv,
+          change: ch,
+          infoText: infoLineWithPlan(c, x),
+          discount: discountOf(x)
         });
       });
     });
     return;
   }
 
-  if(tab==="LOW"){
+  /* LOW 탭: 109/110/115 미만 요금제 있는 통신사만, 표시도 그 요금제 기준 (0은 숨김) */
+  if (tab === "LOW"){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
-        const p=asNum(x[`${c}_요금제`]);
-        const lim=c==="SK"?109:c==="KT"?110:115;
-        if(!(p && p<lim)) return;
-        const mv=x[`${c}_이동`]||"", ch=x[`${c}_기변`]||"";
-        if(mv==="" && ch==="") return;
+        const p = asNum(x[`${c}_요금제`]);
+        const lim = (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
+        if (!(p !== null && p > 0 && p < lim)) return;
+
+        const mv = showVal(x[`${c}_이동`]);
+        const ch = showVal(x[`${c}_기변`]);
+        if (mv === "" && ch === "") return;
+
         addCard({
-          badgeText:`저가 ${c} (${p})`,
-          badgeClass:"low",
-          model:x["기종"],
-          move:mv,
-          change:ch,
-          infoText:`${c} ${p}요금 6개월 / 부가필수 문의`,
-          discount:String(x["요금할인"]||"").toUpperCase()==="O"
+          badgeText: `저가 ${c} (${p})`,
+          badgeClass: "low",
+          model: x["기종"],
+          move: mv,
+          change: ch,
+          infoText: `${c} ${p}요금 6개월 / 부가필수 문의`,
+          discount: discountOf(x)
         });
       });
     });
+    return;
   }
 }
 
-document.querySelectorAll(".tabBtn").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".tabBtn").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    render(b.dataset.tab);
-  };
+/* 탭 이벤트 */
+document.querySelectorAll(".tabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.tab);
+  });
 });
+
 render("SK");
 </script>
 </body>
