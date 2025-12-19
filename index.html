@@ -27,6 +27,24 @@ body{
 .hero .sub{margin-top:6px;font-weight:800;font-size:14px;}
 .hero .sub b{text-decoration:underline;}
 
+/* ✅ 방문자 카운터(사내 체감용) - 기존 UI 영향 없도록 고유 클래스만 사용 */
+.vCounter{
+  margin:12px 0 2px;
+  padding:10px 12px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 4px 14px rgba(15,23,42,.06);
+}
+.vCol{flex:1;min-width:0;}
+.vLabel{font-size:12px;font-weight:1000;color:var(--muted);letter-spacing:-.2px;}
+.vNum{margin-top:4px;font-size:20px;font-weight:1000;line-height:1;color:var(--ink);}
+.vUnit{font-size:13px;font-weight:1000;color:var(--muted);margin-left:4px;}
+.vBar{width:1px;height:32px;background:var(--line);}
+
 .tabs{display:flex;gap:8px;margin-top:14px;}
 .tabBtn{
   flex:1;padding:12px 0;border-radius:999px;border:1px solid var(--line);
@@ -102,6 +120,19 @@ body{
     인터넷TV·알뜰요금은 카톡문의
     <div class="sub">🪙 인터넷TV : <b>현금 최대 지원</b></div>
     <div class="sub">🔥 알뜰요금 : <b>최저요금 3,300원~</b></div>
+  </div>
+
+  <!-- ✅ 방문자 카운터: 노란 박스 아래 / 탭 위 -->
+  <div class="vCounter" role="note" aria-label="방문자 수(사내 체감용)">
+    <div class="vCol">
+      <div class="vLabel">오늘 방문객</div>
+      <div class="vNum"><span id="todayCount">-</span><span class="vUnit">명</span></div>
+    </div>
+    <div class="vBar"></div>
+    <div class="vCol">
+      <div class="vLabel">누적 방문객</div>
+      <div class="vNum"><span id="totalCount">-</span><span class="vUnit">명</span></div>
+    </div>
   </div>
 
   <div class="tabs">
@@ -330,5 +361,54 @@ document.querySelectorAll(".tabBtn").forEach(btn=>{
 
 render("SK");
 </script>
+
+<!-- ✅ 방문자 카운팅(사내 체감용): 기존 로직과 완전 분리 -->
+<script>
+(function(){
+  // 사이트 고유값(겹치지 않게 고정). 필요하면 더 길게/특정 키워드로 바꿔도 됩니다.
+  const NAMESPACE = 'a2272a-ghpages-bokjigwan2f';
+  const TOTAL_KEY = 'total';
+
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const TODAY_KEY = `today-${yyyy}-${mm}-${dd}`;
+
+  // 30분 내 재접속은 카운트 증가 방지(새로고침/반복 클릭 완화)
+  const stampKey = `visit-stamp-${TODAY_KEY}`;
+  const now = Date.now();
+  const last = Number(localStorage.getItem(stampKey) || 0);
+  const cooldown = 30 * 60 * 1000;
+  const shouldHit = (now - last) > cooldown;
+
+  const setText = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(v);
+  };
+
+  const get = (key, id) =>
+    fetch(`https://api.countapi.xyz/get/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(key)}`)
+      .then(r => r.json())
+      .then(d => setText(id, (d && typeof d.value === 'number') ? d.value : 0))
+      .catch(() => setText(id, "-"));
+
+  const hit = (key, id) =>
+    fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(key)}`)
+      .then(r => r.json())
+      .then(d => setText(id, d.value))
+      .catch(() => get(key, id));
+
+  if (shouldHit){
+    localStorage.setItem(stampKey, String(now));
+    hit(TODAY_KEY, 'todayCount');
+    hit(TOTAL_KEY, 'totalCount');
+  } else {
+    get(TODAY_KEY, 'todayCount');
+    get(TOTAL_KEY, 'totalCount');
+  }
+})();
+</script>
+
 </body>
 </html>
