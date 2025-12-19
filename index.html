@@ -17,7 +17,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
 }
-.wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;} /* ✅ 하단 도크 여유 */
 
 /* =========================
    ✅ 노란 광고판(LED 강)
@@ -159,22 +159,80 @@ body{
 .zero{color:#0ea5e9;}
 .pos{color:#0f172a;}
 
-/* ✅ 하단 고정 버튼 */
-.bottomBar{
-  position:fixed;left:0;right:0;bottom:0;height:60px;
-  display:flex;border-top:1px solid var(--line);background:#fff;
+/* =========================
+   ✅ 하단 도크(세련/균형) + SVG 아이콘
+   ========================= */
+.bottomDock{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:calc(10px + env(safe-area-inset-bottom));
+  height:60px;
+  padding:8px;
+  display:flex;
+  gap:10px;
+  border-radius:18px;
+
+  background:rgba(255,255,255,.88);
+  border:1px solid rgba(15,23,42,.10);
+  box-shadow:0 14px 34px rgba(15,23,42,.14);
+  backdrop-filter: blur(10px) saturate(160%);
   z-index:999;
 }
-.action{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  font-weight:1000;text-decoration:none;color:#000;font-size:16px;
+.dockBtn{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border-radius:14px;
+
+  text-decoration:none;
+  font-weight:1000;
+  font-size:16px;
+  letter-spacing:-.2px;
+
+  border:1px solid rgba(15,23,42,.10);
+  background:#fff;
+  color:#0f172a;
+
+  box-shadow:0 8px 18px rgba(15,23,42,.08);
+  transform: translateY(0);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
-.action.call{background:var(--call);color:#fff;}
-.action.sms{background:var(--sms);color:#05202b;}
-.action.kakao{background:var(--kakao);color:#3b2f00;}
+.dockBtn:active{
+  transform: translateY(1px);
+  box-shadow:0 6px 14px rgba(15,23,42,.10);
+  filter: brightness(.98);
+}
+.dockBtn svg{
+  width:20px;height:20px;
+  stroke: currentColor;
+  stroke-width:2.4;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.dockBtn.call{
+  background:rgba(34,197,94,.12);
+  border-color:rgba(34,197,94,.22);
+  color:#0b3a22;
+}
+.dockBtn.sms{
+  background:rgba(56,189,248,.12);
+  border-color:rgba(56,189,248,.22);
+  color:#083244;
+}
+.dockBtn.kakao{
+  background:rgba(254,229,0,.35);
+  border-color:rgba(254,229,0,.55);
+  color:#3b2f00;
+}
 
 @media (prefers-reduced-motion: reduce){
   .hero,.hero::after,.heroLedStrip::after,.heroLedStrip span,.adHot,.adBadge{animation:none!important;}
+  .dockBtn{transition:none!important;}
 }
 </style>
 </head>
@@ -221,11 +279,36 @@ body{
   </div>
 </div>
 
-<!-- ✅ 하단 버튼(전화/문자/카톡만) -->
-<div class="bottomBar">
-  <a class="action call" href="tel:042-821-2272">전화</a>
-  <a class="action sms" href="sms:010-5839-1512">문자</a>
-  <a class="action kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
+<!-- ✅ 하단 도크: 아이콘(SVG) + 균형 정렬 -->
+<div class="bottomDock" role="navigation" aria-label="빠른 연락">
+  <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
+    <!-- phone -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.6 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.12a2 2 0 0 1 2.11-.45c.83.28 1.7.48 2.6.6A2 2 0 0 1 22 16.92z"/>
+    </svg>
+    <span>전화</span>
+  </a>
+
+  <a class="dockBtn sms" href="sms:010-5839-1512" aria-label="문자">
+    <!-- message-square -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+      <path d="M8 10h8"/>
+      <path d="M8 14h5"/>
+    </svg>
+    <span>문자</span>
+  </a>
+
+  <a class="dockBtn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡">
+    <!-- chat-bubble (simple) -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20 11c0 3.87-3.58 7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
+      <path d="M9 11h.01"/>
+      <path d="M12 11h.01"/>
+      <path d="M15 11h.01"/>
+    </svg>
+    <span>카톡</span>
+  </a>
 </div>
 
 <!-- =========================
