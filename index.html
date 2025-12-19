@@ -147,11 +147,14 @@ const showVal = (raw) => {
   return String(raw).trim();    // -/양수는 그대로
 };
 
+const limOf = (c) => (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
+
 const fixedInfoLine = (c) => {
   if (c === "SK") return "SK 109요금 6개월 / 부가필수 문의";
   if (c === "KT") return "KT 110요금 6개월 / 부가필수 문의";
   return "LG 115요금 6개월 / 부가필수 문의";
 };
+
 /* 요금제 실제값 우선 (예: 33요금) */
 const infoLineWithPlan = (c, x) => {
   const p = asNum(x[`${c}_요금제`]);
@@ -220,19 +223,38 @@ async function render(tab){
 
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
-  /* SK/KT/LG 탭: 이동/기변 둘 다 있으면 둘 다 표시, 둘 다 없으면 숨김 (0은 숨김) */
+  /* ✅ [수정1 + 수정2]
+     SK/KT/LG 탭(109/110/115): 해당 요금제만 노출(요금제 비어있으면 허용)
+     + 세트 규칙: 한쪽만 있으면 다른쪽은 "문의"로 채워 세트 유지
+  */
   if (["SK","KT","LG"].includes(tab)){
+    const lim = limOf(tab);
+
     items.forEach(x=>{
-      const mv = showVal(x[`${tab}_이동`]);
-      const ch = showVal(x[`${tab}_기변`]);
+      const plan = asNum(x[`${tab}_요금제`]);
+
+      // 요금제가 명시되어 있고, 109/110/115가 아니면 → 통신사 탭에서 제외(저가/핫딜로만)
+      if (plan !== null && plan > 0 && plan !== lim) return;
+
+      const mvRaw = x[`${tab}_이동`];
+      const chRaw = x[`${tab}_기변`];
+
+      const mv = showVal(mvRaw);
+      const ch = showVal(chRaw);
+
+      // 둘 다 아예 없으면 숨김(표시할 정보 없음)
       if (mv === "" && ch === "") return;
+
+      // 세트 강제: 한쪽만 있으면 없는 쪽은 "문의"
+      const mvFinal = (mv !== "") ? mv : "문의";
+      const chFinal = (ch !== "") ? ch : "문의";
 
       addCard({
         badgeText: tab,
         badgeClass: tab.toLowerCase(),
         model: x["기종"],
-        move: mv,
-        change: ch,
+        move: mvFinal,
+        change: chFinal,
         infoText: fixedInfoLine(tab),
         discount: discountOf(x)
       });
@@ -254,7 +276,7 @@ async function render(tab){
 
         const mv = (mvNum !== null && mvNum < 0) ? showVal(rawMv) : "";
         const ch = (chNum !== null && chNum < 0) ? showVal(rawCh) : "";
-        if (mv === "" && ch === "") return; // 안전
+        if (mv === "" && ch === "") return;
 
         addCard({
           badgeText: `핫딜 ${c}`,
@@ -275,7 +297,7 @@ async function render(tab){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
         const p = asNum(x[`${c}_요금제`]);
-        const lim = (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
+        const lim = limOf(c);
         if (!(p !== null && p > 0 && p < lim)) return;
 
         const mv = showVal(x[`${c}_이동`]);
