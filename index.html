@@ -7,7 +7,8 @@
 
 <style>
 :root{
-  --bg:#f5f6f8; --ink:#0f172a; --line:#e5e7eb;
+  --bg:#f5f6f8; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e5e7eb;
+  --sk:#2563eb; --kt:#111827; --lg:#16a34a; --hot:#f97316; --low:#7c3aed;
   --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
 }
 *{box-sizing:border-box;}
@@ -19,7 +20,7 @@ body{
 .wrap{max-width:760px;margin:0 auto;padding:14px 14px 164px;}
 
 /* =========================
-   LED 강(전광판급) – 노란 광고판
+   ✅ 노란 광고판(LED 강)
    ========================= */
 @keyframes neonBoxPulseStrong{
   0%,100%{
@@ -37,15 +38,23 @@ body{
   12%{opacity:.9;}45%{opacity:.45;}
   100%{transform:translateX(140%) skewX(-18deg);opacity:0;}
 }
-@keyframes ledFlickerStrong{0%,100%{filter:brightness(1.0);}50%{filter:brightness(1.25) drop-shadow(0 8px 16px rgba(0,0,0,.18));}}
-@keyframes textPulseStrong{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-2px) scale(1.07);}}
+@keyframes ledFlickerStrong{
+  0%,100%{filter:brightness(1.0);}
+  50%{filter:brightness(1.25) drop-shadow(0 8px 16px rgba(0,0,0,.18));}
+}
+@keyframes textPulseStrong{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-2px) scale(1.07);}
+}
 
-/* 통합 히어로 */
+/* 노란 통합 히어로 */
 .hero{
   background:#ffe866;border:2px solid #ffeb3b;border-radius:16px;
-  padding:10px 12px 12px;text-align:center;font-weight:1000;
+  padding:10px 12px 12px;
+  text-align:center;font-weight:1000;
   position:relative;overflow:hidden;
   animation: neonBoxPulseStrong 1.6s ease-in-out infinite, borderBlinkStrong 1.2s ease-in-out infinite;
+  box-shadow:0 8px 20px rgba(0,0,0,.10);
 }
 .hero::after{
   content:"";position:absolute;inset:-25%;
@@ -53,69 +62,116 @@ body{
   animation: shineSweepStrong 1.7s linear infinite;pointer-events:none;mix-blend-mode:screen;
 }
 
-/* 1) 오늘 / 누적 – 초슬림 & 연함 */
+/* 1) 오늘/누적: 초슬림 + 연하게 */
 .heroTopCounter{
   display:flex;align-items:center;justify-content:center;gap:12px;
   padding:3px 6px;margin-bottom:8px;border-radius:8px;
-  background:rgba(255,255,255,.38);border:1px dashed rgba(15,23,42,.12);
+  background:rgba(255,255,255,.38);
+  border:1px dashed rgba(15,23,42,.12);
   font-size:11px;font-weight:700;line-height:1;color:rgba(15,23,42,.55);
 }
 .heroTopCounter b{font-weight:800;color:rgba(15,23,42,.60);}
 .heroTopCounter .bar{width:1px;height:10px;background:rgba(15,23,42,.18);}
 
-/* 2) 액정필름 – LED 스트립(강) */
+/* 2) 액정필름: LED 스트립(강) */
 .heroLedStrip{
   margin-top:8px;padding:7px 10px;border-radius:12px;position:relative;overflow:hidden;
   background:linear-gradient(90deg,#fff7b3,#ffdf3a,#fff7b3);
-  border:1px solid rgba(15,23,42,.18);font-size:14px;font-weight:1000;
+  border:1px solid rgba(15,23,42,.18);
+  font-size:14px;font-weight:1000;
 }
 .heroLedStrip::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0) 25%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 75%,transparent 100%);
   animation: shineSweepStrong 1.4s linear infinite;pointer-events:none;
 }
-.heroLedStrip span{display:block;animation: ledFlickerStrong 1.05s ease-in-out infinite;text-shadow:0 6px 14px rgba(0,0,0,.16);}
+.heroLedStrip span{
+  display:block;
+  animation: ledFlickerStrong 1.05s ease-in-out infinite;
+  text-shadow:0 6px 14px rgba(0,0,0,.16);
+}
 
-/* 3) 알뜰요금 – 최우선 주인공 */
+/* 3) 알뜰요금: 최우선 */
 .heroSub.alttel{margin-top:12px;font-size:22px;font-weight:1000;line-height:1.2;}
 .adHot{
   display:inline-block;padding:2px 10px;border-radius:12px;
-  background:rgba(255,255,255,.72);border:1px solid rgba(255,120,0,.35);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,120,0,.35);
   box-shadow:0 14px 26px rgba(255,120,0,.18);
   animation: textPulseStrong 1.15s ease-in-out infinite, ledFlickerStrong 1.15s ease-in-out infinite;
 }
 
-/* 4) 인터넷TV – 주인공 2순위 */
+/* 4) 인터넷TV: 2순위 */
 .heroSub.tv{margin-top:10px;font-size:20px;font-weight:1000;line-height:1.2;}
 .adBadge{
   display:inline-block;padding:2px 10px;border-radius:12px;
-  background:rgba(255,255,255,.72);border:1px solid rgba(15,23,42,.12);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(15,23,42,.12);
   box-shadow:0 12px 22px rgba(0,0,0,.14);
   animation: textPulseStrong 1.2s ease-in-out infinite, ledFlickerStrong 1.2s ease-in-out infinite;
 }
 
-/* 탭(안정) */
+/* =========================
+   ✅ 탭/카드(원래 코드 유지)
+   ========================= */
 .tabs{display:flex;gap:8px;margin-top:14px;}
 .tabBtn{
   flex:1;padding:12px 0;border-radius:999px;border:1px solid var(--line);
   background:#fff;font-weight:1000;font-size:14px;cursor:pointer;
 }
 .tabBtn.active{color:#fff;border-color:transparent;}
-.tabBtn.sk.active{background:#2563eb;}
-.tabBtn.kt.active{background:#111827;}
-.tabBtn.lg.active{background:#16a34a;}
-.tabBtn.hot.active{background:#f97316;}
-.tabBtn.low.active{background:#7c3aed;}
+.tabBtn.sk.active{background:var(--sk);}
+.tabBtn.kt.active{background:var(--kt);}
+.tabBtn.lg.active{background:var(--lg);}
+.tabBtn.hot.active{background:var(--hot);}
+.tabBtn.low.active{background:var(--low);}
 
-.panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
+.panel{
+  margin-top:14px;background:#fff;border:1px solid var(--line);
+  border-radius:16px;padding:14px;
+}
+
 .list{display:flex;flex-direction:column;gap:10px;}
+.card{
+  border:1px solid var(--line);border-radius:14px;padding:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+.titleRow{display:flex;justify-content:space-between;margin-bottom:8px;gap:10px;align-items:center;}
+.model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
+.badge{
+  font-size:12px;font-weight:1000;padding:6px 10px;border-radius:999px;color:#fff;
+  white-space:nowrap;
+}
+.badge.sk{background:var(--sk);}
+.badge.kt{background:var(--kt);}
+.badge.lg{background:var(--lg);}
+.badge.hot{background:var(--hot);}
+.badge.low{background:var(--low);}
 
-/* 하단 버튼(안정) */
+.infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin:0 0 6px;}
+.discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin:0 0 8px;}
+
+.priceRow{display:flex;gap:10px;}
+.pill{
+  flex:1;border:1px solid var(--line);border-radius:12px;
+  padding:10px;text-align:center;background:#fafafa;
+}
+.pill .k{font-size:12px;color:var(--muted);font-weight:1000;margin-bottom:4px;}
+.pill .v{font-size:20px;font-weight:1000;letter-spacing:-.4px;}
+.neg{color:#dc2626;}
+.zero{color:#0ea5e9;}
+.pos{color:#0f172a;}
+
+/* ✅ 하단 고정 버튼 */
 .bottomBar{
   position:fixed;left:0;right:0;bottom:0;height:60px;
-  display:flex;border-top:1px solid var(--line);background:#fff;z-index:999;
+  display:flex;border-top:1px solid var(--line);background:#fff;
+  z-index:999;
 }
-.action{flex:1;display:flex;align-items:center;justify-content:center;font-weight:1000;text-decoration:none;font-size:16px;}
+.action{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  font-weight:1000;text-decoration:none;color:#000;font-size:16px;
+}
 .action.call{background:var(--call);color:#fff;}
 .action.sms{background:var(--sms);color:#05202b;}
 .action.kakao{background:var(--kakao);color:#3b2f00;}
@@ -128,26 +184,26 @@ body{
 
 <body>
 <div class="wrap">
-  <!-- ===== 노란 LED 광고판 ===== -->
+  <!-- ✅ 노란 LED 광고판(최종 순서 고정) -->
   <div class="hero">
-    <!-- 1) 오늘 / 누적 -->
-    <div class="heroTopCounter">
+    <!-- 1) 오늘/누적(연하게) -->
+    <div class="heroTopCounter" aria-label="방문자 수">
       <span>오늘 <b id="todayCount">-</b></span>
       <span class="bar"></span>
       <span>누적 <b id="totalCount">-</b></span>
     </div>
 
-    <!-- 2) 액정필름 -->
+    <!-- 2) 액정필름(LED) -->
     <div class="heroLedStrip">
       <span>🔥 액정필름 무료교체 · 카톡 주문 필수 · 복지관2층 매장 방문</span>
     </div>
 
-    <!-- 3) 알뜰요금 -->
+    <!-- 3) 알뜰요금(최우선) -->
     <div class="heroSub alttel">
       🔥 알뜰요금 : <b class="adHot">최저요금 3,300원~</b>
     </div>
 
-    <!-- 4) 인터넷TV -->
+    <!-- 4) 인터넷TV(2순위) -->
     <div class="heroSub tv">
       🪙 인터넷TV : <b class="adBadge">현금 최대 지원</b>
     </div>
@@ -162,40 +218,269 @@ body{
     <button class="tabBtn low" data-tab="LOW">저가</button>
   </div>
 
-  <!-- 리스트 영역(기존 CSV/렌더 로직 사용) -->
+  <!-- 카드 리스트 -->
   <div class="panel">
     <div class="list" id="list"></div>
   </div>
 </div>
 
-<!-- 하단 버튼 -->
+<!-- ✅ 하단 버튼(전화/문자/카톡만) -->
 <div class="bottomBar">
   <a class="action call" href="tel:042-821-2272">전화</a>
   <a class="action sms" href="sms:010-5839-1512">문자</a>
   <a class="action kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡</a>
 </div>
 
-<!-- ================= 방문객 카운팅 ================= -->
+<!-- =========================
+     방문객 카운팅(사내 체감용)
+     ========================= -->
 <script>
-/* 보정 ON/OFF */
+/* ✅ 보정 ON/OFF */
 const BOOST_MODE = true; // true=체감용, false=실제값
 
 function showToday(n){ return BOOST_MODE ? Math.max(0, n + 8) : n; }
 function showTotal(n){ return BOOST_MODE ? Math.max(0, n * 3 + 120) : n; }
 
 (function(){
-  const NS='a2272a-ghpages-bokjigwan2f', TOTAL='total';
-  const d=new Date(), k=`today-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const stamp=`visit-${k}`, now=Date.now(), last=+localStorage.getItem(stamp)||0, cd=30*60*1000;
-  const set=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=v;}
-  const get=(key,cb)=>fetch(`https://api.countapi.xyz/get/${NS}/${key}`).then(r=>r.json()).then(x=>cb(x.value||0));
-  const hit=(key,cb)=>fetch(`https://api.countapi.xyz/hit/${NS}/${key}`).then(r=>r.json()).then(x=>cb(x.value||0));
-  const go= (now-last)>cd ? (localStorage.setItem(stamp,now), hit) : get;
-  go(k,v=>set('todayCount', showToday(v)));
-  go(TOTAL,v=>set('totalCount', showTotal(v)));
+  const NS='a2272a-ghpages-bokjigwan2f';
+  const TOTAL='total';
+
+  const d=new Date();
+  const k=`today-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+  /* ✅ 같은 기기 새로고침 뻥튀기 완화: 30분 쿨다운 */
+  const stamp=`visit-${k}`;
+  const now=Date.now();
+  const last=+localStorage.getItem(stamp)||0;
+  const cd=30*60*1000;
+  const shouldHit=(now-last)>cd;
+
+  const set=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=String(v);};
+
+  const get=(key, cb)=>
+    fetch(`https://api.countapi.xyz/get/${encodeURIComponent(NS)}/${encodeURIComponent(key)}`)
+      .then(r=>r.json()).then(x=>cb((x && typeof x.value==='number')?x.value:0))
+      .catch(()=>cb(0));
+
+  const hit=(key, cb)=>
+    fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NS)}/${encodeURIComponent(key)}`)
+      .then(r=>r.json()).then(x=>cb((x && typeof x.value==='number')?x.value:0))
+      .catch(()=>get(key, cb));
+
+  if(shouldHit){
+    localStorage.setItem(stamp, String(now));
+    hit(k, v=>set('todayCount', showToday(v)));
+    hit(TOTAL, v=>set('totalCount', showTotal(v)));
+  }else{
+    get(k, v=>set('todayCount', showToday(v)));
+    get(TOTAL, v=>set('totalCount', showTotal(v)));
+  }
 })();
 </script>
 
-<!-- 기존 CSV/탭 렌더 스크립트는 그대로 두세요 -->
+<!-- =========================
+     ✅ CSV 로드 + 카드 렌더(복구 완전체)
+     ========================= -->
+<script>
+const list = document.getElementById("list");
+
+/* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
+const asNum = (x) => {
+  const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
+  if (s === "") return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+};
+const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
+
+/* ✅ 핵심 정책: 0은 고객 오해 유발 → 화면에 노출하지 않음 */
+const showVal = (raw) => {
+  const n = asNum(raw);
+  if (n === null) return "";    // 빈값
+  if (n === 0) return "";       // 0은 숨김
+  return String(raw).trim();    // -/양수는 그대로
+};
+
+const limOf = (c) => (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
+
+const fixedInfoLine = (c) => {
+  if (c === "SK") return "SK 109요금 6개월 / 부가필수 문의";
+  if (c === "KT") return "KT 110요금 6개월 / 부가필수 문의";
+  return "LG 115요금 6개월 / 부가필수 문의";
+};
+
+/* 요금제 실제값 우선 (예: 33요금) */
+const infoLineWithPlan = (c, x) => {
+  const p = asNum(x[`${c}_요금제`]);
+  return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
+};
+
+function addCard({badgeText, badgeClass, model, move, change, infoText, discount}){
+  const mvNum = asNum(move);
+  const chNum = asNum(change);
+
+  list.insertAdjacentHTML("beforeend", `
+    <div class="card">
+      <div class="titleRow">
+        <div class="model">${model}</div>
+        <div class="badge ${badgeClass}">${badgeText}</div>
+      </div>
+      <p class="infoLine">${infoText}</p>
+      ${discount ? `<p class="discountLine">요금할인 25% 가능</p>` : ``}
+      <div class="priceRow">
+        ${move !== "" ? `
+          <div class="pill">
+            <div class="k">이동</div>
+            <div class="v ${vClass(mvNum)}">${move}</div>
+          </div>` : ``}
+        ${change !== "" ? `
+          <div class="pill">
+            <div class="k">기변</div>
+            <div class="v ${vClass(chNum)}">${change}</div>
+          </div>` : ``}
+      </div>
+    </div>
+  `);
+}
+
+/* CSV fetch + 간단 파싱(콤마/따옴표가 복잡하지 않은 CSV 전제) */
+async function fetchCSV(){
+  const r = await fetch(`data.csv?v=${Date.now()}`, { cache: "no-store" });
+  if (!r.ok) throw new Error("data.csv 로드 실패");
+  const t = await r.text();
+
+  const lines = t.replace(/^\uFEFF/,"").trim().split(/\r?\n/);
+  if (!lines.length) return [];
+  const header = lines.shift().split(",").map(s => s.trim());
+
+  return lines.map(line => {
+    const cols = line.split(",");
+    const o = {};
+    header.forEach((h,i)=> o[h] = (cols[i] ?? "").trim());
+    return o;
+  });
+}
+
+async function render(tab){
+  list.innerHTML = "";
+  let items = [];
+  try{
+    items = (await fetchCSV()).filter(x => String(x["기종"] ?? "").trim() !== "");
+  }catch(e){
+    list.insertAdjacentHTML("beforeend", `<p class="infoLine">CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)</p>`);
+    return;
+  }
+  if (!items.length){
+    list.insertAdjacentHTML("beforeend", `<p class="infoLine">표시할 항목이 없습니다.</p>`);
+    return;
+  }
+
+  const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
+
+  /* ✅ SK/KT/LG: 해당 요금제(109/110/115)만 노출(요금제 비어있으면 허용)
+     + 세트 규칙: 한쪽만 있으면 다른쪽은 "문의"로 채워 세트 유지
+  */
+  if (["SK","KT","LG"].includes(tab)){
+    const lim = limOf(tab);
+
+    items.forEach(x=>{
+      const plan = asNum(x[`${tab}_요금제`]);
+
+      if (plan !== null && plan > 0 && plan !== lim) return;
+
+      const mvRaw = x[`${tab}_이동`];
+      const chRaw = x[`${tab}_기변`];
+
+      const mv = showVal(mvRaw);
+      const ch = showVal(chRaw);
+
+      if (mv === "" && ch === "") return;
+
+      const mvFinal = (mv !== "") ? mv : "문의";
+      const chFinal = (ch !== "") ? ch : "문의";
+
+      addCard({
+        badgeText: tab,
+        badgeClass: tab.toLowerCase(),
+        model: x["기종"],
+        move: mvFinal,
+        change: chFinal,
+        infoText: fixedInfoLine(tab),
+        discount: discountOf(x)
+      });
+    });
+    return;
+  }
+
+  /* HOT: 마이너스가 나온 "쪽"만 표시 + 0 숨김 */
+  if (tab === "HOT"){
+    items.forEach(x=>{
+      ["SK","KT","LG"].forEach(c=>{
+        const rawMv = x[`${c}_이동`] ?? "";
+        const rawCh = x[`${c}_기변`] ?? "";
+        const mvNum = asNum(rawMv);
+        const chNum = asNum(rawCh);
+
+        const isHot = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
+        if (!isHot) return;
+
+        const mv = (mvNum !== null && mvNum < 0) ? showVal(rawMv) : "";
+        const ch = (chNum !== null && chNum < 0) ? showVal(rawCh) : "";
+        if (mv === "" && ch === "") return;
+
+        addCard({
+          badgeText: `핫딜 ${c}`,
+          badgeClass: "hot",
+          model: x["기종"],
+          move: mv,
+          change: ch,
+          infoText: infoLineWithPlan(c, x),
+          discount: discountOf(x)
+        });
+      });
+    });
+    return;
+  }
+
+  /* LOW: 109/110/115 미만 요금제 있는 통신사만 */
+  if (tab === "LOW"){
+    items.forEach(x=>{
+      ["SK","KT","LG"].forEach(c=>{
+        const p = asNum(x[`${c}_요금제`]);
+        const lim = limOf(c);
+        if (!(p !== null && p > 0 && p < lim)) return;
+
+        const mv = showVal(x[`${c}_이동`]);
+        const ch = showVal(x[`${c}_기변`]);
+        if (mv === "" && ch === "") return;
+
+        addCard({
+          badgeText: `저가 ${c} (${p})`,
+          badgeClass: "low",
+          model: x["기종"],
+          move: mv,
+          change: ch,
+          infoText: `${c} ${p}요금 6개월 / 부가필수 문의`,
+          discount: discountOf(x)
+        });
+      });
+    });
+    return;
+  }
+}
+
+/* 탭 이벤트 */
+document.querySelectorAll(".tabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.tab);
+  });
+});
+
+/* 최초 렌더 */
+render("SK");
+</script>
+
 </body>
 </html>
