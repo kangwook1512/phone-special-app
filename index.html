@@ -48,92 +48,30 @@ body{
 }
 
 /* =========================
-   ✅ (NEW) 끊김 없는 LED 전광판(무한 루프) + 더 LED처럼
+   ✅ (NEW) 2줄 LED 전광판(무한 루프) + 색감/플리커 강화
    ========================= */
-@keyframes marqueeLoop{
+@keyframes marqueeLoop2{
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-@keyframes ledDotFlicker{
-  0%,100%{opacity:.28}
-  50%{opacity:.52}
+@keyframes marqueeLoop2R{
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
-@keyframes ledTextFlicker{
-  0%,100%{filter:brightness(1.05);}
-  50%{filter:brightness(1.35);}
+@keyframes ledDotFlicker2{
+  0%,100%{opacity:.25}
+  50%{opacity:.55}
 }
-
-.heroMarquee{
-  margin:2px 0 10px;
-  border-radius:12px;
-  border:1px solid rgba(15,23,42,.16);
-  overflow:hidden;
-  padding:8px 10px;
-  position:relative;
-
-  /* LED 패널 느낌: 어두운 바탕 + 그라데이션 */
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(0,0,0,.10) 100%),
-    linear-gradient(90deg, #0b1220 0%, #111827 40%, #0b1220 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.06),
-    inset 0 10px 20px rgba(0,0,0,.35),
-    0 10px 22px rgba(0,0,0,.10);
+@keyframes ledScan{
+  0%{transform:translateY(-120%);opacity:0;}
+  20%{opacity:.28;}
+  50%{opacity:.18;}
+  100%{transform:translateY(120%);opacity:0;}
 }
-
-/* LED 도트(점) 질감 */
-.heroMarquee::before{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    radial-gradient(circle, rgba(255,255,255,.10) 1px, transparent 1.8px);
-  background-size: 7px 7px;
-  opacity:.32;
-  animation: ledDotFlicker 1.25s ease-in-out infinite;
-  pointer-events:none;
-}
-
-/* 유리 반사광 */
-.heroMarquee::after{
-  content:"";
-  position:absolute; inset:-60% -20% auto -20%;
-  height:120%;
-  transform: rotate(-8deg);
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.14) 45%, transparent 70%);
-  opacity:.35;
-  pointer-events:none;
-}
-
-.heroMarquee .marquee{
-  overflow:hidden;
-  width:100%;
-  position:relative;
-  z-index:1;
-}
-
-.heroMarquee .marquee__inner{
-  display:flex;
-  gap:36px;                 /* 문구 사이 간격 */
-  width:max-content;
-  white-space:nowrap;
-  animation: marqueeLoop 11s linear infinite; /* ✅ 속도 */
-  will-change: transform;
-  align-items:center;
-}
-
-/* LED 글자: 네온 + 살짝 깜빡임 */
-.heroMarquee .marquee__inner span{
-  font-size:12.5px;
-  font-weight:1000;
-  letter-spacing:-.15px;
-  color:#b6ffcf; /* LED 그린 계열 */
-
-  text-shadow:
-    0 0 6px rgba(0,255,120,.40),
-    0 0 12px rgba(0,255,120,.22),
-    0 2px 10px rgba(0,0,0,.55);
-
-  animation: ledTextFlicker 1.05s ease-in-out infinite;
+@keyframes ledTextFlickerStrong2{
+  0%{filter: brightness(1.15) saturate(1.15);}
+  50%{filter: brightness(1.75) saturate(1.45);}
+  100%{filter: brightness(1.25) saturate(1.25);}
 }
 
 /* 노란 통합 히어로 */
@@ -151,43 +89,97 @@ body{
   animation: shineSweepStrong 1.7s linear infinite;pointer-events:none;mix-blend-mode:screen;
 }
 
-/* 2) 액정필름: LED 스트립(강) + ✅ 1줄 고정 */
-.heroLedStrip{
-  margin-top:8px;padding:7px 10px;border-radius:12px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,#fff7b3,#ffdf3a,#fff7b3);
-  border:1px solid rgba(15,23,42,.18);
-  font-size:14px;font-weight:1000;
-}
-.heroLedStrip::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0) 25%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 75%,transparent 100%);
-  animation: shineSweepStrong 1.4s linear infinite;pointer-events:none;
-}
-.heroLedStrip span{
-  display:block;
-  animation: ledFlickerStrong 1.05s ease-in-out infinite;
-  text-shadow:0 6px 14px rgba(0,0,0,.16);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; /* ✅ 1줄 고정 */
+/* ✅ 2줄 LED 전광판 (딱 2줄만) */
+.heroMarquee2{
+  margin:2px 0 0;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+
+  transform: scale(1.03);                /* 살짝 확대 */
+  border:2px solid #ffeb3b;              /* 노란 네온 테두리 */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(0,0,0,.18) 100%),
+    linear-gradient(90deg, #070d18 0%, #0b1220 40%, #070d18 100%);
+  box-shadow:
+    0 0 0 2px rgba(255,235,59,.45),
+    0 0 22px rgba(255,235,59,.55),
+    0 0 38px rgba(0,255,140,.35),
+    inset 0 14px 28px rgba(0,0,0,.45),
+    0 14px 34px rgba(0,0,0,.18);
 }
 
-/* 3) 알뜰요금: 최우선 */
-.heroSub.alttel{margin-top:12px;font-size:22px;font-weight:1000;line-height:1.2;}
-.adHot{
-  display:inline-block;padding:2px 10px;border-radius:12px;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(255,120,0,.35);
-  box-shadow:0 14px 26px rgba(255,120,0,.18);
-  animation: textPulseStrong 1.15s ease-in-out infinite, ledFlickerStrong 1.15s ease-in-out infinite;
+/* LED 도트 */
+.heroMarquee2::before{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(circle, rgba(255,255,255,.11) 1px, transparent 1.9px);
+  background-size: 7px 7px;
+  opacity:.33;
+  animation: ledDotFlicker2 1.15s ease-in-out infinite;
+  pointer-events:none;
+}
+/* 스캔라인 */
+.heroMarquee2::after{
+  content:"";
+  position:absolute; inset:-30% 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,255,180,.18) 45%, transparent 75%);
+  animation: ledScan 1.9s linear infinite;
+  pointer-events:none;
+  mix-blend-mode: screen;
 }
 
-/* 4) 인터넷TV: 2순위 */
-.heroSub.tv{margin-top:10px;font-size:20px;font-weight:1000;line-height:1.2;}
-.adBadge{
-  display:inline-block;padding:2px 10px;border-radius:12px;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(15,23,42,.12);
-  box-shadow:0 12px 22px rgba(0,0,0,.14);
-  animation: textPulseStrong 1.2s ease-in-out infinite, ledFlickerStrong 1.2s ease-in-out infinite;
+.marqueeLine{
+  height:36px;                 /* ✅ 15px 안전 높이 */
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
+  padding:0 10px;
+}
+.marqueeLine + .marqueeLine{
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.marqueeInner{
+  display:flex;
+  gap:34px;
+  width:max-content;
+  white-space:nowrap;
+  align-items:center;
+  will-change:transform;
+  animation: marqueeLoop2 10.5s linear infinite;
+}
+.marqueeInner.reverse{
+  animation: marqueeLoop2R 12.2s linear infinite;
+}
+
+/* 기본(하단) */
+.marqueeInner span{
+  font-size:13.5px;
+  font-weight:1000;
+  letter-spacing:-.2px;
+  color:#b6ffcf;
+  text-shadow:
+    0 0 5px rgba(0,255,140,.55),
+    0 0 12px rgba(0,255,140,.35),
+    0 2px 12px rgba(0,0,0,.65);
+  animation: ledTextFlickerStrong2 1.05s ease-in-out infinite;
+}
+
+/* 상단 1줄(시선 1순위) */
+.marqueeLine.l1{
+  background: linear-gradient(90deg, rgba(255,235,59,.08), rgba(0,255,140,.10), rgba(255,235,59,.08));
+}
+.marqueeLine.l1 .marqueeInner span{
+  font-size:15px; /* ✅ 요청: 15px */
+  letter-spacing:-.2px;
+  color:#faff7a;
+  text-shadow:
+    0 0 6px rgba(255,255,120,.85),
+    0 0 14px rgba(255,255,120,.65),
+    0 0 26px rgba(0,255,160,.55),
+    0 2px 14px rgba(0,0,0,.75);
+  animation: ledTextFlickerStrong2 0.85s ease-in-out infinite;
 }
 
 /* =========================
@@ -309,9 +301,9 @@ body{
 }
 
 @media (prefers-reduced-motion: reduce){
-  .hero,.hero::after,.heroLedStrip::after,.heroLedStrip span,.adHot,.adBadge,
-  .heroMarquee .marquee__inner span, .heroMarquee .marquee__inner,
-  .heroMarquee::before{animation:none!important;}
+  .hero,.hero::after,
+  .heroMarquee2::before,.heroMarquee2::after,
+  .marqueeInner,.marqueeInner span{animation:none!important;}
   .dockBtn{transition:none!important;}
 }
 </style>
@@ -319,33 +311,27 @@ body{
 
 <body>
 <div class="wrap">
-  <!-- ✅ 노란 LED 광고판(최종 순서 고정) -->
+  <!-- ✅ 노란 LED 광고판: 딱 2줄만 -->
   <div class="hero">
 
-    <!-- ✅ 끊김 없는 LED 전광판(더 LED처럼) -->
-    <div class="heroMarquee" aria-label="공지">
-      <div class="marquee">
-        <div class="marquee__inner">
-          <span>복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
-          <span aria-hidden="true">복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
+    <div class="heroMarquee2" aria-label="공지">
+      <!-- 1줄 -->
+      <div class="marqueeLine l1">
+        <div class="marqueeInner">
+          <span>휴대폰특판 · 인터넷TV · 알뜰요금 · 액정필름무료교체</span>
+          <span aria-hidden="true">휴대폰특판 · 인터넷TV · 알뜰요금 · 액정필름무료교체</span>
+        </div>
+      </div>
+
+      <!-- 2줄 -->
+      <div class="marqueeLine l2">
+        <div class="marqueeInner reverse">
+          <span>모든 문의는 카톡으로 편하게 주세요</span>
+          <span aria-hidden="true">모든 문의는 카톡으로 편하게 주세요</span>
         </div>
       </div>
     </div>
 
-    <!-- 2) 액정필름(LED) ✅ 1줄 문구 -->
-    <div class="heroLedStrip">
-      <span>🔥 액정필름 무료교체 · 카톡주문</span>
-    </div>
-
-    <!-- 3) 알뜰요금(최우선) -->
-    <div class="heroSub alttel">
-      🔥 알뜰요금 : <b class="adHot">최저요금 3,300원~</b>
-    </div>
-
-    <!-- 4) 인터넷TV(2순위) -->
-    <div class="heroSub tv">
-      🪙 인터넷TV : <b class="adBadge">현금 최대 지원</b>
-    </div>
   </div>
 
   <!-- 탭 -->
