@@ -410,12 +410,11 @@ const asNum = (x) => {
 };
 const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
 
-/* ✅ 0은 고객 오해 유발 → 화면에 노출하지 않음 */
+/* ✅ (1번 적용) 0도 값이다 → 0은 0으로 표시 */
 const showVal = (raw) => {
   const n = asNum(raw);
   if (n === null) return "";
-  if (n === 0) return "";
-  return String(raw).trim();
+  return String(raw).trim();   // ✅ 0 포함 그대로 표시
 };
 
 const limOf = (c) => (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
