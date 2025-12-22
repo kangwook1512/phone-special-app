@@ -62,16 +62,36 @@ body{
   animation: shineSweepStrong 1.7s linear infinite;pointer-events:none;mix-blend-mode:screen;
 }
 
-/* 1) 오늘/누적: 초슬림 + 연하게 */
-.heroTopCounter{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  padding:3px 6px;margin-bottom:8px;border-radius:8px;
-  background:rgba(255,255,255,.38);
-  border:1px dashed rgba(15,23,42,.12);
-  font-size:11px;font-weight:700;line-height:1;color:rgba(15,23,42,.55);
+/* =========================
+   ✅ (NEW) 카운팅 자리 대체: LED 전광판(좌→우)
+   ========================= */
+@keyframes marqueeLR{
+  0%{ transform: translateX(-110%); }
+  100%{ transform: translateX(110%); }
 }
-.heroTopCounter b{font-weight:800;color:rgba(15,23,42,.60);}
-.heroTopCounter .bar{width:1px;height:10px;background:rgba(15,23,42,.18);}
+.heroMarquee{
+  margin:2px 0 10px;
+  border-radius:12px;
+  border:1px dashed rgba(15,23,42,.16);
+  background:rgba(255,255,255,.40);
+  overflow:hidden;
+  padding:7px 10px;
+  position:relative;
+}
+.heroMarquee .track{
+  display:inline-block;
+  white-space:nowrap;
+  animation: marqueeLR 16s linear infinite;
+  will-change: transform;
+}
+.heroMarquee .track span{
+  font-size:12px;
+  font-weight:900;
+  color:rgba(15,23,42,.70);
+  letter-spacing:-.2px;
+  text-shadow:0 6px 14px rgba(0,0,0,.12);
+  padding-left:100%;
+}
 
 /* 2) 액정필름: LED 스트립(강) + ✅ 1줄 고정 */
 .heroLedStrip{
@@ -231,7 +251,8 @@ body{
 }
 
 @media (prefers-reduced-motion: reduce){
-  .hero,.hero::after,.heroLedStrip::after,.heroLedStrip span,.adHot,.adBadge{animation:none!important;}
+  .hero,.hero::after,.heroLedStrip::after,.heroLedStrip span,.adHot,.adBadge,
+  .heroMarquee .track{animation:none!important;}
   .dockBtn{transition:none!important;}
 }
 </style>
@@ -241,11 +262,12 @@ body{
 <div class="wrap">
   <!-- ✅ 노란 LED 광고판(최종 순서 고정) -->
   <div class="hero">
-    <!-- 1) 오늘/누적(연하게) -->
-    <div class="heroTopCounter" aria-label="방문자 수">
-      <span>오늘 <b id="todayCount">-</b></span>
-      <span class="bar"></span>
-      <span>누적 <b id="totalCount">-</b></span>
+
+    <!-- ✅ (카운팅 삭제 후 대체) LED 전광판 -->
+    <div class="heroMarquee" aria-label="공지">
+      <div class="track">
+        <span>복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
+      </div>
     </div>
 
     <!-- 2) 액정필름(LED) ✅ 1줄 문구 -->
@@ -282,7 +304,6 @@ body{
 <!-- ✅ 하단 도크: 아이콘(SVG) + 균형 정렬 -->
 <div class="bottomDock" role="navigation" aria-label="빠른 연락">
   <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
-    <!-- phone -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.6 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.12a2 2 0 0 1 2.11-.45c.83.28 1.7.48 2.6.6A2 2 0 0 1 22 16.92z"/>
     </svg>
@@ -290,7 +311,6 @@ body{
   </a>
 
   <a class="dockBtn sms" href="sms:010-5839-1512" aria-label="문자">
-    <!-- message-square -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
       <path d="M8 10h8"/>
@@ -300,7 +320,6 @@ body{
   </a>
 
   <a class="dockBtn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡">
-    <!-- chat-bubble (simple) -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M20 11c0 3.87-3.58 7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
       <path d="M9 11h.01"/>
@@ -312,54 +331,7 @@ body{
 </div>
 
 <!-- =========================
-     방문객 카운팅(✅ 실제값만 표시)
-     ========================= -->
-<script>
-/* ✅ 실제값만 */
-const BOOST_MODE = false; // ✅ true=체감용, false=실제값
-
-function showToday(n){ return BOOST_MODE ? Math.max(0, n + 8) : n; }
-function showTotal(n){ return BOOST_MODE ? Math.max(0, n * 3 + 120) : n; }
-
-(function(){
-  const NS='a2272a-ghpages-bokjigwan2f';
-  const TOTAL='total';
-
-  const d=new Date();
-  const k=`today-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-
-  /* ✅ 같은 기기 새로고침 뻥튀기 완화: 30분 쿨다운 */
-  const stamp=`visit-${k}`;
-  const now=Date.now();
-  const last=+localStorage.getItem(stamp)||0;
-  const cd=30*60*1000;
-  const shouldHit=(now-last)>cd;
-
-  const set=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=String(v);};
-
-  const get=(key, cb)=>
-    fetch(`https://api.countapi.xyz/get/${encodeURIComponent(NS)}/${encodeURIComponent(key)}`)
-      .then(r=>r.json()).then(x=>cb((x && typeof x.value==='number')?x.value:0))
-      .catch(()=>cb(0));
-
-  const hit=(key, cb)=>
-    fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(NS)}/${encodeURIComponent(key)}`)
-      .then(r=>r.json()).then(x=>cb((x && typeof x.value==='number')?x.value:0))
-      .catch(()=>get(key, cb));
-
-  if(shouldHit){
-    localStorage.setItem(stamp, String(now));
-    hit(k, v=>set('todayCount', showToday(v)));
-    hit(TOTAL, v=>set('totalCount', showTotal(v)));
-  }else{
-    get(k, v=>set('todayCount', showToday(v)));
-    get(TOTAL, v=>set('totalCount', showTotal(v)));
-  }
-})();
-</script>
-
-<!-- =========================
-     ✅ CSV 로드 + 카드 렌더(완전 복구)
+     ✅ CSV 로드 + 카드 렌더(그대로)
      ========================= -->
 <script>
 const list = document.getElementById("list");
