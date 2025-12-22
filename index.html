@@ -48,7 +48,7 @@ body{
 }
 
 /* =========================
-   ✅ (NEW) 2줄 LED 전광판(무한 루프) + 색감/플리커 강화
+   ✅ 2줄 LED 전광판(무한 루프) + 색감/플리커 강화
    ========================= */
 @keyframes marqueeLoop2{
   0%   { transform: translateX(0); }
@@ -130,7 +130,7 @@ body{
 }
 
 .marqueeLine{
-  height:36px;                 /* ✅ 15px 안전 높이 */
+  height:40px;                 /* ✅ 글자 크게 보이게(잘림 방지) */
   display:flex;
   align-items:center;
   overflow:hidden;
@@ -153,9 +153,9 @@ body{
   animation: marqueeLoop2R 12.2s linear infinite;
 }
 
-/* 기본(하단) */
+/* 기본(하단 포함) */
 .marqueeInner span{
-  font-size:13.5px;
+  font-size:15px;              /* ✅ 13.5 → 15 */
   font-weight:1000;
   letter-spacing:-.2px;
   color:#b6ffcf;
@@ -171,7 +171,7 @@ body{
   background: linear-gradient(90deg, rgba(255,235,59,.08), rgba(0,255,140,.10), rgba(255,235,59,.08));
 }
 .marqueeLine.l1 .marqueeInner span{
-  font-size:15px; /* ✅ 요청: 15px */
+  font-size:16px; /* ✅ 15 → 16 */
   letter-spacing:-.2px;
   color:#faff7a;
   text-shadow:
@@ -372,7 +372,7 @@ body{
   <a class="dockBtn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡">
     <!-- chat-bubble (simple) -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M20 11c0 3.87-3.58 7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
+      <path d="M20 11c0 3.87-3.58-7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
       <path d="M9 11h.01"/>
       <path d="M12 11h.01"/>
       <path d="M15 11h.01"/>
