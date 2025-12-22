@@ -10,6 +10,15 @@
   --bg:#f5f6f8; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e5e7eb;
   --sk:#2563eb; --kt:#111827; --lg:#16a34a; --hot:#f97316; --low:#7c3aed;
   --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
+
+  /* ✅ A안 전광판 팔레트 */
+  --ledBg:#070b12;        /* 거의 블랙 */
+  --ledBg2:#0b1220;       /* 딥네이비 */
+  --ledBorder:rgba(255,255,255,.14);
+  --ledGlow1:rgba(0,255,180,.35);
+  --ledGlow2:rgba(255,60,60,.25);
+  --ledText:#f8fffc;
+  --ledText2:#b6ffcf;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -20,86 +29,78 @@ body{
 .wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;} /* ✅ 하단 도크 여유 */
 
 /* =========================
-   ✅ 노란 광고판(LED 강)
+   ✅ A안: 히어로 전광판(간판 복귀)
+   - 모바일 기준 화면 높이 25%
+   - 완전 블랙, 초고대비
+   - 끊김 없는 무한 루프
    ========================= */
-@keyframes neonBoxPulseStrong{
+@keyframes heroGlow{
   0%,100%{
-    box-shadow: 0 12px 30px rgba(0,0,0,.12), 0 0 0 rgba(255,235,59,0), 0 0 0 rgba(255,176,0,0);
-    filter: brightness(1.02) saturate(1.05);
+    box-shadow:
+      0 16px 40px rgba(0,0,0,.20),
+      0 0 0 2px rgba(255,255,255,.10),
+      0 0 24px var(--ledGlow1),
+      0 0 44px rgba(0,255,180,.18);
+    filter: brightness(1.02) saturate(1.08);
   }
   50%{
-    box-shadow: 0 16px 36px rgba(0,0,0,.14), 0 0 28px rgba(255,235,59,.85), 0 0 44px rgba(255,176,0,.35);
-    filter: brightness(1.16) saturate(1.22);
+    box-shadow:
+      0 18px 46px rgba(0,0,0,.26),
+      0 0 0 2px rgba(255,255,255,.14),
+      0 0 34px rgba(0,255,180,.42),
+      0 0 62px rgba(255,60,60,.18);
+    filter: brightness(1.14) saturate(1.18);
   }
 }
-@keyframes borderBlinkStrong{0%,100%{border-color:#ffeb3b;}50%{border-color:#ff9f00;}}
-@keyframes shineSweepStrong{
-  0%{transform:translateX(-140%) skewX(-18deg);opacity:0;}
-  12%{opacity:.9;}45%{opacity:.45;}
-  100%{transform:translateX(140%) skewX(-18deg);opacity:0;}
-}
-@keyframes ledTextFlickerStrong2{
-  0%{filter: brightness(1.15) saturate(1.15);}
-  50%{filter: brightness(1.75) saturate(1.45);}
-  100%{filter: brightness(1.25) saturate(1.25);}
-}
-
-/* =========================
-   ✅ 2줄 LED 전광판(무한 루프) + 색감/플리커 강화
-   ========================= */
-@keyframes marqueeLoop2{ 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
-@keyframes marqueeLoop2R{ 0%{transform:translateX(-50%);} 100%{transform:translateX(0);} }
-@keyframes ledDotFlicker2{ 0%,100%{opacity:.25} 50%{opacity:.55} }
+@keyframes ledDotFlicker{ 0%,100%{opacity:.22} 50%{opacity:.52} }
 @keyframes ledScan{
   0%{transform:translateY(-120%);opacity:0;}
-  20%{opacity:.28;}
-  50%{opacity:.18;}
+  18%{opacity:.26;}
+  50%{opacity:.16;}
   100%{transform:translateY(120%);opacity:0;}
 }
+/* ✅ 루프 속도(전광판 맛): 6~7초 권장 */
+@keyframes marqueeLoopA{ 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+@keyframes marqueeLoopAR{ 0%{transform:translateX(-50%);} 100%{transform:translateX(0);} }
+@keyframes ledTextFlicker{
+  0%{filter: brightness(1.12) saturate(1.18);}
+  50%{filter: brightness(1.68) saturate(1.40);}
+  100%{filter: brightness(1.22) saturate(1.24);}
+}
 
-/* 노란 통합 히어로 */
+/* ✅ 히어로 컨테이너: 높이를 화면기준으로 고정(간판 복귀) */
 .hero{
-  background:#ffe866;border:2px solid #ffeb3b;border-radius:16px;
-  padding:10px 12px 12px;
-  text-align:center;font-weight:1000;
-  position:relative;overflow:hidden;
-  animation: neonBoxPulseStrong 1.6s ease-in-out infinite, borderBlinkStrong 1.2s ease-in-out infinite;
-  box-shadow:0 8px 20px rgba(0,0,0,.10);
-}
-.hero::after{
-  content:"";position:absolute;inset:-25%;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,.92) 50%,rgba(255,255,255,0) 70%,transparent 100%);
-  animation: shineSweepStrong 1.7s linear infinite;pointer-events:none;mix-blend-mode:screen;
-}
-
-/* ✅ 2줄 LED 전광판 (딱 2줄만) */
-.heroMarquee2{
-  margin:2px 0 0;
-  border-radius:14px;
+  border-radius:18px;
   overflow:hidden;
   position:relative;
-
-  transform: scale(1.03);
-  border:2px solid #ffeb3b;
   background:
-    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(0,0,0,.18) 100%),
-    linear-gradient(90deg, #070d18 0%, #0b1220 40%, #070d18 100%);
-  box-shadow:
-    0 0 0 2px rgba(255,235,59,.45),
-    0 0 22px rgba(255,235,59,.55),
-    0 0 38px rgba(0,255,140,.35),
-    inset 0 14px 28px rgba(0,0,0,.45),
-    0 14px 34px rgba(0,0,0,.18);
+    radial-gradient(1200px 240px at 50% 0%, rgba(0,255,180,.14), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(0,0,0,.22) 100%),
+    linear-gradient(90deg, var(--ledBg) 0%, var(--ledBg2) 50%, var(--ledBg) 100%);
+  border:1px solid var(--ledBorder);
+  animation: heroGlow 1.8s ease-in-out infinite;
+  contain: layout paint; /* ✅ 레이아웃 흔들림 완화 */
+}
+
+/* ✅ 히어로 높이: 화면의 25% (너무 커지면 상한 190px) */
+.heroMarquee2{
+  min-height: clamp(120px, 25vh, 190px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:10px;
+  padding:12px 12px;
+  position:relative;
 }
 
 /* LED 도트 */
 .heroMarquee2::before{
   content:"";
   position:absolute; inset:0;
-  background: radial-gradient(circle, rgba(255,255,255,.11) 1px, transparent 1.9px);
+  background: radial-gradient(circle, rgba(255,255,255,.10) 1px, transparent 1.9px);
   background-size: 7px 7px;
-  opacity:.33;
-  animation: ledDotFlicker2 1.15s ease-in-out infinite;
+  opacity:.30;
+  animation: ledDotFlicker 1.1s ease-in-out infinite;
   pointer-events:none;
 }
 /* 스캔라인 */
@@ -107,61 +108,70 @@ body{
   content:"";
   position:absolute; inset:-30% 0;
   background: linear-gradient(180deg, transparent 0%, rgba(0,255,180,.18) 45%, transparent 75%);
-  animation: ledScan 1.9s linear infinite;
+  animation: ledScan 1.85s linear infinite;
   pointer-events:none;
   mix-blend-mode: screen;
 }
 
+/* 전광판 2줄(간판형) */
 .marqueeLine{
-  height:40px;                 /* ✅ 글자 크게 보이게(잘림 방지) */
+  height:52px;                 /* ✅ 더 큼 (존재감) */
   display:flex;
   align-items:center;
   overflow:hidden;
   position:relative;
   padding:0 10px;
+  border-radius:14px;
+  background: rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:
+    inset 0 16px 28px rgba(0,0,0,.38),
+    0 10px 24px rgba(0,0,0,.16);
 }
-.marqueeLine + .marqueeLine{
-  border-top:1px solid rgba(255,255,255,.08);
-}
+.marqueeLine + .marqueeLine{ margin-top:10px; }
+
+/* 루프 본체 */
 .marqueeInner{
   display:flex;
-  gap:34px;
+  gap:44px;
   width:max-content;
   white-space:nowrap;
   align-items:center;
   will-change:transform;
-  animation: marqueeLoop2 10.5s linear infinite;
+  transform: translateZ(0);
+  animation: marqueeLoopA 6.6s linear infinite;  /* ✅ 1줄 6.6초 */
 }
 .marqueeInner.reverse{
-  animation: marqueeLoop2R 12.2s linear infinite;
+  animation: marqueeLoopAR 7.2s linear infinite; /* ✅ 2줄 7.2초 */
 }
 
-/* 기본(2줄 포함) */
+/* 텍스트 */
 .marqueeInner span{
-  font-size:15px;
+  font-size:22px;              /* ✅ 글자 크게(간판) */
   font-weight:1000;
-  letter-spacing:-.2px;
-  color:#b6ffcf;
+  letter-spacing:-.6px;
+  color:var(--ledText2);
   text-shadow:
-    0 0 6px rgba(0,255,160,.55),
-    0 0 14px rgba(0,255,160,.32),
-    0 2px 12px rgba(0,0,0,.65);
-  animation: ledTextFlickerStrong2 1.05s ease-in-out infinite;
+    0 0 8px rgba(0,255,180,.55),
+    0 0 16px rgba(0,255,180,.30),
+    0 2px 14px rgba(0,0,0,.75);
+  animation: ledTextFlicker .92s ease-in-out infinite;
 }
 
-/* ✅ 상단 1줄(시선 1순위) : 노랑 배경과 대비되게 "화이트+민트 네온" */
+/* 1줄 = 최우선(화이트/레드톤 살짝) */
 .marqueeLine.l1{
-  background: linear-gradient(90deg, rgba(255,235,59,.08), rgba(0,255,140,.10), rgba(255,235,59,.08));
+  background: linear-gradient(90deg, rgba(255,60,60,.06), rgba(0,255,180,.06), rgba(255,60,60,.06));
+  border-color: rgba(255,255,255,.10);
 }
 .marqueeLine.l1 .marqueeInner span{
-  font-size:16px;
-  color:#f8fffc;  /* ✅ 거의 흰색 */
+  font-size:24px;
+  color:var(--ledText);
   text-shadow:
-    0 0 6px rgba(0,255,180,.85),
-    0 0 14px rgba(0,255,180,.65),
-    0 0 26px rgba(0,180,120,.55),
-    0 2px 14px rgba(0,0,0,.85);
-  animation: ledTextFlickerStrong2 0.85s ease-in-out infinite;
+    0 0 10px rgba(0,255,180,.70),
+    0 0 18px rgba(0,255,180,.42),
+    0 0 26px rgba(255,60,60,.22),
+    0 2px 16px rgba(0,0,0,.85);
+  animation: ledTextFlicker .78s ease-in-out infinite;
 }
 
 /* =========================
@@ -265,7 +275,6 @@ body{
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-
 .dockBtn.call{
   background:rgba(34,197,94,.12);
   border-color:rgba(34,197,94,.22);
@@ -283,8 +292,7 @@ body{
 }
 
 @media (prefers-reduced-motion: reduce){
-  .hero,.hero::after,
-  .heroMarquee2::before,.heroMarquee2::after,
+  .hero,.heroMarquee2::before,.heroMarquee2::after,
   .marqueeInner,.marqueeInner span{animation:none!important;}
   .dockBtn{transition:none!important;}
 }
@@ -293,9 +301,9 @@ body{
 
 <body>
 <div class="wrap">
-  <!-- ✅ 노란 LED 광고판: 딱 2줄만 -->
-  <div class="hero">
-    <div class="heroMarquee2" aria-label="공지">
+  <!-- ✅ A안: 전광판(간판) 히어로 -->
+  <div class="hero" aria-label="공지">
+    <div class="heroMarquee2">
       <!-- 1줄 -->
       <div class="marqueeLine l1">
         <div class="marqueeInner">
@@ -359,7 +367,7 @@ body{
 </div>
 
 <!-- =========================
-     ✅ CSV 로드 + 카드 렌더(완전 복구)
+     ✅ CSV 로드 + 카드 렌더(원본 유지)
      ========================= -->
 <script>
 const list = document.getElementById("list");
