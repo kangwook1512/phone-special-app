@@ -11,6 +11,7 @@
   --sk:#2563eb; --kt:#111827; --lg:#16a34a; --hot:#f97316; --low:#7c3aed;
   --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
 
+  /* ✅ A안 전광판 팔레트 */
   --ledBg:#070b12;
   --ledBg2:#0b1220;
   --ledBorder:rgba(255,255,255,.14);
@@ -25,9 +26,11 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
 }
-.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;} /* ✅ 하단 도크 여유 */
 
-/* ===== 전광판 ===== */
+/* =========================
+   ✅ A안: 히어로 전광판(간판 복귀)
+   ========================= */
 @keyframes heroGlow{
   0%,100%{
     box-shadow:
@@ -61,7 +64,7 @@ body{
   100%{filter: brightness(1.22) saturate(1.24);}
 }
 
-/* 2열 MAX 펄스 */
+/* ✅ 2열 카톡문의 MAX 펄스 */
 @keyframes kakaoPulseMAX{
   0%,100%{
     color:#fffbe6;
@@ -83,6 +86,7 @@ body{
   }
 }
 
+/* ✅ 히어로 컨테이너 */
 .hero{
   border-radius:18px;
   overflow:hidden;
@@ -96,6 +100,7 @@ body{
   contain: layout paint;
 }
 
+/* ✅ 광고판 크기는 지금 그대로 유지 */
 .heroMarquee2{
   min-height: clamp(120px, 25vh, 190px);
   display:flex;
@@ -105,6 +110,8 @@ body{
   padding:12px 12px;
   position:relative;
 }
+
+/* LED 도트 */
 .heroMarquee2::before{
   content:"";
   position:absolute; inset:0;
@@ -114,6 +121,7 @@ body{
   animation: ledDotFlicker 1.1s ease-in-out infinite;
   pointer-events:none;
 }
+/* 스캔라인 */
 .heroMarquee2::after{
   content:"";
   position:absolute; inset:-30% 0;
@@ -123,18 +131,26 @@ body{
   mix-blend-mode: screen;
 }
 
-/* ===== 2줄 ===== */
+/* =========================
+   ✅ 2줄 전광판 (글자/여백 최적화)
+   ========================= */
 .marqueeLine{
   height:64px;
-  display:flex; align-items:center; overflow:hidden;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
   padding:0 10px;
   border-radius:14px;
   background: rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
-  box-shadow: inset 0 16px 28px rgba(0,0,0,.38), 0 10px 24px rgba(0,0,0,.16);
+  box-shadow:
+    inset 0 16px 28px rgba(0,0,0,.38),
+    0 10px 24px rgba(0,0,0,.16);
 }
 .marqueeLine + .marqueeLine{ margin-top:10px; }
 
+/* 루프 본체 */
 .marqueeInner{
   display:flex;
   gap:44px;
@@ -146,11 +162,12 @@ body{
   animation: marqueeLoopA 6.6s linear infinite;
 }
 
-/* ✅ 2열: 속도는 빠르게 + (중요) 문구 반복으로 폭을 늘려서 체감 속도 상승 */
+/* ✅ 2열: 속도 조금 느리게(안정감) */
 .marqueeInner.reverse{
-  animation: marqueeLoopAR 5.2s linear infinite;
+  animation: marqueeLoopAR 7.0s linear infinite;
 }
 
+/* 기본(2줄 공통) 글자 */
 .marqueeInner span{
   font-size:26px;
   font-weight:1000;
@@ -163,7 +180,7 @@ body{
   animation: ledTextFlicker .92s ease-in-out infinite;
 }
 
-/* 1줄 */
+/* 1줄 = 최우선 */
 .marqueeLine.l1{
   background: linear-gradient(90deg, rgba(255,60,60,.06), rgba(0,255,180,.06), rgba(255,60,60,.06));
   border-color: rgba(255,255,255,.10);
@@ -180,10 +197,10 @@ body{
   animation: ledTextFlicker .78s ease-in-out infinite;
 }
 
-/* ✅ 2열: gap 줄여서 더 ‘휙휙’ 체감 */
-.marqueeLine.l2 .marqueeInner{ gap:18px; }
+/* ✅ 2열: gap 약간 늘려 더 안정감 */
+.marqueeLine.l2 .marqueeInner{ gap:24px; }
 
-/* ✅ 2열: 카톡문의 MAX */
+/* ✅ 2열: 카톡문의 MAX 효과 */
 .marqueeLine.l2 .marqueeInner span.kakaoBlink{
   font-size:28px;
   letter-spacing:-.6px;
@@ -193,7 +210,9 @@ body{
     kakaoPulseMAX 1.20s ease-in-out infinite;
 }
 
-/* ===== 탭/카드/도크(원본 유지) ===== */
+/* =========================
+   ✅ 탭/카드
+   ========================= */
 .tabs{display:flex;gap:8px;margin-top:14px;}
 .tabBtn{
   flex:1;padding:12px 0;border-radius:999px;border:1px solid var(--line);
@@ -238,6 +257,9 @@ body{
 .zero{color:#0ea5e9;}
 .pos{color:#0f172a;}
 
+/* =========================
+   ✅ 하단 도크(세련/균형) + SVG 아이콘
+   ========================= */
 .bottomDock{
   position:fixed;
   left:12px;
@@ -315,6 +337,7 @@ body{
 
 <body>
 <div class="wrap">
+  <!-- ✅ A안: 2줄 전광판(광고판 크기 유지) -->
   <div class="hero" aria-label="공지">
     <div class="heroMarquee2">
       <!-- 1줄 -->
@@ -325,7 +348,7 @@ body{
         </div>
       </div>
 
-      <!-- 2줄: ✅ 폭을 늘리기 위해 반복(체감 속도 확실히 상승) -->
+      <!-- 2줄: ✅ 카톡문의 반복(체감 전광판 유지) + 속도 안정화 -->
       <div class="marqueeLine l2">
         <div class="marqueeInner reverse">
           <span class="kakaoBlink">카톡문의</span><span class="kakaoBlink">·</span>
@@ -361,7 +384,7 @@ body{
   </div>
 </div>
 
-<!-- 하단 도크 -->
+<!-- ✅ 하단 도크 -->
 <div class="bottomDock" role="navigation" aria-label="빠른 연락">
   <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -381,7 +404,7 @@ body{
 
   <a class="dockBtn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡">
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M20 11c0 3.87-3.58 7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
+      <path d="M20 11c0 3.87-3.58-7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
       <path d="M9 11h.01"/>
       <path d="M12 11h.01"/>
       <path d="M15 11h.01"/>
@@ -390,9 +413,13 @@ body{
   </a>
 </div>
 
+<!-- =========================
+     ✅ CSV 로드 + 카드 렌더(원본 유지)
+     ========================= -->
 <script>
 const list = document.getElementById("list");
 
+/* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
 const asNum = (x) => {
   const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
   if (s === "") return null;
@@ -401,6 +428,7 @@ const asNum = (x) => {
 };
 const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
 
+/* ✅ 0도 값이다 → 0은 0으로 표시 */
 const showVal = (raw) => {
   const n = asNum(raw);
   if (n === null) return "";
@@ -415,6 +443,7 @@ const fixedInfoLine = (c) => {
   return "LG 115요금 6개월 / 부가필수 문의";
 };
 
+/* 요금제 실제값 우선 (예: 33요금) */
 const infoLineWithPlan = (c, x) => {
   const p = asNum(x[`${c}_요금제`]);
   return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
@@ -448,6 +477,7 @@ function addCard({badgeText, badgeClass, model, move, change, infoText, discount
   `);
 }
 
+/* CSV fetch + 간단 파싱(콤마/따옴표가 복잡하지 않은 CSV 전제) */
 async function fetchCSV(){
   const r = await fetch(`data.csv?v=${Date.now()}`, { cache: "no-store" });
   if (!r.ok) throw new Error("data.csv 로드 실패");
@@ -481,6 +511,7 @@ async function render(tab){
 
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
+  /* SK/KT/LG: 109/110/115만(요금제 비어있으면 허용) + 세트 규칙 */
   if (["SK","KT","LG"].includes(tab)){
     const lim = limOf(tab);
 
@@ -509,6 +540,7 @@ async function render(tab){
     return;
   }
 
+  /* HOT: 마이너스가 나온 쪽만 */
   if (tab === "HOT"){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
@@ -538,6 +570,7 @@ async function render(tab){
     return;
   }
 
+  /* LOW: 109/110/115 미만 요금제 있는 통신사만 */
   if (tab === "LOW"){
     items.forEach(x=>{
       ["SK","KT","LG"].forEach(c=>{
@@ -564,6 +597,7 @@ async function render(tab){
   }
 }
 
+/* 탭 이벤트 */
 document.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
@@ -572,6 +606,7 @@ document.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
+/* 최초 렌더 */
 render("SK");
 </script>
 
