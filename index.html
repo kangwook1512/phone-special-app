@@ -47,6 +47,95 @@ body{
   50%{transform:translateY(-2px) scale(1.07);}
 }
 
+/* =========================
+   ✅ (NEW) 끊김 없는 LED 전광판(무한 루프) + 더 LED처럼
+   ========================= */
+@keyframes marqueeLoop{
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes ledDotFlicker{
+  0%,100%{opacity:.28}
+  50%{opacity:.52}
+}
+@keyframes ledTextFlicker{
+  0%,100%{filter:brightness(1.05);}
+  50%{filter:brightness(1.35);}
+}
+
+.heroMarquee{
+  margin:2px 0 10px;
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,.16);
+  overflow:hidden;
+  padding:8px 10px;
+  position:relative;
+
+  /* LED 패널 느낌: 어두운 바탕 + 그라데이션 */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(0,0,0,.10) 100%),
+    linear-gradient(90deg, #0b1220 0%, #111827 40%, #0b1220 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    inset 0 10px 20px rgba(0,0,0,.35),
+    0 10px 22px rgba(0,0,0,.10);
+}
+
+/* LED 도트(점) 질감 */
+.heroMarquee::before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.10) 1px, transparent 1.8px);
+  background-size: 7px 7px;
+  opacity:.32;
+  animation: ledDotFlicker 1.25s ease-in-out infinite;
+  pointer-events:none;
+}
+
+/* 유리 반사광 */
+.heroMarquee::after{
+  content:"";
+  position:absolute; inset:-60% -20% auto -20%;
+  height:120%;
+  transform: rotate(-8deg);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.14) 45%, transparent 70%);
+  opacity:.35;
+  pointer-events:none;
+}
+
+.heroMarquee .marquee{
+  overflow:hidden;
+  width:100%;
+  position:relative;
+  z-index:1;
+}
+
+.heroMarquee .marquee__inner{
+  display:flex;
+  gap:36px;                 /* 문구 사이 간격 */
+  width:max-content;
+  white-space:nowrap;
+  animation: marqueeLoop 11s linear infinite; /* ✅ 속도 */
+  will-change: transform;
+  align-items:center;
+}
+
+/* LED 글자: 네온 + 살짝 깜빡임 */
+.heroMarquee .marquee__inner span{
+  font-size:12.5px;
+  font-weight:1000;
+  letter-spacing:-.15px;
+  color:#b6ffcf; /* LED 그린 계열 */
+
+  text-shadow:
+    0 0 6px rgba(0,255,120,.40),
+    0 0 12px rgba(0,255,120,.22),
+    0 2px 10px rgba(0,0,0,.55);
+
+  animation: ledTextFlicker 1.05s ease-in-out infinite;
+}
+
 /* 노란 통합 히어로 */
 .hero{
   background:#ffe866;border:2px solid #ffeb3b;border-radius:16px;
@@ -60,37 +149,6 @@ body{
   content:"";position:absolute;inset:-25%;
   background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,.92) 50%,rgba(255,255,255,0) 70%,transparent 100%);
   animation: shineSweepStrong 1.7s linear infinite;pointer-events:none;mix-blend-mode:screen;
-}
-
-/* =========================
-   ✅ (NEW) 카운팅 자리 대체: LED 전광판(좌→우)
-   ========================= */
-@keyframes marqueeLR{
-  0%{ transform: translateX(-110%); }
-  100%{ transform: translateX(110%); }
-}
-.heroMarquee{
-  margin:2px 0 10px;
-  border-radius:12px;
-  border:1px dashed rgba(15,23,42,.16);
-  background:rgba(255,255,255,.40);
-  overflow:hidden;
-  padding:7px 10px;
-  position:relative;
-}
-.heroMarquee .track{
-  display:inline-block;
-  white-space:nowrap;
-  animation: marqueeLR 16s linear infinite;
-  will-change: transform;
-}
-.heroMarquee .track span{
-  font-size:12px;
-  font-weight:900;
-  color:rgba(15,23,42,.70);
-  letter-spacing:-.2px;
-  text-shadow:0 6px 14px rgba(0,0,0,.12);
-  padding-left:100%;
 }
 
 /* 2) 액정필름: LED 스트립(강) + ✅ 1줄 고정 */
@@ -252,7 +310,8 @@ body{
 
 @media (prefers-reduced-motion: reduce){
   .hero,.hero::after,.heroLedStrip::after,.heroLedStrip span,.adHot,.adBadge,
-  .heroMarquee .track{animation:none!important;}
+  .heroMarquee .marquee__inner span, .heroMarquee .marquee__inner,
+  .heroMarquee::before{animation:none!important;}
   .dockBtn{transition:none!important;}
 }
 </style>
@@ -263,10 +322,13 @@ body{
   <!-- ✅ 노란 LED 광고판(최종 순서 고정) -->
   <div class="hero">
 
-    <!-- ✅ (카운팅 삭제 후 대체) LED 전광판 -->
+    <!-- ✅ 끊김 없는 LED 전광판(더 LED처럼) -->
     <div class="heroMarquee" aria-label="공지">
-      <div class="track">
-        <span>복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
+      <div class="marquee">
+        <div class="marquee__inner">
+          <span>복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
+          <span aria-hidden="true">복지관2층 휴대폰매장 · SK/KT/LG 특가 · 알뜰요금 3,300원~ · 인터넷TV 현금 최대 지원 · 카톡 문의 환영</span>
+        </div>
       </div>
     </div>
 
@@ -304,6 +366,7 @@ body{
 <!-- ✅ 하단 도크: 아이콘(SVG) + 균형 정렬 -->
 <div class="bottomDock" role="navigation" aria-label="빠른 연락">
   <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
+    <!-- phone -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.6 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.12a2 2 0 0 1 2.11-.45c.83.28 1.7.48 2.6.6A2 2 0 0 1 22 16.92z"/>
     </svg>
@@ -311,6 +374,7 @@ body{
   </a>
 
   <a class="dockBtn sms" href="sms:010-5839-1512" aria-label="문자">
+    <!-- message-square -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
       <path d="M8 10h8"/>
@@ -320,6 +384,7 @@ body{
   </a>
 
   <a class="dockBtn kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡">
+    <!-- chat-bubble (simple) -->
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M20 11c0 3.87-3.58 7-8 7a9.8 9.8 0 0 1-2.5-.33L4 20l1.66-4.15A6.3 6.3 0 0 1 4 11c0-3.87 3.58-7 8-7s8 3.13 8 7z"/>
       <path d="M9 11h.01"/>
@@ -331,7 +396,7 @@ body{
 </div>
 
 <!-- =========================
-     ✅ CSV 로드 + 카드 렌더(그대로)
+     ✅ CSV 로드 + 카드 렌더(완전 복구)
      ========================= -->
 <script>
 const list = document.getElementById("list");
