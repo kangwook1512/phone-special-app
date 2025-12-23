@@ -308,7 +308,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- ✅ 요청: 인터넷/알뜰 보다가도 휴대폰 탭 바로 누를 수 있게 → 항상 표시(숨기지 않음) -->
+  <!-- ✅ 휴대폰 탭(항상 표시) -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -418,8 +418,6 @@ function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, dis
 
 /* =========================
    ✅ 알뜰/인터넷 전용 카드
-   - 요청: 이동/기변 구분 제거(알뜰)
-   - 요청: 인터넷도 이동/기변 제거, "월/결합"으로 표현
    ========================= */
 function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1, price2Label, price2}){
   list.insertAdjacentHTML("beforeend", `
@@ -444,9 +442,9 @@ function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1
 
 /* =========================
    ✅ 인터넷TV 데이터
-   - 요청: 최저요금순 정렬
-   - 요청: [SK] 100M·TV없음 / 월 / 결합
-   - 요청: 설치비/조건 문구 삭제
+   - 최저요금순 정렬
+   - 월/결합 표시
+   - 설치비/조건 문구 없음
    ========================= */
 const INTERNET_TV = [
   {carrier:"SK", net:"100M", tv:"없음", monthly:"22,000", bundle:"17,600"},
@@ -484,18 +482,38 @@ const INTERNET_TV = [
 ];
 
 /* =========================
-   ✅ 알뜰요금 카드 추가
-   - 요청: 이동/기변 없이 요금제 그대로
-   - 요청: 최저요금순 정렬
-   - 요청: 알뜰요금에서 핫딜로 바로
+   ✅ 알뜰요금 데이터(전체 22개)
+   - 이동/기변 구분 없음
+   - 최저요금순 정렬
    ========================= */
 const MVNO_PLANS = [
-  {net:"LG", talk:"50분", sms:"50건", data:"500MB", fee:"3,300"},
+  // LG
   {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"9,900"},
-  {net:"KT", talk:"무제한", sms:"무제한", data:"2.5GB+400Kbps무제한", fee:"9,500"},
-  {net:"SK", talk:"2000분", sms:"2000건", data:"2GB", fee:"6,820"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"15,900"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"18,900"},
+  {net:"LG", talk:"100분",  sms:"100건",  data:"15GB+3Mbps무제한", fee:"25,250"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"32,990"},
   {net:"LG", talk:"무제한", sms:"무제한", data:"100GB+5Mbps무제한", fee:"38,200"},
+  {net:"LG", talk:"50분",   sms:"50건",   data:"500MB", fee:"3,300"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"12,900"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"5GB+1Mbps무제한", fee:"17,500"},
+  {net:"LG", talk:"100분",  sms:"100건",  data:"15GB+망내1회선+3Mbps무제한", fee:"28,820"},
+
+  // KT
+  {net:"KT", talk:"무제한", sms:"무제한", data:"2.5GB+400Kbps무제한", fee:"9,500"},
+  {net:"KT", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"17,900"},
+  {net:"KT", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"19,900"},
+  {net:"KT", talk:"무제한", sms:"무제한", data:"15GB+1Mbps무제한", fee:"22,400"},
+  {net:"KT", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"34,000"},
   {net:"KT", talk:"무제한", sms:"무제한", data:"100GB+5Mbps무제한", fee:"39,900"},
+
+  // SK
+  {net:"SK", talk:"2,000분", sms:"2,000건", data:"2GB", fee:"6,820"},
+  {net:"SK", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"13,340"},
+  {net:"SK", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"19,140"},
+  {net:"SK", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"19,640"},
+  {net:"SK", talk:"100분",  sms:"100건",  data:"15GB+3Mbps무제한", fee:"25,740"},
+  {net:"SK", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"36,140"},
 ];
 
 /* =========================
@@ -507,9 +525,7 @@ function setServiceActive(next){
   if (next === "INTERNET") serviceTabsEl.querySelector('[data-mode="INTERNET"]').classList.add("active");
 }
 
-function clearList(){
-  list.innerHTML = "";
-}
+function clearList(){ list.innerHTML = ""; }
 
 /* ===== CSV 휴대폰(원본 로직 유지) ===== */
 async function fetchCSV(){
@@ -631,7 +647,7 @@ async function renderPhone(tab){
   }
 }
 
-/* ===== 인터넷TV (요청대로: 월/결합, 최저요금순) ===== */
+/* ===== 인터넷TV (월/결합, 최저요금순) ===== */
 function renderInternet(){
   mode = "INTERNET";
   setServiceActive("INTERNET");
@@ -656,29 +672,11 @@ function renderInternet(){
   });
 }
 
-/* ===== 알뜰요금 (요청대로: 요금제 그대로, 최저요금순, 핫딜 바로) ===== */
+/* ===== 알뜰요금 (전체 + 최저요금순, 핫딜바로가기카드 삭제) ===== */
 function renderMVNO(){
   mode = "MVNO";
   setServiceActive("MVNO");
   clearList();
-
-  // ✅ 알뜰요금 → 핫딜 바로가기 카드(요청 반영)
-  list.insertAdjacentHTML("beforeend", `
-    <div class="card" style="grid-column:1/-1;">
-      <div class="titleRow">
-        <div class="model">빠른 이동</div>
-        <div class="badge hot">바로가기</div>
-      </div>
-      <p class="planLine" style="margin-bottom:10px;">알뜰요금 보다가도 핫딜을 바로 확인할 수 있습니다.</p>
-      <button class="tabBtn hot active" style="width:100%;border-radius:12px;padding:12px 0;"
-        id="goHotBtn" type="button">핫딜 바로가기</button>
-    </div>
-  `);
-  document.getElementById("goHotBtn").onclick = () => {
-    // 휴대폰 탭 HOT 활성화 + 렌더
-    activatePhoneTab("HOT");
-    renderPhone("HOT");
-  };
 
   const sorted = MVNO_PLANS
     .slice()
@@ -712,24 +710,19 @@ function activatePhoneTab(tab){
 /* =========================
    ✅ 이벤트 바인딩
    ========================= */
-// 휴대폰 5개 탭: 어떤 화면(MVNO/INTERNET)에서든 바로 이동 가능
 phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const tab = btn.dataset.tab;
     activatePhoneTab(tab);
-    // 서비스 탭 active 해제
     serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
     renderPhone(tab);
   });
 });
 
-// 서비스 2개 탭: 클릭하면 해당 화면으로 전환(휴대폰 탭은 그대로 유지)
 serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
-    // 같은 탭을 다시 누르면 PHONE으로 복귀(요청: 전체화면/원래 화면 복귀)
     if (mode === next){
-      // 휴대폰 마지막 탭으로 복귀
       serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
       activatePhoneTab(lastPhoneTab);
       renderPhone(lastPhoneTab);
