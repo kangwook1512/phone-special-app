@@ -26,7 +26,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
 }
-.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;} /* ✅ 하단 도크 여유 */
 
 /* =========================
    ✅ A안: 히어로 전광판
@@ -175,9 +175,8 @@ body{
 .card{
   border:1px solid var(--line);border-radius:14px;padding:12px;
   box-shadow:0 2px 10px rgba(0,0,0,.05);
-  background:#fff;
 }
-.titleRow{display:flex;justify-content:space-between;margin-bottom:10px;gap:10px;align-items:center;}
+.titleRow{display:flex;justify-content:space-between;margin-bottom:8px;gap:10px;align-items:center;}
 .model{font-weight:1000;font-size:16px;letter-spacing:-.2px;}
 .badge{
   font-size:12px;font-weight:1000;padding:6px 10px;border-radius:999px;color:#fff;
@@ -192,7 +191,7 @@ body{
 .infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin:0 0 6px;}
 .discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin:0 0 8px;}
 
-/* 휴대폰 pill(유지) */
+/* 휴대폰 전용 pill(그대로 유지) */
 .priceRow{display:flex;gap:10px;}
 .pill{
   flex:1;border:1px solid var(--line);border-radius:12px;
@@ -204,67 +203,64 @@ body{
 .zero{color:#0ea5e9;}
 .pos{color:#0f172a;}
 
-/* =========================
-   ✅ (B안) 알뜰/인터넷 전용: “있어보이게” 카드 UI
-   ========================= */
-.serviceCard{padding:14px;}
-.serviceCard.full{grid-column:1 / -1;} /* 첫 카드 전체폭 */
-.serviceTitle{
-  font-size:17px;
-  font-weight:1000;
-  letter-spacing:-.4px;
-  line-height:1.15;
-}
-.serviceSub{
-  margin:8px 0 10px;
-  font-size:13px;
-  font-weight:1000;
-  color:#0f172a;
-  line-height:1.35;
-}
-.metaChips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
-.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 10px;border-radius:999px;
-  border:1px solid rgba(15,23,42,.10);
-  background:rgba(2,6,23,.03);
-  font-weight:1000;
-  font-size:12px;
-  color:#0f172a;
-}
-.chip b{font-weight:1000;}
-.noticeBar{
-  margin:0 0 10px;
-  padding:9px 10px;
-  border-radius:12px;
-  border:1px solid rgba(15,23,42,.10);
-  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(2,6,23,.02));
-  font-weight:1000;
-  font-size:12.5px;
-  color:#0f172a;
-}
-.noticeBar.mvno{border-color:rgba(22,163,74,.22); background:rgba(22,163,74,.07);}
-.noticeBar.internet{border-color:rgba(17,24,39,.18); background:rgba(17,24,39,.06);}
+/* ✅ 알뜰/인터넷 전용 라인 */
+.planLine{font-size:13px;font-weight:1000;letter-spacing:-.2px;margin:0 0 8px;color:#0f172a;line-height:1.25;}
+.moneyRow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+.moneyRow .label{font-size:12px;font-weight:1000;color:var(--muted);}
+.moneyRow .val{font-size:22px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;} /* ✅ 살짝 키움 */
+.moneyRow .val2{font-size:19px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;} /* ✅ 살짝 키움 */
 
-.moneyBig{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-  padding-top:10px;
-  border-top:1px dashed rgba(15,23,42,.14);
+/* =========================
+   ✅ (NEW) 알뜰/인터넷 첫 카드: 안내 카드 전용 (월요금/결합 제거)
+   ========================= */
+.infoCard{
+  grid-column:1/-1;                 /* 2열 전체폭 */
+  padding:14px 14px;
+  border-radius:16px;
+  background: linear-gradient(180deg, rgba(15,23,42,.04), rgba(15,23,42,.02));
 }
-.moneyBlock{display:flex;flex-direction:column;gap:4px;}
-.moneyLabel{font-size:12px;font-weight:1000;color:var(--muted);}
-.moneyValue{
-  font-size:30px;
+.infoCard .big{
+  font-size:18px;
   font-weight:1000;
-  letter-spacing:-1px;
-  line-height:1;
+  letter-spacing:-.3px;
+  line-height:1.25;
+  color:#0f172a;
+  margin:0 0 8px;
+}
+.infoCard .big strong{ font-weight:1000; }
+.infoCard .sub{
+  font-size:14px;
+  font-weight:1000;
+  color:var(--muted);
+  margin:0;
+}
+.infoCard .kakaoHint{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(254,229,0,.28);
+  border:1px solid rgba(254,229,0,.55);
+}
+.infoCard .kakaoHint .t{
+  font-size:15px;
+  font-weight:1000;
+  color:#3b2f00;
+  letter-spacing:-.2px;
+}
+.infoCard .kakaoHint a{
+  text-decoration:none;
+  font-weight:1000;
+  font-size:14px;
+  padding:9px 12px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid rgba(15,23,42,.10);
   color:#0f172a;
 }
-.moneyValue.small{font-size:25px;}
-.moneyUnit{font-size:12px;font-weight:1000;color:var(--muted);margin-left:6px;}
 
 /* =========================
    ✅ 하단 도크(원본 유지)
@@ -364,7 +360,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- ✅ 휴대폰 탭(항상 표시) -->
+  <!-- ✅ 휴대폰 탭 -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -413,9 +409,9 @@ const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
 
 let mode = "PHONE";          // PHONE | MVNO | INTERNET
-let lastPhoneTab = "SK";
+let lastPhoneTab = "SK";     // 휴대폰 탭 복귀용
 
-/* 숫자 변환 */
+/* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
 const asNum = (x) => {
   const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
   if (s === "") return null;
@@ -442,7 +438,7 @@ const infoLineWithPlan = (c, x) => {
 };
 
 /* =========================
-   ✅ 휴대폰 카드(그대로 유지)
+   ✅ 휴대폰 카드(원본 유지)
    ========================= */
 function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, discount}){
   const mvNum = asNum(move);
@@ -473,54 +469,46 @@ function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, dis
 }
 
 /* =========================
-   ✅ (B) 알뜰/인터넷 카드(업그레이드)
+   ✅ 알뜰/인터넷 전용 카드
    ========================= */
-function addServiceCard({
-  badgeText, badgeClass,
-  title, sub="",
-  chips=[],
-  notice="", noticeClass="",
-  monthlyLabel="월", monthly="",
-  bundleLabel="", bundle="",
-  fullWidth=false
-}){
-  const chipHTML = chips.length ? `
-    <div class="metaChips">
-      ${chips.map(c=>`<span class="chip"><b>${c.k}</b> ${c.v}</span>`).join("")}
-    </div>` : ``;
-
-  const noticeHTML = notice ? `<div class="noticeBar ${noticeClass}">${notice}</div>` : ``;
-
+function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1, price2Label, price2}){
   list.insertAdjacentHTML("beforeend", `
-    <div class="card serviceCard ${fullWidth ? "full" : ""}">
+    <div class="card">
       <div class="titleRow">
-        <div class="serviceTitle">${title}</div>
+        <div class="model">${line1}</div>
         <div class="badge ${badgeClass}">${badgeText}</div>
       </div>
-
-      ${sub ? `<div class="serviceSub">${sub}</div>` : ``}
-      ${chipHTML}
-      ${noticeHTML}
-
-      <div class="moneyBig">
-        <div class="moneyBlock">
-          <div class="moneyLabel">${monthlyLabel}</div>
-          <div>
-            <span class="moneyValue">${monthly}</span>
-            <span class="moneyUnit">원</span>
-          </div>
-        </div>
-
-        ${bundle ? `
-          <div class="moneyBlock" style="text-align:right;">
-            <div class="moneyLabel">${bundleLabel}</div>
-            <div>
-              <span class="moneyValue small">${bundle}</span>
-              <span class="moneyUnit">원</span>
-            </div>
-          </div>
-        ` : ``}
+      ${line2 ? `<p class="planLine">${line2}</p>` : ``}
+      <div class="moneyRow">
+        <div class="label">${price1Label}</div>
+        <div class="val">${price1}</div>
       </div>
+      ${price2 ? `
+        <div class="moneyRow" style="margin-top:6px;">
+          <div class="label">${price2Label}</div>
+          <div class="val2">${price2}</div>
+        </div>` : ``}
+    </div>
+  `);
+}
+
+/* =========================
+   ✅ (NEW) 첫 카드: 안내 카드(월요금/결합 없음)
+   ========================= */
+function addInfoCard({badgeText, badgeClass, title, lines, ctaText}){
+  const safeLines = (lines || []).map(s => `<div>${s}</div>`).join("");
+  list.insertAdjacentHTML("beforeend", `
+    <div class="card infoCard">
+      <div class="titleRow" style="margin-bottom:10px;">
+        <div class="model">${title}</div>
+        <div class="badge ${badgeClass}">${badgeText}</div>
+      </div>
+      <p class="big">${safeLines}</p>
+      ${ctaText ? `
+        <div class="kakaoHint">
+          <div class="t">${ctaText}</div>
+          <a href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡 열기</a>
+        </div>` : ``}
     </div>
   `);
 }
@@ -564,36 +552,15 @@ const INTERNET_TV = [
 ];
 
 /* =========================
-   ✅ 알뜰요금 데이터(전체)
+   ✅ 알뜰요금 데이터
    ========================= */
 const MVNO_PLANS = [
-  // LG
+  {net:"LG", talk:"50분", sms:"50건", data:"500MB", fee:"3,300"},
   {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"9,900"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"15,900"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"18,900"},
-  {net:"LG", talk:"100분",  sms:"100건",  data:"15GB+3Mbps무제한", fee:"25,250"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"32,990"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"100GB+5Mbps무제한", fee:"38,200"},
-  {net:"LG", talk:"50분",   sms:"50건",   data:"500MB", fee:"3,300"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"12,900"},
-  {net:"LG", talk:"무제한", sms:"무제한", data:"5GB+1Mbps무제한", fee:"17,500"},
-  {net:"LG", talk:"100분",  sms:"100건",  data:"15GB+망내1회선+3Mbps무제한", fee:"28,820"},
-
-  // KT
   {net:"KT", talk:"무제한", sms:"무제한", data:"2.5GB+400Kbps무제한", fee:"9,500"},
-  {net:"KT", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"17,900"},
-  {net:"KT", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"19,900"},
-  {net:"KT", talk:"무제한", sms:"무제한", data:"15GB+1Mbps무제한", fee:"22,400"},
-  {net:"KT", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"34,000"},
+  {net:"SK", talk:"2000분", sms:"2000건", data:"2GB", fee:"6,820"},
+  {net:"LG", talk:"무제한", sms:"무제한", data:"100GB+5Mbps무제한", fee:"38,200"},
   {net:"KT", talk:"무제한", sms:"무제한", data:"100GB+5Mbps무제한", fee:"39,900"},
-
-  // SK
-  {net:"SK", talk:"2,000분", sms:"2,000건", data:"2GB", fee:"6,820"},
-  {net:"SK", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"13,340"},
-  {net:"SK", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"19,140"},
-  {net:"SK", talk:"무제한", sms:"무제한", data:"10GB+1Mbps무제한", fee:"19,640"},
-  {net:"SK", talk:"100분",  sms:"100건",  data:"15GB+3Mbps무제한", fee:"25,740"},
-  {net:"SK", talk:"무제한", sms:"무제한", data:"11GB+일2GB+3Mbps무제한", fee:"36,140"},
 ];
 
 /* =========================
@@ -606,7 +573,7 @@ function setServiceActive(next){
 }
 function clearList(){ list.innerHTML = ""; }
 
-/* ===== CSV 휴대폰(원본) ===== */
+/* ===== CSV 휴대폰(원본 로직 유지) ===== */
 async function fetchCSV(){
   const r = await fetch(`data.csv?v=${Date.now()}`, { cache: "no-store" });
   if (!r.ok) throw new Error("data.csv 로드 실패");
@@ -726,29 +693,22 @@ async function renderPhone(tab){
   }
 }
 
-/* ===== 인터넷TV: 첫 카드(현금지원금 카톡문의) + 최저요금순 ===== */
+/* ===== 인터넷TV: 첫 카드(안내) + 요금카드 ===== */
 function renderInternet(){
   mode = "INTERNET";
   setServiceActive("INTERNET");
   clearList();
 
-  // ✅ 첫 카드(요청)
-  addServiceCard({
-    badgeText: "인터넷TV",
-    badgeClass: "kt",
-    title: "현금지원금",
-    sub: "현금지원금은 카톡으로 문의 주세요.",
-    chips: [
-      {k:"문의", v:"카톡"},
-      {k:"안내", v:"현금지원금"}
+  // ✅ 첫 카드(안내) — 월/결합 없음
+  addInfoCard({
+    badgeText:"안내",
+    badgeClass:"kt",
+    title:"인터넷TV",
+    lines:[
+      "<strong>현금지원금</strong> 카톡문의",
+      "결합 시 <strong>요금 할인</strong>"
     ],
-    notice: "현금지원금 상담은 하단 카톡 버튼으로 진행됩니다.",
-    noticeClass: "internet",
-    monthlyLabel: "월 요금",
-    monthly: "22,000",
-    bundleLabel: "결합",
-    bundle: "16,500",
-    fullWidth: true
+    ctaText:"궁금하신 점은 카톡문의"
   });
 
   const sorted = INTERNET_TV
@@ -757,44 +717,35 @@ function renderInternet(){
 
   sorted.forEach(x=>{
     const badgeClass = (x.carrier === "SK") ? "sk" : (x.carrier === "KT" ? "kt" : "lg");
-    addServiceCard({
+    addSimpleCard({
       badgeText: x.carrier,
       badgeClass,
-      title: `[ ${x.carrier} ] ${x.net} · TV${x.tv}`,
-      chips: [
-        {k:"인터넷", v:x.net},
-        {k:"TV", v:x.tv}
-      ],
-      monthlyLabel: "월",
-      monthly: x.monthly,
-      bundleLabel: "결합",
-      bundle: x.bundle
+      line1: `[ ${x.carrier} ]`,
+      line2: `${x.net} · TV${x.tv}`,
+      price1Label: "월",
+      price1: x.monthly,
+      price2Label: "결합",
+      price2: x.bundle
     });
   });
 }
 
-/* ===== 알뜰요금: 첫 카드(가입비/유심비 없음) + 최저요금순 ===== */
+/* ===== 알뜰요금: 첫 카드(안내) + 요금카드 ===== */
 function renderMVNO(){
   mode = "MVNO";
   setServiceActive("MVNO");
   clearList();
 
-  // ✅ 첫 카드(요청)
-  addServiceCard({
-    badgeText: "알뜰요금",
-    badgeClass: "lg",
-    title: "추가요금 없음",
-    sub: "가입비 / 유심비 등 추가요금 없습니다.",
-    chips: [
-      {k:"가입비", v:"없음"},
-      {k:"유심비", v:"없음"},
-      {k:"추가요금", v:"없음"}
+  // ✅ 첫 카드(안내) — 월요금 없음 (요청 문구 그대로)
+  addInfoCard({
+    badgeText:"필독",
+    badgeClass:"lg",
+    title:"알뜰요금",
+    lines:[
+      "가입비 · 유심비",
+      "<strong>추가요금 없음</strong>"
     ],
-    notice: "요금제 표기 금액 그대로 진행됩니다.",
-    noticeClass: "mvno",
-    monthlyLabel: "월 최저",
-    monthly: "3,300",
-    fullWidth: true
+    ctaText:"궁금하신점은 카톡문의"
   });
 
   const sorted = MVNO_PLANS
@@ -803,23 +754,15 @@ function renderMVNO(){
 
   sorted.forEach(p=>{
     const badgeClass = (p.net === "SK") ? "sk" : (p.net === "KT" ? "kt" : "lg");
-
-    // 데이터 표현(한 줄로)
-    const dataText = `${p.data}`;
-    const talkText = `${p.talk}`;
-    const smsText  = `${p.sms}`;
-
-    addServiceCard({
+    addSimpleCard({
       badgeText: p.net,
       badgeClass,
-      title: `${p.net}망 알뜰요금`,
-      sub: dataText,
-      chips: [
-        {k:"통화", v:talkText},
-        {k:"문자", v:smsText}
-      ],
-      monthlyLabel: "월",
-      monthly: p.fee
+      line1: `${p.net}망 알뜰요금`,
+      line2: `${p.data} / 통화 ${p.talk} / 문자 ${p.sms}`,
+      price1Label: "월",
+      price1: p.fee,
+      price2Label: "",
+      price2: ""
     });
   });
 }
@@ -860,7 +803,7 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
-/* 최초 렌더 */
+/* 최초 렌더: 휴대폰(SK) */
 activatePhoneTab("SK");
 renderPhone("SK");
 </script>
