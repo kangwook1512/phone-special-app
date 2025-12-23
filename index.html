@@ -109,10 +109,12 @@ body{
 .tabBtn.lg.active{background:var(--lg);}
 .tabBtn.deal.active{background:var(--hot);} /* ✅ 특가 탭 */
 
-/* ✅ 상단 2개 탭(알뜰/인터넷TV) */
+/* ✅ 상단 서비스 탭(알뜰/인터넷TV/영상) */
 .tabBtn.svc{font-size:15px;font-weight:1000;}
 .tabBtn.svc.mvno.active{background:var(--lg);}
 .tabBtn.svc.internet.active{background:var(--kt);}
+/* ✅ 추가: 영상 탭 */
+.tabBtn.svc.video.active{background:var(--sk);}
 
 .panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
 
@@ -230,6 +232,78 @@ body{
 }
 
 /* =========================
+   ✅ (추가) 영상 카드형 UI
+   ========================= */
+.videoGrid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:10px;
+}
+@media (max-width: 420px){
+  .videoGrid{ grid-template-columns:1fr; }
+}
+.videoCard{
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+.videoThumb{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:linear-gradient(180deg, rgba(15,23,42,.08), rgba(15,23,42,.02));
+  overflow:hidden;
+}
+.videoThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.videoPlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(to top, rgba(0,0,0,.52), rgba(0,0,0,.06));
+}
+.videoPlay button{
+  border:0;
+  padding:11px 14px;
+  border-radius:999px;
+  font-weight:1000;
+  cursor:pointer;
+  background:#fff;
+  color:#0f172a;
+  border:1px solid rgba(15,23,42,.10);
+}
+.videoMeta{
+  padding:12px 12px;
+}
+.videoTitle{
+  margin:0 0 6px 0;
+  font-size:15px;
+  font-weight:1000;
+  letter-spacing:-.2px;
+}
+.videoDesc{
+  margin:0;
+  font-size:12px;
+  font-weight:1000;
+  color:var(--muted);
+  line-height:1.35;
+}
+.videoFrame{
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  display:block;
+}
+
+/* =========================
    ✅ 하단 도크(원본 유지)
    ========================= */
 .bottomDock{
@@ -320,6 +394,8 @@ body{
   <div class="tabs" id="serviceTabs" aria-label="서비스 탭">
     <button class="tabBtn svc mvno" data-mode="MVNO">알뜰요금</button>
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
+    <!-- ✅ 추가: 영상 탭 -->
+    <button class="tabBtn svc video" data-mode="VIDEO">영상</button>
   </div>
 
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
@@ -373,7 +449,7 @@ const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
 const dealTabsEl = document.getElementById("dealTabs");
 
-let mode = "PHONE";          // PHONE | MVNO | INTERNET
+let mode = "PHONE";          // PHONE | MVNO | INTERNET | VIDEO
 let lastPhoneTab = "SK";     // 휴대폰 탭 복귀용
 let dealSub = "LOW";         // ✅ 기본: 저가 우선
 
@@ -491,6 +567,93 @@ function addInfoCard({badgeText, badgeClass, title, lines, ctaText}){
 }
 
 /* =========================
+   ✅ (추가) 영상: ID 추출 + 카드 렌더
+   ========================= */
+function extractYouTubeId(url){
+  try{
+    const u = new URL(url);
+    if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/shorts/')[1].split('/')[0];
+    if (u.searchParams.get('v')) return u.searchParams.get('v');
+    if (u.hostname === 'youtu.be') return u.pathname.replace('/','');
+    if (u.pathname.startsWith('/embed/')) return u.pathname.split('/embed/')[1].split('/')[0];
+  }catch(e){}
+  return null;
+}
+
+const VIDEO_ITEMS = [
+  { title:"웃참 1", desc:"잠깐 웃고 가기", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" },
+  { title:"웃참 2", desc:"짧게 보고 리셋", url:"https://youtube.com/shorts/RQ2VvIvo04U?si=LwPMHImIB0nKOOGC" },
+  { title:"웃참 3", desc:"스트레스 10초 컷", url:"https://youtube.com/shorts/EOUcOBoAzhQ?si=ujBpn55ke666SHry" },
+  { title:"웃참 4", desc:"심심할 때 1분", url:"https://youtube.com/shorts/NHLWKP5Qh6s?si=EHPxIr5B4csUoPNY" },
+  { title:"웃참 5", desc:"짧고 재밌는 클립", url:"https://youtube.com/shorts/2TOQ8GK7WoA?si=YfQOi2H28iDB3lMe" },
+];
+
+function renderVideo(){
+  mode = "VIDEO";
+  // 서비스 탭 active 처리
+  serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
+  serviceTabsEl.querySelector('[data-mode="VIDEO"]').classList.add("active");
+
+  // 휴대폰 탭 active 해제(영상에서는 휴대폰 탭 선택 상태가 의미 없어서)
+  phoneTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
+
+  showDealTabs(false);
+  clearList();
+
+  // 안내 카드
+  addInfoCard({
+    badgeText:"영상",
+    badgeClass:"sk",
+    title:"직원 웃참 영상",
+    lines:[
+      "썸네일 클릭하면 <strong>바로 재생</strong>",
+      "소리 주의 (업무 중엔 조용히)"
+    ],
+    ctaText:"재밌는 영상 있으면 카톡으로 공유"
+  });
+
+  // 영상 그리드 영역(기존 list 안에 한 칸으로 넣음)
+  list.insertAdjacentHTML("beforeend", `
+    <div class="card" style="grid-column:1/-1;padding:0;border:0;box-shadow:none;background:transparent;">
+      <div class="videoGrid" id="videoGrid"></div>
+    </div>
+  `);
+
+  const grid = document.getElementById("videoGrid");
+  if(!grid) return;
+
+  VIDEO_ITEMS.forEach(v=>{
+    const id = extractYouTubeId(v.url);
+    if(!id) return;
+    const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    const embed = `https://www.youtube.com/embed/${id}?autoplay=1`;
+
+    const el = document.createElement("div");
+    el.className = "videoCard";
+    el.innerHTML = `
+      <div class="videoThumb">
+        <img src="${thumb}" alt="${v.title}">
+        <div class="videoPlay">
+          <button type="button" data-embed="${embed}">재생</button>
+        </div>
+      </div>
+      <div class="videoMeta">
+        <p class="videoTitle">${v.title}</p>
+        <p class="videoDesc">${v.desc || ""}</p>
+      </div>
+    `;
+
+    el.querySelector("button").addEventListener("click", (e)=>{
+      const em = e.currentTarget.getAttribute("data-embed");
+      const thumbWrap = el.querySelector(".videoThumb");
+      thumbWrap.outerHTML = `<iframe class="videoFrame" src="${em}" title="${v.title}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    });
+
+    grid.appendChild(el);
+  });
+}
+
+/* =========================
    ✅ 인터넷TV / 알뜰요금 데이터
    ========================= */
 const INTERNET_TV = [
@@ -562,6 +725,7 @@ function setServiceActive(next){
   serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
   if (next === "MVNO") serviceTabsEl.querySelector('[data-mode="MVNO"]').classList.add("active");
   if (next === "INTERNET") serviceTabsEl.querySelector('[data-mode="INTERNET"]').classList.add("active");
+  if (next === "VIDEO") serviceTabsEl.querySelector('[data-mode="VIDEO"]').classList.add("active");
 }
 function clearList(){ list.innerHTML = ""; }
 
@@ -886,6 +1050,14 @@ phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
 serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
+
+    // ✅ 영상 탭
+    if (next === "VIDEO"){
+      renderVideo();
+      return;
+    }
+
+    // ✅ 기존 동작(알뜰/인터넷TV)
     if (mode === next){
       serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
       activatePhoneTab(lastPhoneTab);
