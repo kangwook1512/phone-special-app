@@ -488,7 +488,7 @@ const infoLineWithPlan = (c, x) => {
   return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
 };
 
-/* ✅ 페이백 정렬용 점수: 이동/기변 중 더 큰 마이너스(=더 작은 값) */
+/* ✅ 페이백 정렬용 점수 */
 const payScore = (it) => {
   const a = asNum(it.mv);
   const b = asNum(it.ch);
@@ -710,7 +710,6 @@ function buildDealBuckets(items){
       const mvNum = asNum(rawMv);
       const chNum = asNum(rawCh);
 
-      // 저가요금폰 후보
       const lim = limOf(c);
       const isLowPlan = (plan !== null && plan > 0 && plan < lim);
       if (isLowPlan){
@@ -731,7 +730,6 @@ function buildDealBuckets(items){
         }
       }
 
-      // 페이백폰 후보(0 포함)
       const isPay = (mvNum !== null && mvNum <= 0) || (chNum !== null && chNum <= 0);
       if (isPay){
         const mv = (mvNum !== null && mvNum <= 0) ? showVal(rawMv) : "";
@@ -754,7 +752,6 @@ function buildDealBuckets(items){
     });
   });
 
-  // 같은 모델/통신사/표시금액(mv+ch 동일)이면 낮은 요금제만 남김
   const keepLowestPlanOnly = (arr) => {
     const map = new Map();
     arr.forEach(it=>{
@@ -770,11 +767,9 @@ function buildDealBuckets(items){
   const low = keepLowestPlanOnly(lowCandidates);
   let pay = keepLowestPlanOnly(payCandidates);
 
-  // 페이백 vs 저가가 완전히 같은 조건으로 겹치면 저가 우선 → 페이백 제거
   const lowKeySet = new Set(low.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
   pay = pay.filter(it => !lowKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
 
-  // ✅ 정렬
   const cOrder = {SK:0, KT:1, LG:2};
   low.sort((a,b)=>{
     const pa = a.plan ?? 9999, pb = b.plan ?? 9999;
@@ -787,7 +782,7 @@ function buildDealBuckets(items){
   pay.sort((a,b)=>{
     const sa = payScore(a);
     const sb = payScore(b);
-    if (sa !== sb) return sa - sb; // 더 음수 먼저
+    if (sa !== sb) return sa - sb;
     const m = a.model.localeCompare(b.model, "ko");
     if (m !== 0) return m;
     return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
@@ -821,12 +816,12 @@ function extractYouTubeId(url){
 
 /* =========================
    ✅ (왕초보용) videos.json 불러오기
-   - videos.json이 없거나 오류면, 위 VIDEO_ITEMS(기본값) 그대로 사용
+   - ✅ FIX: 절대경로로 호출하여 404 방지
    ========================= */
 async function loadVideosFromJSON(){
   try{
-    const r = await fetch(`videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
-    if (!r.ok) return; // 없으면 기본값 사용
+    const r = await fetch(`https://a2272a.github.io/videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
+    if (!r.ok) return;
     const data = await r.json();
     if (!Array.isArray(data)) return;
 
@@ -912,7 +907,6 @@ async function renderPhone(tab){
 
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
-  // 통신사 탭
   if (["SK","KT","LG"].includes(tab)){
     const lim = limOf(tab);
 
@@ -937,7 +931,6 @@ async function renderPhone(tab){
     return;
   }
 
-  // 특가 탭
   if (tab === "DEAL"){
     showDealTabs(true);
     activateDealSub(dealSub);
@@ -1043,7 +1036,7 @@ function renderMVNO(){
 }
 
 /* =========================
-   ✅ (영상) 렌더: videos.json 있으면 그걸로 자동 반영
+   ✅ 영상
    ========================= */
 async function renderVideo(){
   mode = "VIDEO";
@@ -1052,7 +1045,7 @@ async function renderVideo(){
   clearList();
 
   showLoading("영상 불러오는 중…");
-  await loadVideosFromJSON(); // ✅ 여기만 자동화 핵심
+  await loadVideosFromJSON();
   clearList();
 
   if (!VIDEO_ITEMS.length){
@@ -1088,7 +1081,6 @@ async function renderVideo(){
       const vid = card?.dataset?.vid || "";
       if (!vid) return;
 
-      // ✅ 다른 영상이 이미 재생 중이면 모두 종료(성능/소리 리스크 제거)
       stopAllVideos();
 
       const iframe = document.createElement("iframe");
@@ -1121,7 +1113,6 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
 
     if (mode === "VIDEO" && next !== "VIDEO") stopAllVideos();
 
-    // 같은 탭을 다시 누르면 휴대폰 탭으로 복귀(기존 UX 유지)
     if (mode === next){
       serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
       activatePhoneTab(lastPhoneTab);
@@ -1137,7 +1128,7 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
 
 dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
-    const sub = btn.dataset.deal; // PAY | LOW
+    const sub = btn.dataset.deal;
     stopAllVideos();
     activateDealSub(sub);
     activatePhoneTab("DEAL");
