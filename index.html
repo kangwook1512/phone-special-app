@@ -443,12 +443,24 @@ const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
 const dealTabsEl = document.getElementById("dealTabs");
 
-/* ✅ CSV 버전(가격표 수정했을 때만 이 값 바꾸면 됨) */
+/* ✅ 가격표(CSV) 업데이트 했을 때만 날짜만 바꾸면 됨 */
 const CSV_VER = "2025-12-23";
+
+/* ✅ 영상 목록은 videos.json에서 읽음(왕초보용) */
+const VIDEO_VER = "2025-12-23"; // videos.json 바꿀 때만 날짜 바꾸면 즉시 반영됨
 
 let mode = "PHONE";          // PHONE | MVNO | INTERNET | VIDEO
 let lastPhoneTab = "SK";     // 휴대폰 탭 복귀용
 let dealSub = "LOW";         // ✅ 기본: 저가 우선
+
+/* ✅ videos.json이 없거나 깨져도 사이트가 멈추지 않게 “기본 영상”을 넣어둠 */
+let VIDEO_ITEMS = [
+  { title:"웃참 1", desc:"짧게 보고 리셋", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" },
+  { title:"웃참 2", desc:"잠깐 웃고 가기", url:"https://youtube.com/shorts/RQ2VvIvo04U?si=LwPMHImIB0nKOOGC" },
+  { title:"웃참 3", desc:"스트레스 10초 컷", url:"https://youtube.com/shorts/EOUcOBoAzhQ?si=ujBpn55ke666SHry" },
+  { title:"웃참 4", desc:"심심할 때 1분", url:"https://youtube.com/shorts/NHLWKP5Qh6s?si=EHPxIr5B4csUoPNY" },
+  { title:"웃참 5", desc:"짧고 재밌는 클립", url:"https://youtube.com/shorts/2TOQ8GK7WoA?si=YfQOi2H28iDB3lMe" },
+];
 
 /* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
 const asNum = (x) => {
@@ -495,14 +507,12 @@ function showLoading(msg="불러오는 중…"){
   clearList();
   list.insertAdjacentHTML("beforeend", `<div class="loading">${msg}</div>`);
 }
-
 function setServiceActive(next){
   serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
   if (!next) return;
   const el = serviceTabsEl.querySelector(`[data-mode="${next}"]`);
   if (el) el.classList.add("active");
 }
-
 function showDealTabs(show){
   if (show){
     dealTabsEl.classList.add("show");
@@ -517,7 +527,6 @@ function activateDealSub(sub){
     b.classList.toggle("active", b.dataset.deal === sub);
   });
 }
-
 function activatePhoneTab(tab){
   phoneTabsEl.querySelectorAll(".tabBtn").forEach(b=>{
     b.classList.toggle("active", b.dataset.tab === tab);
@@ -788,13 +797,98 @@ function buildDealBuckets(items){
 }
 
 /* =========================
+   ✅ (영상) 유튜브 ID 추출
+   ========================= */
+function extractYouTubeId(url){
+  try{
+    const u = new URL(url);
+    if (u.pathname.startsWith("/shorts/")){
+      return u.pathname.split("/shorts/")[1].split("/")[0];
+    }
+    if (u.hostname.includes("youtu.be")){
+      return u.pathname.replace("/","").split("/")[0];
+    }
+    const v = u.searchParams.get("v");
+    if (v) return v;
+    const m = u.pathname.match(/\/embed\/([^\/]+)/);
+    if (m && m[1]) return m[1];
+    return "";
+  }catch(e){
+    const s = String(url||"").trim();
+    return /^[a-zA-Z0-9_-]{6,}$/.test(s) ? s : "";
+  }
+}
+
+/* =========================
+   ✅ (왕초보용) videos.json 불러오기
+   - videos.json이 없거나 오류면, 위 VIDEO_ITEMS(기본값) 그대로 사용
+   ========================= */
+async function loadVideosFromJSON(){
+  try{
+    const r = await fetch(`videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
+    if (!r.ok) return; // 없으면 기본값 사용
+    const data = await r.json();
+    if (!Array.isArray(data)) return;
+
+    const cleaned = data.map(v => ({
+      title: String(v.title ?? "").trim(),
+      desc: String(v.desc ?? "").trim(),
+      url: String(v.url ?? "").trim(),
+    })).filter(v => v.title && v.url);
+
+    if (cleaned.length) VIDEO_ITEMS = cleaned;
+  }catch(e){
+    // 오류면 기본값 유지
+  }
+}
+
+/* =========================
+   ✅ (영상) 탭 이동 시 자동 종료
+   ========================= */
+function stopAllVideos(){
+  const grid = document.getElementById("videoGrid");
+  if (!grid) return;
+  const playing = grid.querySelectorAll("iframe.videoFrame");
+  if (!playing.length) return;
+
+  playing.forEach(frame=>{
+    const card = frame.closest(".videoCard");
+    if (!card) return;
+
+    const idx = Number(card.dataset.idx);
+    const it = VIDEO_ITEMS[idx] || { title:"영상", desc:"", url:"" };
+    const vid = card.dataset.vid || "";
+    const thumb = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : "";
+
+    const btn = document.createElement("button");
+    btn.className = "videoThumbBtn";
+    btn.type = "button";
+    btn.setAttribute("aria-label", (it.title || "영상") + " 재생");
+    btn.innerHTML = `
+      ${thumb ? `<img src="${thumb}" alt="${it.title || "영상"} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
+      <span class="playBadge">재생</span>
+    `;
+
+    btn.addEventListener("click", ()=>{
+      stopAllVideos();
+      const iframe = document.createElement("iframe");
+      iframe.className = "videoFrame";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`;
+      btn.replaceWith(iframe);
+    });
+
+    frame.replaceWith(btn);
+  });
+}
+
+/* =========================
    ✅ 휴대폰 렌더(로딩 문구 포함)
    ========================= */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
-
-  // ✅ 영상 재생 중이면 탭 이동 시 자동 종료
   stopAllVideos();
 
   showDealTabs(false);
@@ -881,10 +975,7 @@ function renderInternet(){
   mode = "INTERNET";
   setServiceActive("INTERNET");
   showDealTabs(false);
-
-  // ✅ 영상 재생 중이면 탭 이동 시 자동 종료
   stopAllVideos();
-
   clearList();
 
   addInfoCard({
@@ -899,7 +990,6 @@ function renderInternet(){
   });
 
   const sorted = INTERNET_TV.slice().sort((a,b)=> (asNum(a.monthly)||0) - (asNum(b.monthly)||0));
-
   sorted.forEach(x=>{
     const badgeClass = (x.carrier === "SK") ? "sk" : (x.carrier === "KT" ? "kt" : "lg");
     addSimpleCard({
@@ -922,10 +1012,7 @@ function renderMVNO(){
   mode = "MVNO";
   setServiceActive("MVNO");
   showDealTabs(false);
-
-  // ✅ 영상 재생 중이면 탭 이동 시 자동 종료
   stopAllVideos();
-
   clearList();
 
   addInfoCard({
@@ -940,7 +1027,6 @@ function renderMVNO(){
   });
 
   const sorted = MVNO_PLANS.slice().sort((a,b)=> (asNum(a.fee)||0) - (asNum(b.fee)||0));
-
   sorted.forEach(p=>{
     const badgeClass = (p.net === "SK") ? "sk" : (p.net === "KT" ? "kt" : "lg");
     addSimpleCard({
@@ -957,51 +1043,23 @@ function renderMVNO(){
 }
 
 /* =========================
-   ✅ (영상) 유튜브 카드형 UI
-   - 탭 이동 시 자동 종료(iframe 제거) 포함
+   ✅ (영상) 렌더: videos.json 있으면 그걸로 자동 반영
    ========================= */
-function extractYouTubeId(url){
-  try{
-    const u = new URL(url);
-    // shorts
-    if (u.pathname.startsWith("/shorts/")){
-      return u.pathname.split("/shorts/")[1].split("/")[0];
-    }
-    // youtu.be
-    if (u.hostname.includes("youtu.be")){
-      return u.pathname.replace("/","").split("/")[0];
-    }
-    // watch?v=
-    const v = u.searchParams.get("v");
-    if (v) return v;
-    // embed/
-    const m = u.pathname.match(/\/embed\/([^\/]+)/);
-    if (m && m[1]) return m[1];
-    return "";
-  }catch(e){
-    // URL이 아니더라도 혹시 ID만 들어온 경우
-    const s = String(url||"").trim();
-    return /^[a-zA-Z0-9_-]{6,}$/.test(s) ? s : "";
-  }
-}
-
-const VIDEO_ITEMS = [
-  { title:"웃참 1", desc:"짧게 보고 리셋", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" },
-  { title:"웃참 2", desc:"잠깐 웃고 가기", url:"https://youtube.com/shorts/RQ2VvIvo04U?si=LwPMHImIB0nKOOGC" },
-  { title:"웃참 3", desc:"스트레스 10초 컷", url:"https://youtube.com/shorts/EOUcOBoAzhQ?si=ujBpn55ke666SHry" },
-  { title:"웃참 4", desc:"심심할 때 1분", url:"https://youtube.com/shorts/NHLWKP5Qh6s?si=EHPxIr5B4csUoPNY" },
-  { title:"웃참 5", desc:"짧고 재밌는 클립", url:"https://youtube.com/shorts/2TOQ8GK7WoA?si=YfQOi2H28iDB3lMe" },
-];
-
-function renderVideo(){
+async function renderVideo(){
   mode = "VIDEO";
   setServiceActive("VIDEO");
   showDealTabs(false);
   clearList();
 
-  // phone 탭은 유지(원하시면 숨기는 것도 가능하지만 지금은 그대로)
-  list.classList.remove("list");
-  // list는 grid이므로 영상은 별도 그리드로 묶음
+  showLoading("영상 불러오는 중…");
+  await loadVideosFromJSON(); // ✅ 여기만 자동화 핵심
+  clearList();
+
+  if (!VIDEO_ITEMS.length){
+    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
+    return;
+  }
+
   list.insertAdjacentHTML("beforeend", `<div class="videoGrid" id="videoGrid"></div>`);
   const grid = document.getElementById("videoGrid");
 
@@ -1024,7 +1082,6 @@ function renderVideo(){
 
   grid.innerHTML = cards;
 
-  // 클릭하면 해당 카드만 iframe으로 교체
   grid.querySelectorAll(".videoThumbBtn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const card = btn.closest(".videoCard");
@@ -1034,56 +1091,14 @@ function renderVideo(){
       // ✅ 다른 영상이 이미 재생 중이면 모두 종료(성능/소리 리스크 제거)
       stopAllVideos();
 
-      // 썸네일 버튼을 iframe으로 교체
       const iframe = document.createElement("iframe");
       iframe.className = "videoFrame";
       iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
       iframe.allowFullscreen = true;
       iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`;
 
-      const thumbBtn = card.querySelector(".videoThumbBtn");
-      if (thumbBtn) thumbBtn.replaceWith(iframe);
-    });
-  });
-}
-
-/* ✅ 탭 이동 시 영상 자동 종료(iframe 제거 → 썸네일로 복구) */
-function stopAllVideos(){
-  const grid = document.getElementById("videoGrid");
-  if (!grid) return;
-  const playing = grid.querySelectorAll("iframe.videoFrame");
-  if (!playing.length) return;
-
-  playing.forEach(frame=>{
-    const card = frame.closest(".videoCard");
-    if (!card) return;
-
-    const idx = Number(card.dataset.idx);
-    const it = VIDEO_ITEMS[idx];
-    const vid = card.dataset.vid || "";
-    const thumb = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : "";
-
-    const btn = document.createElement("button");
-    btn.className = "videoThumbBtn";
-    btn.type = "button";
-    btn.setAttribute("aria-label", (it?.title || "영상") + " 재생");
-    btn.innerHTML = `
-      ${thumb ? `<img src="${thumb}" alt="${it?.title || "영상"} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
-      <span class="playBadge">재생</span>
-    `;
-
-    // 다시 클릭하면 재생되도록 이벤트 재바인딩
-    btn.addEventListener("click", ()=>{
-      stopAllVideos();
-      const iframe = document.createElement("iframe");
-      iframe.className = "videoFrame";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`;
       btn.replaceWith(iframe);
     });
-
-    frame.replaceWith(btn);
   });
 }
 
@@ -1093,9 +1108,7 @@ function stopAllVideos(){
 phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const tab = btn.dataset.tab;
-    // ✅ 영상 재생 중이면 탭 이동 시 자동 종료
     stopAllVideos();
-
     activatePhoneTab(tab);
     serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
     renderPhone(tab);
@@ -1106,7 +1119,6 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
 
-    // ✅ VIDEO -> 다른 탭 이동 시 자동 종료
     if (mode === "VIDEO" && next !== "VIDEO") stopAllVideos();
 
     // 같은 탭을 다시 누르면 휴대폰 탭으로 복귀(기존 UX 유지)
