@@ -307,7 +307,6 @@ body{
 
 <body>
 <div class="wrap">
-  <!-- ✅ 고정 간판(높이 축소) -->
   <div class="hero" aria-label="공지">
     <div class="heroMarquee2">
       <div class="marqueeLine">
@@ -318,13 +317,11 @@ body{
     </div>
   </div>
 
-  <!-- ✅ 상단 2개 탭: 알뜰요금 / 인터넷TV -->
   <div class="tabs" id="serviceTabs" aria-label="서비스 탭">
     <button class="tabBtn svc mvno" data-mode="MVNO">알뜰요금</button>
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- ✅ 휴대폰 탭 -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -333,7 +330,6 @@ body{
   </div>
 
   <div class="panel">
-    <!-- ✅ 특가 탭 전용: 페이백/저가 서브탭 -->
     <div class="subTabs" id="dealTabs" aria-label="특가 서브탭">
       <button class="subTabBtn pay" data-deal="PAY">페이백폰</button>
       <button class="subTabBtn low" data-deal="LOW">저가요금폰</button>
@@ -343,7 +339,6 @@ body{
   </div>
 </div>
 
-<!-- ✅ 하단 도크 -->
 <div class="bottomDock" role="navigation" aria-label="빠른 연락">
   <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -380,7 +375,7 @@ const dealTabsEl = document.getElementById("dealTabs");
 
 let mode = "PHONE";          // PHONE | MVNO | INTERNET
 let lastPhoneTab = "SK";     // 휴대폰 탭 복귀용
-let dealSub = "LOW";         // ✅ 특가 서브탭 기본: 저가 우선(요청)
+let dealSub = "LOW";         // ✅ 기본: 저가 우선
 
 /* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
 const asNum = (x) => {
@@ -406,6 +401,17 @@ const fixedInfoLine = (c) => {
 const infoLineWithPlan = (c, x) => {
   const p = asNum(x[`${c}_요금제`]);
   return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
+};
+
+/* ✅ 페이백 정렬용 점수: 이동/기변 중 더 큰 마이너스(=더 작은 값) */
+const payScore = (it) => {
+  const a = asNum(it.mv);
+  const b = asNum(it.ch);
+  const cand = [];
+  if (a !== null && a <= 0) cand.push(a);
+  if (b !== null && b <= 0) cand.push(b);
+  if (!cand.length) return 0;
+  return Math.min(...cand); // 예: -20, -8 -> -20이 우선
 };
 
 /* =========================
@@ -485,7 +491,7 @@ function addInfoCard({badgeText, badgeClass, title, lines, ctaText}){
 }
 
 /* =========================
-   ✅ 인터넷TV 데이터
+   ✅ 인터넷TV / 알뜰요금 데이터
    ========================= */
 const INTERNET_TV = [
   {carrier:"SK", net:"100M", tv:"없음", monthly:"22,000", bundle:"17,600"},
@@ -522,9 +528,6 @@ const INTERNET_TV = [
   {carrier:"LG", net:"1G",   tv:"프리미엄", monthly:"53,900", bundle:"40,700"},
 ];
 
-/* =========================
-   ✅ 알뜰요금 데이터(전체 입력본)
-   ========================= */
 const MVNO_PLANS = [
   {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"9,900"},
   {net:"LG", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"15,900"},
@@ -596,14 +599,11 @@ async function fetchCSV(){
 }
 
 /* =========================
-   ✅ 특가 데이터 구성 규칙
-   - 페이백폰: 이동/기변 값이 <= 0 인 것(0 포함)
-   - 저가요금폰: 요금제 < lim
-   - (핵심) 같은 통신사/모델/금액(이동+기변 표시값 동일)이면 "낮은 요금제"만 남김
-   - (핵심) 페이백과 저가가 완전히 같은 조건으로 겹치면 "저가요금폰" 우선(페이백 숨김)
+   ✅ 특가 데이터 구성 규칙 + 정렬
+   - 페이백폰: 마이너스 큰 순서(=더 음수 우선)
+   - 저가요금폰: 낮은 요금제 순서
    ========================= */
 function buildDealBuckets(items){
-  // 1) 후보 만들기
   const payCandidates = [];
   const lowCandidates = [];
 
@@ -612,13 +612,13 @@ function buildDealBuckets(items){
     if (!model) return;
 
     ["SK","KT","LG"].forEach(c=>{
-      const plan = asNum(x[`${c}_요금제`]); // 요금제
+      const plan = asNum(x[`${c}_요금제`]);
       const rawMv = x[`${c}_이동`] ?? "";
       const rawCh = x[`${c}_기변`] ?? "";
       const mvNum = asNum(rawMv);
       const chNum = asNum(rawCh);
 
-      // (A) 저가요금 후보
+      // 저가요금폰 후보
       const lim = limOf(c);
       const isLowPlan = (plan !== null && plan > 0 && plan < lim);
       if (isLowPlan){
@@ -631,7 +631,6 @@ function buildDealBuckets(items){
             plan: plan,
             mv: mv,
             ch: ch,
-            // low 카드 표기
             badgeText: `저가 ${c} (${plan})`,
             badgeClass: "low",
             infoText: `${c} ${plan}요금 6개월 / 부가필수 문의`,
@@ -640,14 +639,12 @@ function buildDealBuckets(items){
         }
       }
 
-      // (B) 페이백 후보(0 포함)
+      // 페이백폰 후보(0 포함)
       const isPay = (mvNum !== null && mvNum <= 0) || (chNum !== null && chNum <= 0);
       if (isPay){
-        // 페이백은 조건값(<=0)인 것만 표시
         const mv = (mvNum !== null && mvNum <= 0) ? showVal(rawMv) : "";
         const ch = (chNum !== null && chNum <= 0) ? showVal(rawCh) : "";
         if (mv !== "" || ch !== ""){
-          // plan이 없으면 9999로 취급(낮은 요금제 우선 로직에서 밀리게)
           const pSafe = (plan !== null && plan > 0) ? plan : 9999;
           payCandidates.push({
             type:"PAY",
@@ -665,11 +662,11 @@ function buildDealBuckets(items){
     });
   });
 
-  // 2) "같은 모델/통신사/표시금액(mv+ch 동일)"이면 낮은 요금제만 남기기
+  // 같은 모델/통신사/표시금액(mv+ch 동일)이면 낮은 요금제만 남김
   const keepLowestPlanOnly = (arr) => {
-    const map = new Map(); // key -> item
+    const map = new Map();
     arr.forEach(it=>{
-      const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`; // ✅ 금액 동일/모델 동일 기준
+      const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`;
       const prev = map.get(key);
       if (!prev || it.plan < prev.plan){
         map.set(key, it);
@@ -681,22 +678,32 @@ function buildDealBuckets(items){
   const low = keepLowestPlanOnly(lowCandidates);
   let pay = keepLowestPlanOnly(payCandidates);
 
-  // 3) 페이백 vs 저가가 "완전히 같은 조건"으로 겹치면 저가 우선 → 페이백 제거
+  // 페이백 vs 저가가 완전히 같은 조건으로 겹치면 저가 우선 → 페이백 제거
   const lowKeySet = new Set(low.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
   pay = pay.filter(it => !lowKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
 
-  // 4) 보기 좋게 정렬(모델명 → 통신사)
+  // ✅ 정렬
+  // - 저가요금폰: 낮은 요금제(plan) 우선 → 모델명 → 통신사
   const cOrder = {SK:0, KT:1, LG:2};
-  const sorter = (a,b) => {
+  low.sort((a,b)=>{
+    const pa = a.plan ?? 9999, pb = b.plan ?? 9999;
+    if (pa !== pb) return pa - pb;
     const m = a.model.localeCompare(b.model, "ko");
     if (m !== 0) return m;
     return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
-  };
+  });
 
-  return {
-    LOW: low.sort(sorter),
-    PAY: pay.sort(sorter)
-  };
+  // - 페이백폰: 마이너스 큰 순서(=더 음수 먼저) → 모델명 → 통신사
+  pay.sort((a,b)=>{
+    const sa = payScore(a);
+    const sb = payScore(b);
+    if (sa !== sb) return sa - sb; // -20 < -8 이므로 -20이 먼저
+    const m = a.model.localeCompare(b.model, "ko");
+    if (m !== 0) return m;
+    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
+  });
+
+  return { LOW: low, PAY: pay };
 }
 
 async function renderPhone(tab){
@@ -720,7 +727,7 @@ async function renderPhone(tab){
 
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
-  /* ===== 통신사 탭(요청대로 그대로 유지) ===== */
+  // 통신사 탭(그대로)
   if (["SK","KT","LG"].includes(tab)){
     showDealTabs(false);
     const lim = limOf(tab);
@@ -749,51 +756,34 @@ async function renderPhone(tab){
     return;
   }
 
-  /* ===== 특가 탭 ===== */
+  // 특가 탭
   if (tab === "DEAL"){
     showDealTabs(true);
-    activateDealSub(dealSub); // 현재 선택 유지
+    activateDealSub(dealSub);
 
     const buckets = buildDealBuckets(items);
     const data = buckets[dealSub] || [];
 
-    if (dealSub === "LOW"){
-      if (!data.length){
-        list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">현재 저가요금폰 항목이 없습니다.</p>`);
-        return;
-      }
-      data.forEach(it=>{
-        addPhoneCard({
-          badgeText: it.badgeText,
-          badgeClass: it.badgeClass,
-          model: it.model,
-          move: it.mv,
-          change: it.ch,
-          infoText: it.infoText,
-          discount: it.discount
-        });
-      });
+    if (!data.length){
+      const msg = (dealSub === "PAY")
+        ? "현재 페이백폰 항목이 없습니다."
+        : "현재 저가요금폰 항목이 없습니다.";
+      list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">${msg}</p>`);
       return;
     }
 
-    if (dealSub === "PAY"){
-      if (!data.length){
-        list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">현재 페이백폰 항목이 없습니다.</p>`);
-        return;
-      }
-      data.forEach(it=>{
-        addPhoneCard({
-          badgeText: it.badgeText,
-          badgeClass: it.badgeClass,
-          model: it.model,
-          move: it.mv,
-          change: it.ch,
-          infoText: it.infoText,
-          discount: it.discount
-        });
+    data.forEach(it=>{
+      addPhoneCard({
+        badgeText: it.badgeText,
+        badgeClass: it.badgeClass,
+        model: it.model,
+        move: it.mv,
+        change: it.ch,
+        infoText: it.infoText,
+        discount: it.discount
       });
-      return;
-    }
+    });
+    return;
   }
 }
 
@@ -907,18 +897,16 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
-/* ✅ 특가 서브탭 */
 dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const sub = btn.dataset.deal; // PAY | LOW
     activateDealSub(sub);
-    // 특가 탭 상태에서만 다시 렌더
     activatePhoneTab("DEAL");
     renderPhone("DEAL");
   });
 });
 
-/* 최초 렌더: 휴대폰(SK) */
+/* 최초 렌더 */
 activatePhoneTab("SK");
 renderPhone("SK");
 </script>
