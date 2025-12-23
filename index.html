@@ -44,7 +44,6 @@ body{
     0 14px 34px rgba(0,0,0,.18),
     0 0 0 2px rgba(255,255,255,.10);
 }
-
 .heroMarquee2{
   min-height: 52px;
   display:flex;
@@ -117,7 +116,28 @@ body{
 
 .panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
 
-/* ✅ 요청: 알뜰/인터넷 카드 많으니 2열 */
+/* ✅ 특가 탭 안 서브탭(페이백/저가) */
+.subTabs{
+  display:none;
+  gap:8px;
+  margin:0 0 12px;
+}
+.subTabs.show{ display:flex; }
+.subTabBtn{
+  flex:1;
+  padding:10px 0;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+.subTabBtn.active{ color:#fff; border-color:transparent; }
+.subTabBtn.pay.active{ background:var(--hot); }
+.subTabBtn.low.active{ background:var(--low); }
+
+/* ✅ 요청: 알뜰/인터넷 카드 많으니 2열(유지) */
 .list{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -165,9 +185,7 @@ body{
 .moneyRow .val{font-size:22px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;}
 .moneyRow .val2{font-size:19px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;}
 
-/* =========================
-   ✅ 알뜰/인터넷 첫 카드: 안내 카드 전용
-   ========================= */
+/* ✅ 알뜰/인터넷 첫 카드: 안내 카드 전용 */
 .infoCard{
   grid-column:1/-1;
   padding:14px 14px;
@@ -209,30 +227,6 @@ body{
   background:#fff;
   border:1px solid rgba(15,23,42,.10);
   color:#0f172a;
-}
-
-/* ✅ (추가) 특가 탭 섹션 라벨 */
-.section{
-  grid-column:1/-1;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 12px;
-  border-radius:14px;
-  border:1px solid rgba(15,23,42,.10);
-  background: linear-gradient(180deg, rgba(15,23,42,.04), rgba(15,23,42,.02));
-  margin:2px 2px 0;
-}
-.section .t{
-  font-size:14px;
-  font-weight:1000;
-  letter-spacing:-.2px;
-  color:#0f172a;
-}
-.section .s{
-  font-size:12px;
-  font-weight:1000;
-  color:var(--muted);
 }
 
 /* =========================
@@ -330,7 +324,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- ✅ 휴대폰 탭 (핫딜+저가 → 특가 1탭) -->
+  <!-- ✅ 휴대폰 탭 -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -339,6 +333,12 @@ body{
   </div>
 
   <div class="panel">
+    <!-- ✅ 특가 탭 전용: 페이백/저가 서브탭 -->
+    <div class="subTabs" id="dealTabs" aria-label="특가 서브탭">
+      <button class="subTabBtn pay" data-deal="PAY">페이백폰</button>
+      <button class="subTabBtn low" data-deal="LOW">저가요금폰</button>
+    </div>
+
     <div class="list" id="list"></div>
   </div>
 </div>
@@ -376,9 +376,11 @@ body{
 const list = document.getElementById("list");
 const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
+const dealTabsEl = document.getElementById("dealTabs");
 
 let mode = "PHONE";          // PHONE | MVNO | INTERNET
 let lastPhoneTab = "SK";     // 휴대폰 탭 복귀용
+let dealSub = "LOW";         // ✅ 특가 서브탭 기본: 저가 우선(요청)
 
 /* 숫자 변환: 유니코드 마이너스(−) + 콤마 처리 */
 const asNum = (x) => {
@@ -482,16 +484,6 @@ function addInfoCard({badgeText, badgeClass, title, lines, ctaText}){
   `);
 }
 
-/* ✅ (추가) 섹션 라벨 */
-function addSection(title, sub){
-  list.insertAdjacentHTML("beforeend", `
-    <div class="section">
-      <div class="t">${title}</div>
-      <div class="s">${sub || ""}</div>
-    </div>
-  `);
-}
-
 /* =========================
    ✅ 인터넷TV 데이터
    ========================= */
@@ -570,6 +562,21 @@ function setServiceActive(next){
 }
 function clearList(){ list.innerHTML = ""; }
 
+function showDealTabs(show){
+  if (show){
+    dealTabsEl.classList.add("show");
+  }else{
+    dealTabsEl.classList.remove("show");
+    dealTabsEl.querySelectorAll(".subTabBtn").forEach(b=>b.classList.remove("active"));
+  }
+}
+function activateDealSub(sub){
+  dealSub = sub;
+  dealTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.deal === sub);
+  });
+}
+
 /* ===== CSV 휴대폰 ===== */
 async function fetchCSV(){
   const r = await fetch(`data.csv?v=${Date.now()}`, { cache: "no-store" });
@@ -588,6 +595,110 @@ async function fetchCSV(){
   });
 }
 
+/* =========================
+   ✅ 특가 데이터 구성 규칙
+   - 페이백폰: 이동/기변 값이 <= 0 인 것(0 포함)
+   - 저가요금폰: 요금제 < lim
+   - (핵심) 같은 통신사/모델/금액(이동+기변 표시값 동일)이면 "낮은 요금제"만 남김
+   - (핵심) 페이백과 저가가 완전히 같은 조건으로 겹치면 "저가요금폰" 우선(페이백 숨김)
+   ========================= */
+function buildDealBuckets(items){
+  // 1) 후보 만들기
+  const payCandidates = [];
+  const lowCandidates = [];
+
+  items.forEach(x=>{
+    const model = String(x["기종"]||"").trim();
+    if (!model) return;
+
+    ["SK","KT","LG"].forEach(c=>{
+      const plan = asNum(x[`${c}_요금제`]); // 요금제
+      const rawMv = x[`${c}_이동`] ?? "";
+      const rawCh = x[`${c}_기변`] ?? "";
+      const mvNum = asNum(rawMv);
+      const chNum = asNum(rawCh);
+
+      // (A) 저가요금 후보
+      const lim = limOf(c);
+      const isLowPlan = (plan !== null && plan > 0 && plan < lim);
+      if (isLowPlan){
+        const mv = showVal(rawMv);
+        const ch = showVal(rawCh);
+        if (mv !== "" || ch !== ""){
+          lowCandidates.push({
+            type:"LOW",
+            c, model,
+            plan: plan,
+            mv: mv,
+            ch: ch,
+            // low 카드 표기
+            badgeText: `저가 ${c} (${plan})`,
+            badgeClass: "low",
+            infoText: `${c} ${plan}요금 6개월 / 부가필수 문의`,
+            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
+          });
+        }
+      }
+
+      // (B) 페이백 후보(0 포함)
+      const isPay = (mvNum !== null && mvNum <= 0) || (chNum !== null && chNum <= 0);
+      if (isPay){
+        // 페이백은 조건값(<=0)인 것만 표시
+        const mv = (mvNum !== null && mvNum <= 0) ? showVal(rawMv) : "";
+        const ch = (chNum !== null && chNum <= 0) ? showVal(rawCh) : "";
+        if (mv !== "" || ch !== ""){
+          // plan이 없으면 9999로 취급(낮은 요금제 우선 로직에서 밀리게)
+          const pSafe = (plan !== null && plan > 0) ? plan : 9999;
+          payCandidates.push({
+            type:"PAY",
+            c, model,
+            plan: pSafe,
+            mv: mv,
+            ch: ch,
+            badgeText: `페이백 ${c}`,
+            badgeClass: "hot",
+            infoText: infoLineWithPlan(c, x),
+            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
+          });
+        }
+      }
+    });
+  });
+
+  // 2) "같은 모델/통신사/표시금액(mv+ch 동일)"이면 낮은 요금제만 남기기
+  const keepLowestPlanOnly = (arr) => {
+    const map = new Map(); // key -> item
+    arr.forEach(it=>{
+      const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`; // ✅ 금액 동일/모델 동일 기준
+      const prev = map.get(key);
+      if (!prev || it.plan < prev.plan){
+        map.set(key, it);
+      }
+    });
+    return Array.from(map.values());
+  };
+
+  const low = keepLowestPlanOnly(lowCandidates);
+  let pay = keepLowestPlanOnly(payCandidates);
+
+  // 3) 페이백 vs 저가가 "완전히 같은 조건"으로 겹치면 저가 우선 → 페이백 제거
+  const lowKeySet = new Set(low.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
+  pay = pay.filter(it => !lowKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
+
+  // 4) 보기 좋게 정렬(모델명 → 통신사)
+  const cOrder = {SK:0, KT:1, LG:2};
+  const sorter = (a,b) => {
+    const m = a.model.localeCompare(b.model, "ko");
+    if (m !== 0) return m;
+    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
+  };
+
+  return {
+    LOW: low.sort(sorter),
+    PAY: pay.sort(sorter)
+  };
+}
+
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
@@ -597,18 +708,21 @@ async function renderPhone(tab){
   try{
     items = (await fetchCSV()).filter(x => String(x["기종"] ?? "").trim() !== "");
   }catch(e){
+    showDealTabs(false);
     list.insertAdjacentHTML("beforeend", `<p class="infoLine">CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)</p>`);
     return;
   }
   if (!items.length){
+    showDealTabs(false);
     list.insertAdjacentHTML("beforeend", `<p class="infoLine">표시할 항목이 없습니다.</p>`);
     return;
   }
 
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
-  /* ===== 통신사 탭 ===== */
+  /* ===== 통신사 탭(요청대로 그대로 유지) ===== */
   if (["SK","KT","LG"].includes(tab)){
+    showDealTabs(false);
     const lim = limOf(tab);
 
     items.forEach(x=>{
@@ -635,89 +749,51 @@ async function renderPhone(tab){
     return;
   }
 
-  /* ===== 특가 탭 (핫딜 + 저가) =====
-     - 핫딜: 이동/기변 값이 0 이하(<=0) 포함
-     - 저가: 요금제 lim 미만
-     - 중복 방지: 핫딜로 나온 (기종+통신사) 조합은 저가에서 제외
-  */
+  /* ===== 특가 탭 ===== */
   if (tab === "DEAL"){
-    const shown = new Set(); // key: `${기종}__${통신사}`
+    showDealTabs(true);
+    activateDealSub(dealSub); // 현재 선택 유지
 
-    // 1) 핫딜 섹션
-    addSection("🔥 핫딜", "0원/마이너스 포함");
-    let hotCount = 0;
+    const buckets = buildDealBuckets(items);
+    const data = buckets[dealSub] || [];
 
-    items.forEach(x=>{
-      ["SK","KT","LG"].forEach(c=>{
-        const rawMv = x[`${c}_이동`] ?? "";
-        const rawCh = x[`${c}_기변`] ?? "";
-        const mvNum = asNum(rawMv);
-        const chNum = asNum(rawCh);
-
-        // ✅ 0 포함: <= 0
-        const isHot = (mvNum !== null && mvNum <= 0) || (chNum !== null && chNum <= 0);
-        if (!isHot) return;
-
-        // 핫딜은 해당 값만 보여주고(둘 다 0/음수면 둘 다), 아니면 빈칸
-        const mv = (mvNum !== null && mvNum <= 0) ? showVal(rawMv) : "";
-        const ch = (chNum !== null && chNum <= 0) ? showVal(rawCh) : "";
-        if (mv === "" && ch === "") return;
-
-        const key = `${String(x["기종"]||"").trim()}__${c}`;
-        shown.add(key);
-        hotCount++;
-
+    if (dealSub === "LOW"){
+      if (!data.length){
+        list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">현재 저가요금폰 항목이 없습니다.</p>`);
+        return;
+      }
+      data.forEach(it=>{
         addPhoneCard({
-          badgeText: `핫딜 ${c}`,
-          badgeClass: "hot",
-          model: x["기종"],
-          move: mv,
-          change: ch,
-          infoText: infoLineWithPlan(c, x),
-          discount: discountOf(x)
+          badgeText: it.badgeText,
+          badgeClass: it.badgeClass,
+          model: it.model,
+          move: it.mv,
+          change: it.ch,
+          infoText: it.infoText,
+          discount: it.discount
         });
       });
-    });
-
-    if (hotCount === 0){
-      list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 10px;">현재 핫딜 항목이 없습니다.</p>`);
+      return;
     }
 
-    // 2) 저가 섹션
-    addSection("💸 저가요금", "기준요금 미만");
-    let lowCount = 0;
-
-    items.forEach(x=>{
-      ["SK","KT","LG"].forEach(c=>{
-        const key = `${String(x["기종"]||"").trim()}__${c}`;
-        if (shown.has(key)) return; // ✅ 중복 제거(핫딜 우선)
-
-        const p = asNum(x[`${c}_요금제`]);
-        const lim = limOf(c);
-        if (!(p !== null && p > 0 && p < lim)) return;
-
-        const mv = showVal(x[`${c}_이동`]);
-        const ch = showVal(x[`${c}_기변`]);
-        if (mv === "" && ch === "") return;
-
-        lowCount++;
-
+    if (dealSub === "PAY"){
+      if (!data.length){
+        list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">현재 페이백폰 항목이 없습니다.</p>`);
+        return;
+      }
+      data.forEach(it=>{
         addPhoneCard({
-          badgeText: `저가 ${c} (${p})`,
-          badgeClass: "low",
-          model: x["기종"],
-          move: mv,
-          change: ch,
-          infoText: `${c} ${p}요금 6개월 / 부가필수 문의`,
-          discount: discountOf(x)
+          badgeText: it.badgeText,
+          badgeClass: it.badgeClass,
+          model: it.model,
+          move: it.mv,
+          change: it.ch,
+          infoText: it.infoText,
+          discount: it.discount
         });
       });
-    });
-
-    if (lowCount === 0){
-      list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">현재 저가 항목이 없습니다.</p>`);
+      return;
     }
-    return;
   }
 }
 
@@ -725,6 +801,7 @@ async function renderPhone(tab){
 function renderInternet(){
   mode = "INTERNET";
   setServiceActive("INTERNET");
+  showDealTabs(false);
   clearList();
 
   addInfoCard({
@@ -761,6 +838,7 @@ function renderInternet(){
 function renderMVNO(){
   mode = "MVNO";
   setServiceActive("MVNO");
+  showDealTabs(false);
   clearList();
 
   addInfoCard({
@@ -826,6 +904,17 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
     }
     if (next === "MVNO") renderMVNO();
     if (next === "INTERNET") renderInternet();
+  });
+});
+
+/* ✅ 특가 서브탭 */
+dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const sub = btn.dataset.deal; // PAY | LOW
+    activateDealSub(sub);
+    // 특가 탭 상태에서만 다시 렌더
+    activatePhoneTab("DEAL");
+    renderPhone("DEAL");
   });
 });
 
