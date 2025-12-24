@@ -70,6 +70,7 @@ body{
 
 .panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
 
+/* sub tabs (deal + service sub) */
 .subTabs{display:none;gap:8px;margin:0 0 12px;}
 .subTabs.show{ display:flex; }
 .subTabBtn{
@@ -79,6 +80,10 @@ body{
 .subTabBtn.active{ color:#fff; border-color:transparent; }
 .subTabBtn.pay.active{ background:var(--hot); }
 .subTabBtn.low.active{ background:var(--low); }
+
+.subTabBtn.sk.active{ background:var(--sk); }
+.subTabBtn.kt.active{ background:var(--kt); }
+.subTabBtn.lg.active{ background:var(--lg); }
 
 .list{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;}
 @media (max-width: 420px){ .list{ grid-template-columns:1fr; } }
@@ -104,20 +109,26 @@ body{
 .moneyRow .val{font-size:22px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;}
 .moneyRow .val2{font-size:19px;font-weight:1000;letter-spacing:-.4px;color:#0f172a;}
 
-.infoCard{grid-column:1/-1;padding:14px 14px;border-radius:16px;background: linear-gradient(180deg, rgba(15,23,42,.04), rgba(15,23,42,.02));}
-.infoCard .big{font-size:18px;font-weight:1000;letter-spacing:-.3px;line-height:1.25;color:#0f172a;margin:0 0 8px;}
-.infoCard .big strong{font-weight:1000;}
-.infoCard .kakaoHint{
-  margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 12px;border-radius:14px;background:rgba(254,229,0,.28);border:1px solid rgba(254,229,0,.55);
-}
-.infoCard .kakaoHint .t{font-size:15px;font-weight:1000;color:#3b2f00;letter-spacing:-.2px;}
-.infoCard .kakaoHint a{
-  text-decoration:none;font-weight:1000;font-size:14px;padding:9px 12px;border-radius:12px;
-  background:#fff;border:1px solid rgba(15,23,42,.10);color:#0f172a;
-}
-
 .loading{grid-column:1/-1;padding:18px;text-align:center;font-weight:1000;color:#64748b;}
+
+/* ✅ compact notice card (mvno per-net) */
+.noticeCard{
+  grid-column:1/-1;
+  padding:10px 12px;
+  border-radius:14px;
+  background: linear-gradient(180deg, rgba(15,23,42,.04), rgba(15,23,42,.02));
+}
+.noticeCard .row{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.noticeCard .twrap{display:flex;flex-direction:column;gap:4px;}
+.noticeCard .t1{font-size:13px;font-weight:1000;letter-spacing:-.2px;color:#0f172a;line-height:1.2;}
+.noticeCard .t2{font-size:12px;font-weight:1000;letter-spacing:-.2px;color:var(--muted);line-height:1.2;}
+.noticeCard a{
+  flex:0 0 auto;
+  text-decoration:none;font-weight:1000;font-size:13px;padding:8px 10px;border-radius:12px;
+  background:rgba(254,229,0,.35);border:1px solid rgba(254,229,0,.55);color:#3b2f00;
+}
 
 /* video cards */
 .videoGrid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px;}
@@ -172,11 +183,11 @@ body{
     </div>
   </div>
 
-  <!-- ✅ 서비스 탭(알뜰/인터넷/정보) -->
+  <!-- ✅ 서비스 탭(알뜰/인터넷/영상) -->
   <div class="tabs" id="serviceTabs" aria-label="서비스 탭">
     <button class="tabBtn svc mvno" data-mode="MVNO">알뜰요금</button>
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
-    <button class="tabBtn svc video" data-mode="VIDEO">정보</button>
+    <button class="tabBtn svc video" data-mode="VIDEO">영상</button>
   </div>
 
   <!-- ✅ 휴대폰 탭 -->
@@ -188,9 +199,24 @@ body{
   </div>
 
   <div class="panel">
+    <!-- ✅ 특가 서브탭 -->
     <div class="subTabs" id="dealTabs" aria-label="특가 서브탭">
       <button class="subTabBtn pay" data-deal="PAY">페이백폰</button>
       <button class="subTabBtn low" data-deal="LOW">저가요금폰</button>
+    </div>
+
+    <!-- ✅ 알뜰요금 망별 서브탭 -->
+    <div class="subTabs" id="mvnoTabs" aria-label="알뜰요금 망 서브탭">
+      <button class="subTabBtn sk" data-mvno="SK">SK망</button>
+      <button class="subTabBtn kt" data-mvno="KT">KT망</button>
+      <button class="subTabBtn lg" data-mvno="LG">LG망</button>
+    </div>
+
+    <!-- ✅ 인터넷TV 통신사 서브탭 -->
+    <div class="subTabs" id="internetTabs" aria-label="인터넷TV 통신사 서브탭">
+      <button class="subTabBtn sk" data-inet="SK">SK</button>
+      <button class="subTabBtn kt" data-inet="KT">KT</button>
+      <button class="subTabBtn lg" data-inet="LG">LG</button>
     </div>
 
     <div class="list" id="list"></div>
@@ -230,6 +256,8 @@ const list = document.getElementById("list");
 const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
 const dealTabsEl = document.getElementById("dealTabs");
+const mvnoTabsEl = document.getElementById("mvnoTabs");
+const internetTabsEl = document.getElementById("internetTabs");
 
 /* 버전 */
 const CSV_VER = "2025-12-23";
@@ -237,14 +265,18 @@ const VIDEO_VER = "2025-12-23";
 
 /* ✅ videos.json 404 방지: 절대경로 */
 const SITE_BASE = "https://a2272a.github.io";
+const KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
 
 let mode = "PHONE";
 let lastPhoneTab = "SK";
 let dealSub = "LOW";
 
-/* ✅ 정보(영상) 기본값: videos.json 없을 때만 보이는 예비 목록 */
+let mvnoNet = "LG";      // 알뜰 기본 탭
+let inetCarrier = "SK";  // 인터넷 기본 탭
+
+/* ✅ 영상 기본값: videos.json 없을 때만 보이는 예비 목록 */
 let VIDEO_ITEMS = [
-  { title:"정보 1", desc:"필요한 영상/공지/안내를 올리세요", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" }
+  { title:"영상 1", desc:"필요한 영상/공지/안내를 올리세요", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" }
 ];
 
 /* 숫자 변환 */
@@ -292,6 +324,11 @@ function setServiceActive(next){
   const el = serviceTabsEl.querySelector(`[data-mode="${next}"]`);
   if (el) el.classList.add("active");
 }
+function hideAllSubTabs(){
+  dealTabsEl.classList.remove("show");
+  mvnoTabsEl.classList.remove("show");
+  internetTabsEl.classList.remove("show");
+}
 function showDealTabs(show){
   if (show){
     dealTabsEl.classList.add("show");
@@ -311,6 +348,30 @@ function activatePhoneTab(tab){
     b.classList.toggle("active", b.dataset.tab === tab);
   });
   lastPhoneTab = tab;
+}
+
+/* mvno sub */
+function showMvnoTabs(show){
+  if (show) mvnoTabsEl.classList.add("show");
+  else mvnoTabsEl.classList.remove("show");
+}
+function activateMvnoNet(net){
+  mvnoNet = net;
+  mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.mvno === net);
+  });
+}
+
+/* internet sub */
+function showInternetTabs(show){
+  if (show) internetTabsEl.classList.add("show");
+  else internetTabsEl.classList.remove("show");
+}
+function activateInetCarrier(c){
+  inetCarrier = c;
+  internetTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.inet === c);
+  });
 }
 
 /* 카드 렌더 */
@@ -360,25 +421,35 @@ function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1
     </div>
   `);
 }
-function addInfoCard({badgeText, badgeClass, title, lines, ctaText}){
-  const safeLines = (lines || []).map(s => `<div>${s}</div>`).join("");
+function addCompactNoticeCard(){
   list.insertAdjacentHTML("beforeend", `
-    <div class="card infoCard">
-      <div class="titleRow" style="margin-bottom:10px;">
-        <div class="model">${title}</div>
-        <div class="badge ${badgeClass}">${badgeText}</div>
+    <div class="card noticeCard">
+      <div class="row">
+        <div class="twrap">
+          <div class="t1">가입비·유심비 등 추가 요금 없음</div>
+          <div class="t2">궁금하신 점은 카톡문의</div>
+        </div>
+        <a href="${KAKAO_URL}" target="_blank" rel="noopener">카톡 열기</a>
       </div>
-      <p class="big">${safeLines}</p>
-      ${ctaText ? `
-        <div class="kakaoHint">
-          <div class="t">${ctaText}</div>
-          <a href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener">카톡 열기</a>
-        </div>` : ``}
+    </div>
+  `);
+}
+function addInternetNoticeCard(carrier){
+  const cls = (carrier==="SK") ? "sk" : (carrier==="KT" ? "kt" : "lg");
+  list.insertAdjacentHTML("beforeend", `
+    <div class="card noticeCard">
+      <div class="row">
+        <div class="twrap">
+          <div class="t1"><strong>현금지원금</strong> 카톡문의</div>
+          <div class="t2">궁금하신 점은 카톡문의</div>
+        </div>
+        <a href="${KAKAO_URL}" target="_blank" rel="noopener">카톡 열기</a>
+      </div>
     </div>
   `);
 }
 
-/* 인터넷/알뜰 데이터 (기존 유지) */
+/* 데이터 */
 const INTERNET_TV = [
   {carrier:"SK", net:"100M", tv:"없음", monthly:"22,000", bundle:"17,600"},
   {carrier:"SK", net:"500M", tv:"없음", monthly:"33,000", bundle:"22,000"},
@@ -561,7 +632,7 @@ function extractYouTubeId(url){
   }
 }
 
-/* ✅ videos.json 불러오기 (카테고리 없음) */
+/* ✅ videos.json 불러오기 */
 async function loadVideosFromJSON(){
   try{
     const r = await fetch(`${SITE_BASE}/videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
@@ -588,16 +659,16 @@ function stopAllVideos(){
     if (!card) return;
 
     const idx = Number(card.dataset.idx);
-    const it = VIDEO_ITEMS[idx] || { title:"정보", desc:"", url:"" };
+    const it = VIDEO_ITEMS[idx] || { title:"영상", desc:"", url:"" };
     const vid = card.dataset.vid || "";
     const thumb = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : "";
 
     const btn = document.createElement("button");
     btn.className = "videoThumbBtn";
     btn.type = "button";
-    btn.setAttribute("aria-label", (it.title || "정보") + " 재생");
+    btn.setAttribute("aria-label", (it.title || "영상") + " 재생");
     btn.innerHTML = `
-      ${thumb ? `<img src="${thumb}" alt="${it.title || "정보"} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
+      ${thumb ? `<img src="${thumb}" alt="${it.title || "영상"} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
       <span class="playBadge">재생</span>
     `;
     btn.addEventListener("click", ()=>{
@@ -618,7 +689,7 @@ async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
   stopAllVideos();
-  showDealTabs(false);
+  hideAllSubTabs();
   showLoading("가격 불러오는 중…");
 
   let items = [];
@@ -686,23 +757,22 @@ async function renderPhone(tab){
   }
 }
 
-/* 인터넷TV */
-function renderInternet(){
+/* ✅ 인터넷TV: 통신사 탭 분류 + 통신사별 안내카드 + 월 낮은 순 */
+function renderInternet(carrier = inetCarrier){
   mode = "INTERNET";
   setServiceActive("INTERNET");
-  showDealTabs(false);
   stopAllVideos();
+  hideAllSubTabs();
+  showInternetTabs(true);
+  activateInetCarrier(carrier);
   clearList();
 
-  addInfoCard({
-    badgeText:"안내",
-    badgeClass:"kt",
-    title:"인터넷TV",
-    lines:["<strong>현금지원금</strong> 카톡문의","결합 시 <strong>요금 할인</strong>"],
-    ctaText:"궁금하신 점은 카톡문의"
-  });
+  // 첫 카드: 안내(현금지원금 카톡문의 + 카톡 열기)
+  addInternetNoticeCard(carrier);
 
-  const sorted = INTERNET_TV.slice().sort((a,b)=> (asNum(a.monthly)||0) - (asNum(b.monthly)||0));
+  const filtered = INTERNET_TV.filter(x => x.carrier === carrier);
+  const sorted = filtered.slice().sort((a,b)=> (asNum(a.monthly)||0) - (asNum(b.monthly)||0));
+
   sorted.forEach(x=>{
     const badgeClass = (x.carrier === "SK") ? "sk" : (x.carrier === "KT" ? "kt" : "lg");
     addSimpleCard({
@@ -718,23 +788,27 @@ function renderInternet(){
   });
 }
 
-/* 알뜰요금 */
-function renderMVNO(){
+/* ✅ 알뜰요금: 망별 탭 분류 + 망별 첫 소형 필독카드 + 요금 낮은 순 */
+function renderMVNO(net = mvnoNet){
   mode = "MVNO";
   setServiceActive("MVNO");
-  showDealTabs(false);
   stopAllVideos();
+  hideAllSubTabs();
+  showMvnoTabs(true);
+  activateMvnoNet(net);
   clearList();
 
-  addInfoCard({
-    badgeText:"필독",
-    badgeClass:"lg",
-    title:"알뜰요금",
-    lines:["가입비 · 유심비","<strong>추가요금 없음</strong>"],
-    ctaText:"궁금하신점은 카톡문의"
-  });
+  // 망별 첫 카드(소형 필독) - 각 탭마다 첫 카드로 동일하게 표시
+  addCompactNoticeCard();
 
-  const sorted = MVNO_PLANS.slice().sort((a,b)=> (asNum(a.fee)||0) - (asNum(b.fee)||0));
+  const filtered = MVNO_PLANS.filter(p => p.net === net);
+  const sorted = filtered.slice().sort((a,b)=> (asNum(a.fee)||0) - (asNum(b.fee)||0));
+
+  if (!sorted.length){
+    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 ${net}망 요금제가 없습니다.</div>`);
+    return;
+  }
+
   sorted.forEach(p=>{
     const badgeClass = (p.net === "SK") ? "sk" : (p.net === "KT" ? "kt" : "lg");
     addSimpleCard({
@@ -750,27 +824,20 @@ function renderMVNO(){
   });
 }
 
-/* ✅ 정보(영상) 탭 */
+/* ✅ 영상 탭: 정보카드 삭제, 영상 리스트만 표시 */
 async function renderVideo(){
   mode = "VIDEO";
   setServiceActive("VIDEO");
-  showDealTabs(false);
+  stopAllVideos();
+  hideAllSubTabs();
   clearList();
 
-  showLoading("정보 불러오는 중…");
+  showLoading("영상 불러오는 중…");
   await loadVideosFromJSON();
   clearList();
 
-  addInfoCard({
-    badgeText:"정보",
-    badgeClass:"sk",
-    title:"정보",
-    lines:["필요한 영상/공지/안내를 올려두세요"],
-    ctaText:"궁금하신 점은 카톡문의"
-  });
-
   if (!VIDEO_ITEMS.length){
-    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 정보(영상)가 없습니다.</div>`);
+    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
     return;
   }
 
@@ -813,7 +880,7 @@ async function renderVideo(){
   });
 }
 
-/* 이벤트 */
+/* 이벤트: 휴대폰 탭 */
 phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const tab = btn.dataset.tab;
@@ -824,6 +891,7 @@ phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
+/* 이벤트: 서비스 탭 */
 serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
@@ -836,12 +904,13 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
       return;
     }
 
-    if (next === "MVNO") renderMVNO();
-    if (next === "INTERNET") renderInternet();
+    if (next === "MVNO") renderMVNO(mvnoNet);
+    if (next === "INTERNET") renderInternet(inetCarrier);
     if (next === "VIDEO") renderVideo();
   });
 });
 
+/* 이벤트: 특가 서브탭 */
 dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const sub = btn.dataset.deal;
@@ -849,6 +918,24 @@ dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
     activateDealSub(sub);
     activatePhoneTab("DEAL");
     renderPhone("DEAL");
+  });
+});
+
+/* 이벤트: 알뜰 망 서브탭 */
+mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const net = btn.dataset.mvno;
+    stopAllVideos();
+    renderMVNO(net);
+  });
+});
+
+/* 이벤트: 인터넷 통신사 서브탭 */
+internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const c = btn.dataset.inet;
+    stopAllVideos();
+    renderInternet(c);
   });
 });
 
