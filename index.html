@@ -326,8 +326,8 @@ const payScore = (it) => {
   const a = asNum(it.mv);
   const b = asNum(it.ch);
   const cand = [];
-  if (a !== null && a <= 0) cand.push(a);
-  if (b !== null && b <= 0) cand.push(b);
+  if (a !== null && a < 0) cand.push(a);
+  if (b !== null && b < 0) cand.push(b);
   if (!cand.length) return 0;
   return Math.min(...cand);
 };
@@ -546,7 +546,7 @@ async function fetchCSV(){
   });
 }
 
-/* 특가 */
+/* ✅ 특가: 저가요금(0 포함) / 페이백(마이너스만) */
 function buildDealBuckets(items){
   const payCandidates = [];
   const lowCandidates = [];
@@ -562,11 +562,35 @@ function buildDealBuckets(items){
       const mvNum = asNum(rawMv);
       const chNum = asNum(rawCh);
 
+      const mvTxt = showVal(rawMv);
+      const chTxt = showVal(rawCh);
+
+      // ✅ PAY(페이백폰) = 마이너스(<0)만
+      const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
+      if (isPay){
+        const mv = (mvNum !== null && mvNum < 0) ? mvTxt : "";
+        const ch = (chNum !== null && chNum < 0) ? chTxt : "";
+        if (mv !== "" || ch !== ""){
+          payCandidates.push({
+            type:"PAY", c, model, plan: (plan !== null && plan > 0) ? plan : 9999,
+            mv, ch,
+            badgeText: `페이백 ${c}`,
+            badgeClass: "hot",
+            infoText: infoLineWithPlan(c, x),
+            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
+          });
+        }
+        return; // 마이너스면 LOW로는 보내지 않음
+      }
+
+      // ✅ LOW(저가요금폰) = 요금제 낮음 + 0 포함(>=0)
       const lim = limOf(c);
       const isLowPlan = (plan !== null && plan > 0 && plan < lim);
-      if (isLowPlan){
-        const mv = showVal(rawMv);
-        const ch = showVal(rawCh);
+      const hasZeroOrPositive = (mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0);
+
+      if (isLowPlan && hasZeroOrPositive){
+        const mv = (mvNum !== null && mvNum >= 0) ? mvTxt : "";
+        const ch = (chNum !== null && chNum >= 0) ? chTxt : "";
         if (mv !== "" || ch !== ""){
           lowCandidates.push({
             type:"LOW", c, model, plan,
@@ -578,41 +602,26 @@ function buildDealBuckets(items){
           });
         }
       }
-
-      const isPay = (mvNum !== null && mvNum <= 0) || (chNum !== null && chNum <= 0);
-      if (isPay){
-        const mv = (mvNum !== null && mvNum <= 0) ? showVal(rawMv) : "";
-        const ch = (chNum !== null && chNum <= 0) ? showVal(rawCh) : "";
-        if (mv !== "" || ch !== ""){
-          const pSafe = (plan !== null && plan > 0) ? plan : 9999;
-          payCandidates.push({
-            type:"PAY", c, model, plan: pSafe,
-            mv, ch,
-            badgeText: `페이백 ${c}`,
-            badgeClass: "hot",
-            infoText: infoLineWithPlan(c, x),
-            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
-          });
-        }
-      }
     });
   });
 
+  // 동일 조건(기종/통신사/금액)에서 더 낮은 요금제만 유지
   const keepLowestPlanOnly = (arr) => {
     const map = new Map();
     arr.forEach(it=>{
       const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`;
       const prev = map.get(key);
-      if (!prev || it.plan < prev.plan) map.set(key, it);
+      if (!prev || (it.plan ?? 9999) < (prev.plan ?? 9999)) map.set(key, it);
     });
     return Array.from(map.values());
   };
 
-  const low = keepLowestPlanOnly(lowCandidates);
+  let low = keepLowestPlanOnly(lowCandidates);
   let pay = keepLowestPlanOnly(payCandidates);
 
-  const lowKeySet = new Set(low.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
-  pay = pay.filter(it => !lowKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
+  // 최종 안전장치: 겹치면 PAY 우선(마이너스 케이스)
+  const payKeySet = new Set(pay.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
+  low = low.filter(it => !payKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
 
   const cOrder = {SK:0, KT:1, LG:2};
   low.sort((a,b)=>{
