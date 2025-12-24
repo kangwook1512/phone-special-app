@@ -1,176 +1,61 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>영상 모음</title>
+[
+  { "title": "영상 1", "desc": "스마트스위치", "url": "https://youtu.be/nVsdOmlJSww?si=v0rtlv438SPPGM_N" },
+  { "title": "영상 2", "desc": "S25울트라", "url": "https://youtu.be/1UhwGlZtkFc?si=MoAme_SyDDn7oqe_" },
+  { "title": "영상 3", "desc": "S25엣지", "url": "https://youtu.be/yrMSnS_dFOc?si=7qbnYUVJCTmOzcdZ" },
+  { "title": "영상 4", "desc": "아이폰17", "url": "https://youtube.com/shorts/iA26TQhvMkQ?si=Fyl9Zduvw0_yPhcT" },
+  { "title": "영상 5", "desc": "아이폰17프로", "url": "https://youtube.com/shorts/EAKq4PqY2MQ?si=jY9DtULKTVT-KJdW" },
 
-  <style>
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
-      background:#f5f6f8;
-    }
-    .wrap{
-      max-width:900px;
-      margin:0 auto;
-      padding:12px;
-    }
-    h1{
-      margin:8px 0 12px;
-      font-size:18px;
-      font-weight:900;
-      text-align:center;
-    }
+  { "title": "영상 6", "desc": "", "url": "" },
+  { "title": "영상 7", "desc": "", "url": "" },
+  { "title": "영상 8", "desc": "", "url": "" },
+  { "title": "영상 9", "desc": "", "url": "" },
+  { "title": "영상 10", "desc": "", "url": "" },
 
-    #videoList{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-    @media(min-width:720px){
-      #videoList{grid-template-columns:repeat(3,1fr);}
-    }
+  { "title": "영상 11", "desc": "", "url": "" },
+  { "title": "영상 12", "desc": "", "url": "" },
+  { "title": "영상 13", "desc": "", "url": "" },
+  { "title": "영상 14", "desc": "", "url": "" },
+  { "title": "영상 15", "desc": "", "url": "" },
 
-    .card{
-      background:#fff;
-      border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 6px 14px rgba(0,0,0,.08);
-    }
-    .frame{
-      position:relative;
-      padding-top:56.25%;
-      background:#000;
-    }
-    .frame iframe{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-    }
-    .title{
-      padding:10px;
-      font-size:14px;
-      font-weight:900;
-      text-align:center;
-    }
+  { "title": "영상 16", "desc": "", "url": "" },
+  { "title": "영상 17", "desc": "", "url": "" },
+  { "title": "영상 18", "desc": "", "url": "" },
+  { "title": "영상 19", "desc": "", "url": "" },
+  { "title": "영상 20", "desc": "", "url": "" },
 
-    .more{
-      margin:16px 0;
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      background:#111827;
-      color:#fff;
-      font-weight:900;
-      font-size:14px;
-    }
-  </style>
-</head>
+  { "title": "영상 21", "desc": "", "url": "" },
+  { "title": "영상 22", "desc": "", "url": "" },
+  { "title": "영상 23", "desc": "", "url": "" },
+  { "title": "영상 24", "desc": "", "url": "" },
+  { "title": "영상 25", "desc": "", "url": "" },
 
-<body>
-  <div class="wrap">
-    <h1>영상 모음</h1>
+  { "title": "영상 26", "desc": "", "url": "" },
+  { "title": "영상 27", "desc": "", "url": "" },
+  { "title": "영상 28", "desc": "", "url": "" },
+  { "title": "영상 29", "desc": "", "url": "" },
+  { "title": "영상 30", "desc": "", "url": "" },
 
-    <div id="videoList"></div>
+  { "title": "영상 31", "desc": "", "url": "" },
+  { "title": "영상 32", "desc": "", "url": "" },
+  { "title": "영상 33", "desc": "", "url": "" },
+  { "title": "영상 34", "desc": "", "url": "" },
+  { "title": "영상 35", "desc": "", "url": "" },
 
-    <button id="moreBtn" class="more">영상 더보기</button>
-  </div>
+  { "title": "영상 36", "desc": "", "url": "" },
+  { "title": "영상 37", "desc": "", "url": "" },
+  { "title": "영상 38", "desc": "", "url": "" },
+  { "title": "영상 39", "desc": "", "url": "" },
+  { "title": "영상 40", "desc": "", "url": "" },
 
-<script>
-/* ===============================
-   ✅ 여기만 수정하세요 (50줄)
-   제목 + 유튜브 공유링크만
-   =============================== */
-const videos = [
-  { title:"영상 1",  url:"https://youtu.be/링크1" },
-  { title:"영상 2",  url:"https://youtu.be/링크2" },
-  { title:"영상 3",  url:"https://youtu.be/링크3" },
-  { title:"영상 4",  url:"https://youtu.be/링크4" },
-  { title:"영상 5",  url:"https://youtu.be/링크5" },
-  { title:"영상 6",  url:"https://youtu.be/링크6" },
-  { title:"영상 7",  url:"https://youtu.be/링크7" },
-  { title:"영상 8",  url:"https://youtu.be/링크8" },
-  { title:"영상 9",  url:"https://youtu.be/링크9" },
-  { title:"영상 10", url:"https://youtu.be/링크10" },
+  { "title": "영상 41", "desc": "", "url": "" },
+  { "title": "영상 42", "desc": "", "url": "" },
+  { "title": "영상 43", "desc": "", "url": "" },
+  { "title": "영상 44", "desc": "", "url": "" },
+  { "title": "영상 45", "desc": "", "url": "" },
 
-  { title:"영상 11", url:"https://youtu.be/링크11" },
-  { title:"영상 12", url:"https://youtu.be/링크12" },
-  { title:"영상 13", url:"https://youtu.be/링크13" },
-  { title:"영상 14", url:"https://youtu.be/링크14" },
-  { title:"영상 15", url:"https://youtu.be/링크15" },
-  { title:"영상 16", url:"https://youtu.be/링크16" },
-  { title:"영상 17", url:"https://youtu.be/링크17" },
-  { title:"영상 18", url:"https://youtu.be/링크18" },
-  { title:"영상 19", url:"https://youtu.be/링크19" },
-  { title:"영상 20", url:"https://youtu.be/링크20" },
-
-  { title:"영상 21", url:"https://youtu.be/링크21" },
-  { title:"영상 22", url:"https://youtu.be/링크22" },
-  { title:"영상 23", url:"https://youtu.be/링크23" },
-  { title:"영상 24", url:"https://youtu.be/링크24" },
-  { title:"영상 25", url:"https://youtu.be/링크25" },
-  { title:"영상 26", url:"https://youtu.be/링크26" },
-  { title:"영상 27", url:"https://youtu.be/링크27" },
-  { title:"영상 28", url:"https://youtu.be/링크28" },
-  { title:"영상 29", url:"https://youtu.be/링크29" },
-  { title:"영상 30", url:"https://youtu.be/링크30" },
-
-  { title:"영상 31", url:"https://youtu.be/링크31" },
-  { title:"영상 32", url:"https://youtu.be/링크32" },
-  { title:"영상 33", url:"https://youtu.be/링크33" },
-  { title:"영상 34", url:"https://youtu.be/링크34" },
-  { title:"영상 35", url:"https://youtu.be/링크35" },
-  { title:"영상 36", url:"https://youtu.be/링크36" },
-  { title:"영상 37", url:"https://youtu.be/링크37" },
-  { title:"영상 38", url:"https://youtu.be/링크38" },
-  { title:"영상 39", url:"https://youtu.be/링크39" },
-  { title:"영상 40", url:"https://youtu.be/링크40" },
-
-  { title:"영상 41", url:"https://youtu.be/링크41" },
-  { title:"영상 42", url:"https://youtu.be/링크42" },
-  { title:"영상 43", url:"https://youtu.be/링크43" },
-  { title:"영상 44", url:"https://youtu.be/링크44" },
-  { title:"영상 45", url:"https://youtu.be/링크45" },
-  { title:"영상 46", url:"https://youtu.be/링크46" },
-  { title:"영상 47", url:"https://youtu.be/링크47" },
-  { title:"영상 48", url:"https://youtu.be/링크48" },
-  { title:"영상 49", url:"https://youtu.be/링크49" },
-  { title:"영상 50", url:"https://youtu.be/링크50" }
-];
-
-/* ===== 건드리지 마세요 ===== */
-function embed(url){
-  if(url.includes("shorts/")) return "https://www.youtube.com/embed/"+url.split("shorts/")[1].split("?")[0];
-  if(url.includes("youtu.be/")) return "https://www.youtube.com/embed/"+url.split("youtu.be/")[1].split("?")[0];
-  if(url.includes("watch?v=")) return "https://www.youtube.com/embed/"+url.split("watch?v=")[1].split("&")[0];
-  return url;
-}
-
-let show = 12;
-const step = 12;
-const list = document.getElementById("videoList");
-const btn  = document.getElementById("moreBtn");
-
-function render(){
-  list.innerHTML="";
-  videos.slice(0,show).forEach(v=>{
-    const d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`
-      <div class="frame">
-        <iframe src="${embed(v.url)}" loading="lazy" allowfullscreen></iframe>
-      </div>
-      <div class="title">${v.title}</div>`;
-    list.appendChild(d);
-  });
-  btn.style.display = show>=videos.length?"none":"block";
-}
-btn.onclick=()=>{show+=step;render();};
-render();
-</script>
-</body>
-</html>
+  { "title": "영상 46", "desc": "", "url": "" },
+  { "title": "영상 47", "desc": "", "url": "" },
+  { "title": "영상 48", "desc": "", "url": "" },
+  { "title": "영상 49", "desc": "", "url": "" },
+  { "title": "영상 50", "desc": "", "url": "" }
+]
