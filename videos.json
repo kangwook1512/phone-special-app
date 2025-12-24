@@ -1,27 +1,270 @@
-[
-  {
-    "title": "영상 1",
-    "desc": "스마트스위치",
-    "url": "https://youtu.be/nVsdOmlJSww?si=v0rtlv438SPPGM_N"
-  },
-  {
-    "title": "영상 2",
-    "desc": "S25울트라",
-    "url": "https://youtu.be/1UhwGlZtkFc?si=MoAme_SyDDn7oqe_"
-  },
-  {
-    "title": "영상 3",
-    "desc": "S25엣지",
-    "url": "https://youtu.be/yrMSnS_dFOc?si=7qbnYUVJCTmOzcdZ"
-  },
-  {
-    "title": "영상 4",
-    "desc": "아이폰17",
-    "url": "https://youtube.com/shorts/iA26TQhvMkQ?si=Fyl9Zduvw0_yPhcT"
-  },
-  {
-    "title": "영상 5",
-    "desc": "아이폰17프로",
-    "url": "https://youtube.com/shorts/EAKq4PqY2MQ?si=jY9DtULKTVT-KJdW"
-  }
-]
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>복지관2층매장 - 영상</title>
+
+  <style>
+    :root{
+      --bg:#f5f6f8; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e5e7eb;
+      --shadow:0 10px 22px rgba(15,23,42,.10);
+      --radius:14px;
+      --kakao:#fee500;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
+      background:var(--bg); color:var(--ink);
+    }
+    .wrap{max-width:900px;margin:0 auto;padding:12px 12px 110px;}
+
+    /* 상단 고정 헤더 */
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 12px; border-radius:999px; background:#fff; border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      position:sticky; top:10px; z-index:20;
+    }
+    .brand{display:flex; flex-direction:column; line-height:1.15;}
+    .brand .t1{font-weight:900; font-size:16px;}
+    .brand .t2{font-weight:800; font-size:12px; color:var(--muted);}
+    .pill{
+      font-size:12px; font-weight:900; padding:8px 10px; border-radius:999px;
+      background:#111827; color:#fff; white-space:nowrap;
+    }
+
+    /* 섹션 */
+    .section{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .sectionHead{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .sectionHead .h1{font-size:15px;font-weight:900;}
+    .sectionHead .h2{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px;}
+    .hint{
+      font-size:12px; font-weight:900; color:#111827;
+      background:#f3f4f6; border:1px solid #e5e7eb;
+      padding:8px 10px; border-radius:10px; white-space:nowrap;
+      height:fit-content;
+    }
+
+    /* 영상 그리드 */
+    #videoList{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      padding:12px;
+    }
+    @media (min-width:720px){
+      #videoList{ grid-template-columns:repeat(3,1fr); }
+    }
+    .video-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 6px 14px rgba(15,23,42,.06);
+    }
+    .video-frame{
+      position:relative;
+      padding-top:56.25%;
+      background:#0b1220;
+    }
+    .video-frame iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:0;
+    }
+    .video-title{
+      padding:10px 10px 12px;
+      text-align:center;
+      font-weight:900;
+      font-size:14px;
+      line-height:1.25;
+    }
+
+    /* 더보기 버튼 */
+    .moreWrap{ padding:0 12px 14px; }
+    .more-btn{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #111827;
+      background:#111827;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .more-btn:active{ transform:translateY(1px); }
+
+    /* 하단 고정 연락 바 */
+    .bottomBar{
+      position:fixed; left:0; right:0; bottom:0;
+      background:#fff;
+      border-top:1px solid var(--line);
+      box-shadow:0 -10px 24px rgba(15,23,42,.12);
+      z-index:30;
+    }
+    .bottomInner{
+      max-width:900px; margin:0 auto;
+      padding:10px 12px;
+      display:flex; gap:10px;
+    }
+    .cta{
+      flex:1;
+      display:flex; align-items:center; justify-content:center;
+      padding:12px 10px;
+      border-radius:14px;
+      font-weight:900;
+      border:1px solid var(--line);
+      background:#fff;
+      user-select:none;
+      box-shadow:0 8px 18px rgba(15,23,42,.06);
+    }
+    .cta.kakao{ background:var(--kakao); border-color:#f6e05e; color:#3b2f00; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="t1">복지관2층매장</div>
+        <div class="t2">영상 · 내가 할 일: “제목 + 공유링크”만 추가 (최대 50개)</div>
+      </div>
+      <div class="pill">초기 12개 · 더보기 12개</div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead">
+        <div>
+          <div class="h1">영상 모음</div>
+          <div class="h2">아래 <b>videos</b>에 <b>title / url</b>만 계속 추가하면 자동으로 카드가 늘어납니다.</div>
+        </div>
+        <div class="hint">쇼츠/공유링크 자동</div>
+      </div>
+
+      <div id="videoList"></div>
+
+      <div class="moreWrap">
+        <button id="videoMoreBtn" class="more-btn" type="button">영상 더보기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottomBar" role="navigation" aria-label="연락">
+    <div class="bottomInner">
+      <a class="cta" href="tel:042-821-2272" aria-label="전화">전화 042-821-2272</a>
+      <a class="cta" href="sms:010-5839-1512" aria-label="문자">문자 010-5839-1512</a>
+      <a class="cta kakao" href="https://open.kakao.com/o/s729bI5h" target="_blank" rel="noopener" aria-label="카톡 문의">카톡문의</a>
+    </div>
+  </div>
+
+  <script>
+    /********************************************************
+     * ✅ 당신이 할 일 (여기만 수정)
+     * - title: 제목
+     * - url  : 유튜브 "공유" 링크 붙여넣기
+     * - 50개까지 그냥 계속 추가하면 됩니다.
+     ********************************************************/
+    const videos = [
+      { title: "영상 1 · 스마트스위치", url: "https://youtu.be/nVsdOmlJSww?si=v0rtlv438SPPGM_N" },
+      { title: "영상 2 · S25울트라",     url: "https://youtu.be/1UhwGlZtkFc?si=MoAme_SyDDn7oqe_" },
+      { title: "영상 3 · S25엣지",       url: "https://youtu.be/yrMSnS_dFOc?si=7qbnYUVJCTmOzcdZ" },
+      { title: "영상 4 · 아이폰17",       url: "https://youtube.com/shorts/iA26TQhvMkQ?si=Fyl9Zduvw0_yPhcT" },
+      { title: "영상 5 · 아이폰17프로",   url: "https://youtube.com/shorts/EAKq4PqY2MQ?si=jY9DtULKTVT-KJdW" },
+
+      // { title: "영상 6 · 제목", url: "https://youtu.be/XXXXXXXXXXX" },
+      // { title: "영상 7 · 제목", url: "https://youtube.com/shorts/YYYYYYYYYYY" },
+    ];
+
+    /***********************
+     * 공유링크 → embed 자동 처리
+     ***********************/
+    function toEmbedUrl(url){
+      try{
+        if(!url) return "";
+        if(url.includes("shorts/")){
+          const id = url.split("shorts/")[1].split("?")[0].split("&")[0];
+          return "https://www.youtube.com/embed/" + id;
+        }
+        if(url.includes("youtu.be/")){
+          const id = url.split("youtu.be/")[1].split("?")[0].split("&")[0];
+          return "https://www.youtube.com/embed/" + id;
+        }
+        if(url.includes("watch?v=")){
+          const id = url.split("watch?v=")[1].split("&")[0];
+          return "https://www.youtube.com/embed/" + id;
+        }
+        return url;
+      }catch(e){
+        return url;
+      }
+    }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /***********************
+     * ✅ 50개 안정 운영: 초기 12개 + 더보기 12개씩
+     ***********************/
+    const videoWrap = document.getElementById("videoList");
+    const moreBtn   = document.getElementById("videoMoreBtn");
+
+    let visibleCount = 12;
+    const STEP = 12;
+
+    function renderVideos(){
+      videoWrap.innerHTML = "";
+
+      const slice = videos.slice(0, visibleCount);
+      slice.forEach(v => {
+        const card = document.createElement("div");
+        card.className = "video-card";
+
+        const embed = toEmbedUrl(v.url);
+
+        card.innerHTML = `
+          <div class="video-frame">
+            <iframe
+              src="${embed}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              title="${escapeHtml(v.title)}"
+            ></iframe>
+          </div>
+          <div class="video-title">${escapeHtml(v.title)}</div>
+        `;
+        videoWrap.appendChild(card);
+      });
+
+      moreBtn.style.display = (visibleCount >= videos.length) ? "none" : "block";
+    }
+
+    moreBtn.addEventListener("click", () => {
+      visibleCount = Math.min(visibleCount + STEP, videos.length);
+      renderVideos();
+      moreBtn.scrollIntoView({ behavior: "smooth", block: "end" });
+    });
+
+    renderVideos();
+  </script>
+</body>
+</html>
