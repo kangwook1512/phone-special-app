@@ -146,6 +146,21 @@ body{
 .videoDesc{margin:0;font-size:12px;font-weight:1000;color:var(--muted);line-height:1.35;}
 .videoFrame{width:100%;aspect-ratio: 16 / 9;border:0;display:block;}
 
+/* ✅ 영상 더보기 버튼 */
+.videoMoreWrap{grid-column:1/-1;margin-top:2px;}
+.videoMoreBtn{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(15,23,42,.14);
+  background:#111827;
+  color:#fff;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+.videoMoreBtn:active{transform:translateY(1px);}
+
 /* bottom dock */
 .bottomDock{
   position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
@@ -278,6 +293,10 @@ let inetCarrier = "SK";  // 인터넷 기본 탭
 let VIDEO_ITEMS = [
   { title:"영상 1", desc:"필요한 영상/공지/안내를 올리세요", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" }
 ];
+
+/* ✅ 영상 더보기(가벼운 50개 운영용) */
+let VIDEO_VISIBLE = 12;   // 처음 보여줄 개수
+const VIDEO_STEP = 12;    // 더보기 클릭 시 추가 개수
 
 /* 숫자 변환 */
 const asNum = (x) => {
@@ -435,7 +454,6 @@ function addCompactNoticeCard(){
   `);
 }
 function addInternetNoticeCard(carrier){
-  const cls = (carrier==="SK") ? "sk" : (carrier==="KT" ? "kt" : "lg");
   list.insertAdjacentHTML("beforeend", `
     <div class="card noticeCard">
       <div class="row">
@@ -757,7 +775,7 @@ async function renderPhone(tab){
   }
 }
 
-/* ✅ 인터넷TV: 통신사 탭 분류 + 통신사별 안내카드 + 월 낮은 순 */
+/* ✅ 인터넷TV */
 function renderInternet(carrier = inetCarrier){
   mode = "INTERNET";
   setServiceActive("INTERNET");
@@ -767,7 +785,6 @@ function renderInternet(carrier = inetCarrier){
   activateInetCarrier(carrier);
   clearList();
 
-  // 첫 카드: 안내(현금지원금 카톡문의 + 카톡 열기)
   addInternetNoticeCard(carrier);
 
   const filtered = INTERNET_TV.filter(x => x.carrier === carrier);
@@ -788,7 +805,7 @@ function renderInternet(carrier = inetCarrier){
   });
 }
 
-/* ✅ 알뜰요금: 망별 탭 분류 + 망별 첫 소형 필독카드 + 요금 낮은 순 */
+/* ✅ 알뜰요금 */
 function renderMVNO(net = mvnoNet){
   mode = "MVNO";
   setServiceActive("MVNO");
@@ -798,7 +815,6 @@ function renderMVNO(net = mvnoNet){
   activateMvnoNet(net);
   clearList();
 
-  // 망별 첫 카드(소형 필독) - 각 탭마다 첫 카드로 동일하게 표시
   addCompactNoticeCard();
 
   const filtered = MVNO_PLANS.filter(p => p.net === net);
@@ -824,27 +840,13 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* ✅ 영상 탭: 정보카드 삭제, 영상 리스트만 표시 */
-async function renderVideo(){
-  mode = "VIDEO";
-  setServiceActive("VIDEO");
-  stopAllVideos();
-  hideAllSubTabs();
-  clearList();
-
-  showLoading("영상 불러오는 중…");
-  await loadVideosFromJSON();
-  clearList();
-
-  if (!VIDEO_ITEMS.length){
-    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
-    return;
-  }
-
-  list.insertAdjacentHTML("beforeend", `<div class="videoGrid" id="videoGrid"></div>`);
+/* ✅ 영상 카드 그리기(더보기 포함) */
+function renderVideoCards(){
   const grid = document.getElementById("videoGrid");
+  if (!grid) return;
 
-  const cards = VIDEO_ITEMS.map((it, idx)=>{
+  const slice = VIDEO_ITEMS.slice(0, VIDEO_VISIBLE);
+  const cards = slice.map((it, idx)=>{
     const id = extractYouTubeId(it.url);
     const thumb = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "";
     return `
@@ -855,13 +857,20 @@ async function renderVideo(){
         </button>
         <div class="videoMeta">
           <p class="videoTitle">${it.title}</p>
-          <p class="videoDesc">${it.desc || ""}</p>
+          ${it.desc ? `<p class="videoDesc">${it.desc}</p>` : ``}
         </div>
       </div>
     `;
   }).join("");
 
-  grid.innerHTML = cards;
+  const moreNeeded = VIDEO_ITEMS.length > VIDEO_VISIBLE;
+  const moreHtml = moreNeeded ? `
+    <div class="videoMoreWrap">
+      <button id="videoMoreBtn" class="videoMoreBtn" type="button">영상 더보기</button>
+    </div>
+  ` : ``;
+
+  grid.innerHTML = cards + moreHtml;
 
   grid.querySelectorAll(".videoThumbBtn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
@@ -878,6 +887,40 @@ async function renderVideo(){
       btn.replaceWith(iframe);
     });
   });
+
+  const moreBtn = document.getElementById("videoMoreBtn");
+  if (moreBtn){
+    moreBtn.addEventListener("click", ()=>{
+      stopAllVideos();
+      VIDEO_VISIBLE = Math.min(VIDEO_VISIBLE + VIDEO_STEP, VIDEO_ITEMS.length);
+      renderVideoCards();
+    });
+  }
+}
+
+/* ✅ 영상 탭 */
+async function renderVideo(){
+  mode = "VIDEO";
+  setServiceActive("VIDEO");
+  stopAllVideos();
+  hideAllSubTabs();
+  clearList();
+
+  showLoading("영상 불러오는 중…");
+  await loadVideosFromJSON();
+
+  /* 영상 탭 진입 시 초기 표시 개수 리셋 */
+  VIDEO_VISIBLE = 12;
+
+  clearList();
+
+  if (!VIDEO_ITEMS.length){
+    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
+    return;
+  }
+
+  list.insertAdjacentHTML("beforeend", `<div class="videoGrid" id="videoGrid"></div>`);
+  renderVideoCards();
 }
 
 /* 이벤트: 휴대폰 탭 */
