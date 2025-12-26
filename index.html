@@ -4,20 +4,17 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-<!-- ✅ SEO: 검색 문구(키워드/브랜딩) -->
 <title>국과연특판 | 복지관2층매장</title>
 <meta name="description" content="국과연특판 · 복지관2층매장 특가폰/알뜰요금/인터넷TV 안내. 카톡문의로 빠르게 상담 가능합니다." />
 <link rel="canonical" href="https://a2272a.github.io/" />
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
 
-<!-- ✅ (선택) Open Graph / SNS 공유용 -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="국과연특판 | 복지관2층매장" />
 <meta property="og:description" content="국과연특판 · 특가폰/알뜰요금/인터넷TV 안내. 카톡문의로 빠르게 상담." />
 <meta property="og:url" content="https://a2272a.github.io/" />
 <meta name="twitter:card" content="summary" />
 
-<!-- ✅ 구조화 데이터(검색엔진 이해 도움) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -37,8 +34,7 @@
   --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
 
   --ledBg:#070b12; --ledBg2:#0b1220; --ledBorder:rgba(255,255,255,.14);
-  --ledGlow1:rgba(0,255,180,.35); --ledGlow2:rgba(255,60,60,.25);
-  --ledText:#f8fffc; --ledText2:#b6ffcf;
+  --ledText:#f8fffc;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -46,7 +42,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
 }
-.wrap{max-width:760px;margin:0 auto;padding:14px 14px 190px;}
+.wrap{max-width:760px;margin:0 auto;padding:12px 14px 190px;} /* ✅ 전체 상단 여백 약간 축소 */
 
 /* hero */
 .hero{
@@ -60,34 +56,47 @@ body{
   border:1px solid var(--ledBorder);
   box-shadow:0 14px 34px rgba(0,0,0,.18), 0 0 0 2px rgba(255,255,255,.10);
 }
-.heroMarquee2{min-height:52px;display:flex;align-items:center;padding:10px 12px;position:relative;}
+.heroMarquee2{min-height:58px;display:flex;align-items:center;padding:10px 12px;position:relative;}
 .heroMarquee2::before{
   content:"";position:absolute; inset:0;
   background: radial-gradient(circle, rgba(255,255,255,.08) 1px, transparent 1.9px);
   background-size: 8px 8px;opacity:.22;pointer-events:none;
 }
+
+/* ✅ 액정필름 무료교체 포인트 강화 */
 .marqueeLine{
-  width:100%;height:36px;display:flex;align-items:center;justify-content:center;overflow:hidden;
-  padding:0 10px;border-radius:14px;background: rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.10);box-shadow: inset 0 12px 20px rgba(0,0,0,.34);
+  width:100%;
+  height:44px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  padding:0 12px;
+  border-radius:16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:
+    inset 0 14px 26px rgba(0,0,0,.40),
+    0 0 0 2px rgba(0,255,180,.10),
+    0 0 26px rgba(0,255,180,.16);
 }
 .marqueeInner{display:flex;width:100%;justify-content:center;white-space:nowrap;align-items:center;}
 .marqueeInner span{
-  font-size:20px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
-  text-shadow:0 0 10px rgba(0,255,180,.55), 0 0 18px rgba(0,255,180,.32), 0 2px 14px rgba(0,0,0,.85);
-}
-
-/* ✅ 상단 안내 문구 */
-.inhouseNote{
-  margin:10px 2px 0;
-  font-size:12px;
+  font-size:22px;
   font-weight:1000;
-  letter-spacing:-.2px;
-  color:#334155;
+  letter-spacing:-.7px;
+  color:var(--ledText);
+  text-shadow:
+    0 0 10px rgba(0,255,180,.55),
+    0 0 20px rgba(0,255,180,.32),
+    0 2px 14px rgba(0,0,0,.85);
+  animation: pulseGlow 1.6s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{ transform:translateY(0); filter:brightness(1); }
+  50%{ transform:translateY(-1px); filter:brightness(1.12); }
 }
 
-/* tabs */
-.tabs{display:flex;gap:8px;margin-top:14px;}
+/* ✅ 탭을 위로 올림(히어로 아래 여백 최소화) */
+.tabs{display:flex;gap:8px;margin-top:10px;} /* 기존 14px → 10px */
 .tabBtn{
   flex:1;padding:12px 0;border-radius:999px;border:1px solid var(--line);
   background:#fff;font-weight:1000;font-size:14px;cursor:pointer;
@@ -102,7 +111,7 @@ body{
 .tabBtn.svc.internet.active{background:var(--kt);}
 .tabBtn.svc.video.active{background:var(--sk);}
 
-.panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
+.panel{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
 
 /* sub tabs */
 .subTabs{display:none;gap:8px;margin:0 0 12px;}
@@ -144,7 +153,7 @@ body{
 
 .loading{grid-column:1/-1;padding:18px;text-align:center;font-weight:1000;color:#64748b;}
 
-/* ✅ notice card */
+/* notice card */
 .noticeCard{
   grid-column:1/-1;
   padding:10px 12px;
@@ -165,14 +174,11 @@ body{
   white-space:nowrap;
 }
 
-/* ✅ 부가서비스(요약 + 펼치기) */
-.addonTop{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
+/* 부가서비스(요약 + 펼치기) */
+.addonTop{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .addonSummary{
   font-size:12px;font-weight:1000;color:#0f172a;letter-spacing:-.2px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  opacity:.92;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.92;
 }
 .addonToggle{
   flex:0 0 auto;
@@ -210,19 +216,12 @@ body{
 .videoTitle{font-weight:1000;font-size:15px;letter-spacing:-.2px;margin:0 0 6px;}
 .videoDesc{margin:0;font-size:12px;font-weight:1000;color:var(--muted);line-height:1.35;}
 .videoFrame{width:100%;aspect-ratio: 16 / 9;border:0;display:block;}
-
-/* ✅ 영상 더보기 버튼 */
 .videoMoreWrap{grid-column:1/-1;margin-top:2px;}
 .videoMoreBtn{
-  width:100%;
-  padding:12px;
-  border-radius:14px;
+  width:100%; padding:12px; border-radius:14px;
   border:1px solid rgba(15,23,42,.14);
-  background:#111827;
-  color:#fff;
-  font-weight:1000;
-  font-size:14px;
-  cursor:pointer;
+  background:#111827; color:#fff;
+  font-weight:1000; font-size:14px; cursor:pointer;
 }
 .videoMoreBtn:active{transform:translateY(1px);}
 
@@ -247,7 +246,10 @@ body{
 .dockBtn.call{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.22);color:#0b3a22;}
 .dockBtn.sms{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.22);color:#083244;}
 .dockBtn.kakao{background:rgba(254,229,0,.35);border-color:rgba(254,229,0,.55);color:#3b2f00;}
-@media (prefers-reduced-motion: reduce){ .dockBtn{transition:none!important;} }
+@media (prefers-reduced-motion: reduce){
+  .dockBtn{transition:none!important;}
+  .marqueeInner span{animation:none!important;}
+}
 </style>
 </head>
 
@@ -261,12 +263,6 @@ body{
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- ✅ 안내 문구(자동 변경 대상) -->
-  <div class="inhouseNote" id="entryNotice">
-    접속 안내 : 주소 직접 입력 또는 QR코드로 접속하세요.<br>
-    <span style="font-weight:700; opacity:.85;">※ 검색 노출은 시점에 따라 다를 수 있습니다.</span>
   </div>
 
   <!-- ✅ 서비스 탭(알뜰/인터넷/영상) -->
@@ -349,7 +345,7 @@ const internetTabsEl = document.getElementById("internetTabs");
 const CSV_VER = "2025-12-23";
 const VIDEO_VER = "2025-12-23";
 
-/* ✅ videos.json 404 방지: 절대경로 */
+/* videos.json 404 방지 */
 const SITE_BASE = "https://a2272a.github.io";
 const KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
 
@@ -357,19 +353,18 @@ let mode = "PHONE";
 let lastPhoneTab = "SK";
 let dealSub = "LOW";
 
-let mvnoNet = "LG";      // 알뜰 기본 탭
-let inetCarrier = "SK";  // 인터넷 기본 탭
+let mvnoNet = "LG";
+let inetCarrier = "SK";
 
-/* ✅ 영상 기본값: videos.json 없을 때만 보이는 예비 목록 */
+/* 영상 기본값 */
 let VIDEO_ITEMS = [
   { title:"영상 1", desc:"필요한 영상/공지/안내를 올리세요", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" }
 ];
 
-/* ✅ 영상 더보기 */
 let VIDEO_VISIBLE = 12;
 const VIDEO_STEP = 12;
 
-/* ✅ 통신사 부가서비스(첫 카드로 노출) */
+/* 통신사 부가서비스(첫 카드) */
 const ADDON_RULES = {
   SK: [
     "우주패스+플러스(무료) 6개월 유지 / 미 가입시 +3",
@@ -388,15 +383,13 @@ const ADDON_RULES = {
     "폰교체보험(모델별 상이) 95일 유지 / 미 가입시 +5"
   ]
 };
-
-/* ✅ 한 줄 요약(기본 표시) */
 const ADDON_SUMMARY = {
   SK: "우주패스+플러스 6개월 · 스마트콜 3개월 · 보험 3개월",
   KT: "필수팩/보험/티빙+메가커피 4개월 · KT카드 2개월",
   LG: "유플레이/V컬+음악/폰교체보험 95일"
 };
 
-/* 숫자 변환 */
+/* utils */
 const asNum = (x) => {
   const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
   if (s === "") return null;
@@ -466,8 +459,6 @@ function activatePhoneTab(tab){
   });
   lastPhoneTab = tab;
 }
-
-/* mvno sub */
 function showMvnoTabs(show){
   if (show) mvnoTabsEl.classList.add("show");
   else mvnoTabsEl.classList.remove("show");
@@ -478,8 +469,6 @@ function activateMvnoNet(net){
     b.classList.toggle("active", b.dataset.mvno === net);
   });
 }
-
-/* internet sub */
 function showInternetTabs(show){
   if (show) internetTabsEl.classList.add("show");
   else internetTabsEl.classList.remove("show");
@@ -491,7 +480,7 @@ function activateInetCarrier(c){
   });
 }
 
-/* 카드 렌더 */
+/* cards */
 function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, discount}){
   const mvNum = asNum(move);
   const chNum = asNum(change);
@@ -564,8 +553,6 @@ function addInternetNoticeCard(carrier){
     </div>
   `);
 }
-
-/* ✅ 통신사 부가서비스 첫 카드 (한 줄 요약 + 펼치기) */
 function addAddonCard(carrier){
   const rules = ADDON_RULES[carrier];
   if (!rules || !rules.length) return;
@@ -669,7 +656,7 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ 특가: 저가요금(0 포함) / 페이백(마이너스만) */
+/* 특가 */
 function buildDealBuckets(items){
   const payCandidates = [];
   const lowCandidates = [];
@@ -761,7 +748,7 @@ function buildDealBuckets(items){
   return { LOW: low, PAY: pay };
 }
 
-/* ✅ videos.json / 영상 관련 */
+/* videos */
 function extractYouTubeId(url){
   try{
     const u = new URL(url);
@@ -826,7 +813,7 @@ function stopAllVideos(){
   });
 }
 
-/* ✅ 부가서비스 펼치기/접기 (이벤트 위임: 한 번만 등록) */
+/* ✅ 부가서비스 펼치기/접기 */
 list.addEventListener("click", (e)=>{
   const btn = e.target.closest(".addonToggle");
   if (!btn) return;
@@ -849,7 +836,7 @@ list.addEventListener("click", (e)=>{
   }
 });
 
-/* ✅ 휴대폰 렌더 */
+/* render: PHONE */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
@@ -875,7 +862,6 @@ async function renderPhone(tab){
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
   if (["SK","KT","LG"].includes(tab)){
-    /* ✅ 각 통신사 첫 카드: 부가서비스 요약 + 펼치기 */
     addAddonCard(tab);
 
     const lim = limOf(tab);
@@ -927,7 +913,7 @@ async function renderPhone(tab){
   }
 }
 
-/* ✅ 인터넷TV */
+/* INTERNET */
 function renderInternet(carrier = inetCarrier){
   mode = "INTERNET";
   setServiceActive("INTERNET");
@@ -957,7 +943,7 @@ function renderInternet(carrier = inetCarrier){
   });
 }
 
-/* ✅ 알뜰요금 */
+/* MVNO */
 function renderMVNO(net = mvnoNet){
   mode = "MVNO";
   setServiceActive("MVNO");
@@ -992,7 +978,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* ✅ 영상 카드 */
+/* VIDEO */
 function renderVideoCards(){
   const grid = document.getElementById("videoGrid");
   if (!grid) return;
@@ -1049,8 +1035,6 @@ function renderVideoCards(){
     });
   }
 }
-
-/* ✅ 영상 탭 */
 async function renderVideo(){
   mode = "VIDEO";
   setServiceActive("VIDEO");
@@ -1064,17 +1048,15 @@ async function renderVideo(){
   VIDEO_VISIBLE = 12;
 
   clearList();
-
   if (!VIDEO_ITEMS.length){
     list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
     return;
   }
-
   list.insertAdjacentHTML("beforeend", `<div class="videoGrid" id="videoGrid"></div>`);
   renderVideoCards();
 }
 
-/* 이벤트: 휴대폰 탭 */
+/* events */
 phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const tab = btn.dataset.tab;
@@ -1085,7 +1067,6 @@ phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
-/* 이벤트: 서비스 탭 */
 serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
@@ -1104,7 +1085,6 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   });
 });
 
-/* 이벤트: 특가 서브탭 */
 dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const sub = btn.dataset.deal;
@@ -1115,7 +1095,6 @@ dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   });
 });
 
-/* 이벤트: 알뜰 망 서브탭 */
 mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const net = btn.dataset.mvno;
@@ -1124,7 +1103,6 @@ mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   });
 });
 
-/* 이벤트: 인터넷 통신사 서브탭 */
 internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const c = btn.dataset.inet;
@@ -1133,35 +1111,7 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   });
 });
 
-/* ✅ 유입경로에 따라 상단 안내 문구 자동 변경(문구만) */
-(function(){
-  const notice = document.getElementById("entryNotice");
-  if (!notice) return;
-
-  const ref = (document.referrer || "").toLowerCase();
-  const url = new URL(location.href);
-  const utm = (url.searchParams.get("utm_source") || "").toLowerCase();
-
-  const isGoogle = ref.includes("google.");
-  const isNaver  = ref.includes("naver.");
-  const isDaum   = ref.includes("daum.") || ref.includes("kakao.com");
-  const isKakao  = ref.includes("kakao.") || ref.includes("open.kakao.com") || utm === "kakao";
-
-  let html = `접속 안내 : 주소 직접 입력 또는 QR코드로 접속하세요.<br>
-    <span style="font-weight:700; opacity:.85;">※ 검색 노출은 시점에 따라 다를 수 있습니다.</span>`;
-
-  if (isKakao){
-    html = `<strong>카카오톡 링크로 접속하셨습니다</strong><br>
-      <span style="font-weight:700; opacity:.85;">상담/주문은 하단 ‘카톡’ 버튼을 눌러주세요.</span>`;
-  } else if (isGoogle || isNaver || isDaum){
-    html = `<strong>검색을 통해 방문하셨습니다</strong><br>
-      <span style="font-weight:700; opacity:.85;">국과연특판 · 복지관2층매장 공식 안내 페이지입니다.</span>`;
-  }
-
-  notice.innerHTML = html;
-})();
-
-/* 최초 */
+/* init */
 activatePhoneTab("SK");
 renderPhone("SK");
 </script>
