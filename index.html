@@ -114,7 +114,6 @@ body{
 .subTabBtn.active{ color:#fff; border-color:transparent; }
 .subTabBtn.pay.active{ background:var(--hot); }
 .subTabBtn.low.active{ background:var(--low); }
-
 .subTabBtn.sk.active{ background:var(--sk); }
 .subTabBtn.kt.active{ background:var(--kt); }
 .subTabBtn.lg.active{ background:var(--lg); }
@@ -155,15 +154,45 @@ body{
 .noticeCard .row{
   display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
 }
-.noticeCard .twrap{display:flex;flex-direction:column;gap:6px;flex:1;}
+.noticeCard .twrap{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0;}
 .noticeCard .t1{font-size:13px;font-weight:1000;letter-spacing:-.2px;color:#0f172a;line-height:1.2;}
-.noticeCard .t2{font-size:12px;font-weight:1000;letter-spacing:-.2px;color:var(--muted);line-height:1.35;}
+.noticeCard .t2{margin:0;font-size:12px;font-weight:1000;letter-spacing:-.2px;color:var(--muted);line-height:1.35;}
 .noticeCard .t2 b{color:#0f172a;}
 .noticeCard a{
   flex:0 0 auto;
   text-decoration:none;font-weight:1000;font-size:13px;padding:8px 10px;border-radius:12px;
   background:rgba(254,229,0,.35);border:1px solid rgba(254,229,0,.55);color:#3b2f00;
   white-space:nowrap;
+}
+
+/* ✅ 부가서비스(요약 + 펼치기) */
+.addonTop{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.addonSummary{
+  font-size:12px;font-weight:1000;color:#0f172a;letter-spacing:-.2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  opacity:.92;
+}
+.addonToggle{
+  flex:0 0 auto;
+  border:1px solid rgba(15,23,42,.14);
+  background:#fff;
+  color:#0f172a;
+  font-weight:1000;
+  font-size:12px;
+  padding:7px 10px;
+  border-radius:12px;
+  cursor:pointer;
+}
+.addonToggle:active{transform:translateY(1px);}
+.addonDetails{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:1000;
+  color:var(--muted);
+  line-height:1.45;
+  word-break:keep-all;
 }
 
 /* video cards */
@@ -360,6 +389,13 @@ const ADDON_RULES = {
   ]
 };
 
+/* ✅ 한 줄 요약(기본 표시) */
+const ADDON_SUMMARY = {
+  SK: "우주패스+플러스 6개월 · 스마트콜 3개월 · 보험 3개월",
+  KT: "필수팩/보험/티빙+메가커피 4개월 · KT카드 2개월",
+  LG: "유플레이/V컬+음악/폰교체보험 95일"
+};
+
 /* 숫자 변환 */
 const asNum = (x) => {
   const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
@@ -529,20 +565,24 @@ function addInternetNoticeCard(carrier){
   `);
 }
 
-/* ✅ 통신사 부가서비스 첫 카드 */
+/* ✅ 통신사 부가서비스 첫 카드 (한 줄 요약 + 펼치기) */
 function addAddonCard(carrier){
   const rules = ADDON_RULES[carrier];
   if (!rules || !rules.length) return;
 
-  const badgeClass = (carrier === "SK") ? "sk" : (carrier === "KT" ? "kt" : "lg");
-  const lines = rules.map(x => `• ${x}`).join("<br>");
+  const summary = ADDON_SUMMARY[carrier] || "부가서비스 유지 조건 (펼치기)";
+  const detailHtml = rules.map(x => `• ${x}`).join("<br>");
 
   list.insertAdjacentHTML("beforeend", `
-    <div class="card noticeCard">
+    <div class="card noticeCard addonCard" data-addon="1">
       <div class="row">
         <div class="twrap">
           <div class="t1">[ ${carrier} ] 부가서비스 유지 조건</div>
-          <div class="t2">${lines}</div>
+          <div class="addonTop">
+            <div class="addonSummary" title="${summary}">${summary}</div>
+            <button class="addonToggle" type="button" aria-expanded="false">펼치기</button>
+          </div>
+          <div class="addonDetails" hidden>${detailHtml}</div>
         </div>
         <a href="${KAKAO_URL}" target="_blank" rel="noopener">카톡문의</a>
       </div>
@@ -648,7 +688,6 @@ function buildDealBuckets(items){
       const mvTxt = showVal(rawMv);
       const chTxt = showVal(rawCh);
 
-      // PAY = 마이너스(<0)만
       const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
       if (isPay){
         const mv = (mvNum !== null && mvNum < 0) ? mvTxt : "";
@@ -666,7 +705,6 @@ function buildDealBuckets(items){
         return;
       }
 
-      // LOW = 요금제 낮음 + 0 포함(>=0)
       const lim = limOf(c);
       const isLowPlan = (plan !== null && plan > 0 && plan < lim);
       const hasZeroOrPositive = (mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0);
@@ -723,7 +761,7 @@ function buildDealBuckets(items){
   return { LOW: low, PAY: pay };
 }
 
-/* 유튜브 ID */
+/* ✅ videos.json / 영상 관련 */
 function extractYouTubeId(url){
   try{
     const u = new URL(url);
@@ -739,8 +777,6 @@ function extractYouTubeId(url){
     return /^[a-zA-Z0-9_-]{6,}$/.test(s) ? s : "";
   }
 }
-
-/* videos.json */
 async function loadVideosFromJSON(){
   try{
     const r = await fetch(`${SITE_BASE}/videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
@@ -757,8 +793,6 @@ async function loadVideosFromJSON(){
     if (cleaned.length) VIDEO_ITEMS = cleaned;
   }catch(e){}
 }
-
-/* 영상 정지 */
 function stopAllVideos(){
   const grid = document.getElementById("videoGrid");
   if (!grid) return;
@@ -792,7 +826,30 @@ function stopAllVideos(){
   });
 }
 
-/* 휴대폰 렌더 */
+/* ✅ 부가서비스 펼치기/접기 (이벤트 위임: 한 번만 등록) */
+list.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".addonToggle");
+  if (!btn) return;
+
+  const card = btn.closest(".addonCard");
+  if (!card) return;
+
+  const details = card.querySelector(".addonDetails");
+  if (!details) return;
+
+  const isOpen = !details.hasAttribute("hidden");
+  if (isOpen){
+    details.setAttribute("hidden", "");
+    btn.textContent = "펼치기";
+    btn.setAttribute("aria-expanded", "false");
+  }else{
+    details.removeAttribute("hidden");
+    btn.textContent = "접기";
+    btn.setAttribute("aria-expanded", "true");
+  }
+});
+
+/* ✅ 휴대폰 렌더 */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
@@ -818,7 +875,7 @@ async function renderPhone(tab){
   const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
   if (["SK","KT","LG"].includes(tab)){
-    /* ✅ 각 통신사 첫 카드: 부가서비스 안내 */
+    /* ✅ 각 통신사 첫 카드: 부가서비스 요약 + 펼치기 */
     addAddonCard(tab);
 
     const lim = limOf(tab);
@@ -870,7 +927,7 @@ async function renderPhone(tab){
   }
 }
 
-/* 인터넷TV */
+/* ✅ 인터넷TV */
 function renderInternet(carrier = inetCarrier){
   mode = "INTERNET";
   setServiceActive("INTERNET");
@@ -900,7 +957,7 @@ function renderInternet(carrier = inetCarrier){
   });
 }
 
-/* 알뜰요금 */
+/* ✅ 알뜰요금 */
 function renderMVNO(net = mvnoNet){
   mode = "MVNO";
   setServiceActive("MVNO");
@@ -935,7 +992,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* 영상 카드 */
+/* ✅ 영상 카드 */
 function renderVideoCards(){
   const grid = document.getElementById("videoGrid");
   if (!grid) return;
@@ -993,7 +1050,7 @@ function renderVideoCards(){
   }
 }
 
-/* 영상 탭 */
+/* ✅ 영상 탭 */
 async function renderVideo(){
   mode = "VIDEO";
   setServiceActive("VIDEO");
@@ -1090,7 +1147,6 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   const isDaum   = ref.includes("daum.") || ref.includes("kakao.com");
   const isKakao  = ref.includes("kakao.") || ref.includes("open.kakao.com") || utm === "kakao";
 
-  // 기본(직접접속/QR)
   let html = `접속 안내 : 주소 직접 입력 또는 QR코드로 접속하세요.<br>
     <span style="font-weight:700; opacity:.85;">※ 검색 노출은 시점에 따라 다를 수 있습니다.</span>`;
 
