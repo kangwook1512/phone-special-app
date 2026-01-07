@@ -70,7 +70,7 @@ body{
 }
 .marqueeInner{display:flex;width:100%;justify-content:center;white-space:nowrap;align-items:center;}
 .marqueeInner span{
-  font-size:20px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
+  font-size:18px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
   text-shadow:0 0 10px rgba(0,255,180,.55), 0 0 18px rgba(0,255,180,.32), 0 2px 14px rgba(0,0,0,.85);
 }
 
@@ -84,15 +84,12 @@ body{
 .tabBtn.sk.active{background:var(--sk);}
 .tabBtn.kt.active{background:var(--kt);}
 .tabBtn.lg.active{background:var(--lg);}
-.tabBtn.deal.active{background:var(--hot);}
 .tabBtn.svc{font-size:15px;font-weight:1000;}
 .tabBtn.svc.mvno.active{background:var(--lg);}
 .tabBtn.svc.internet.active{background:var(--kt);}
-.tabBtn.svc.video.active{background:var(--sk);}
+.tabBtn.svc.notice.active{background:var(--sk);}
 
 .panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
-
-/* sub tabs */
 .subTabs{display:none;gap:8px;margin:0 0 12px;}
 .subTabs.show{ display:flex; }
 .subTabBtn{
@@ -100,8 +97,6 @@ body{
   background:#fff;font-weight:1000;font-size:14px;cursor:pointer;
 }
 .subTabBtn.active{ color:#fff; border-color:transparent; }
-.subTabBtn.pay.active{ background:var(--hot); }
-.subTabBtn.low.active{ background:var(--low); }
 .subTabBtn.sk.active{ background:var(--sk); }
 .subTabBtn.kt.active{ background:var(--kt); }
 .subTabBtn.lg.active{ background:var(--lg); }
@@ -119,12 +114,7 @@ body{
 .infoLine{font-size:12px;font-weight:1000;color:var(--muted);margin:0 0 6px;}
 .discountLine{font-size:12px;font-weight:1000;color:#2563eb;margin:0 0 8px;}
 
-/* price row */
-.priceRow{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:10px;
-}
+.priceRow{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;}
 .priceRow.one{ grid-template-columns:1fr; }
 
 .pill{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:#fafafa;min-width:0;}
@@ -157,10 +147,10 @@ body{
   background:rgba(254,229,0,.35);border:1px solid rgba(254,229,0,.55);color:#3b2f00;
 }
 
-/* ✅ 부가서비스 카드(글씨 크게) */
+/* addon card (큰 글씨) */
 .addonCard{
   grid-column:1/-1;
-  padding:14px; /* 조금 더 여백 */
+  padding:14px;
   border-radius:14px;
   border:1px solid rgba(15,23,42,.12);
   background: linear-gradient(180deg, rgba(15,23,42,.03), rgba(15,23,42,.015));
@@ -169,77 +159,38 @@ body{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   cursor:pointer; user-select:none;
 }
-.addonTitle{
-  font-size:16px;           /* ✅ 크게 */
-  font-weight:1000;
-  letter-spacing:-.2px;
-  color:#0f172a;
-}
+.addonTitle{font-size:16px;font-weight:1000;letter-spacing:-.2px;color:#0f172a;}
 .addonPill{
-  font-size:13px;           /* ✅ 크게 */
-  font-weight:1000;
-  padding:7px 11px;
-  border-radius:999px;
-  color:#fff;
-  white-space:nowrap;
+  font-size:13px;font-weight:1000;
+  padding:7px 11px;border-radius:999px;color:#fff;white-space:nowrap;
 }
-.addonPill.sk{background:var(--sk);}
-.addonPill.kt{background:var(--kt);}
-.addonPill.lg{background:var(--lg);}
+.addonPill.sk{background:var(--sk);} .addonPill.kt{background:var(--kt);} .addonPill.lg{background:var(--lg);}
 .addonBtn{
   border:1px solid rgba(15,23,42,.14);
   background:#fff;
-  padding:10px 12px;        /* ✅ 버튼 크게 */
-  border-radius:12px;
-  font-weight:1000;
-  font-size:14px;           /* ✅ 크게 */
-  cursor:pointer;
+  padding:10px 12px;border-radius:12px;
+  font-weight:1000;font-size:14px;cursor:pointer;
 }
 .addonBody{ margin-top:12px; display:none; }
 .addonBody.show{display:block;}
 .addonList{margin:0;padding-left:18px;}
 .addonList li{
-  margin:10px 0;            /* ✅ 줄간격 */
-  font-size:15px;           /* ✅ 크게 */
-  font-weight:1000;
-  color:#0f172a;
-  line-height:1.25;
+  margin:10px 0;font-size:15px;font-weight:1000;color:#0f172a;line-height:1.25;
 }
 .addonList .sub{
-  margin-top:4px;
-  font-size:14px;           /* ✅ 크게 */
-  font-weight:1000;
-  color:var(--muted);
+  margin-top:4px;font-size:14px;font-weight:1000;color:var(--muted);
 }
 
-/* video */
-.videoGrid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px;}
-@media (max-width: 420px){ .videoGrid{ grid-template-columns:1fr; } }
-.videoCard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.05);}
-.videoThumbBtn{width:100%;border:0;padding:0;margin:0;cursor:pointer;display:block;background:#000;position:relative;}
-.videoThumbBtn img{width:100%;height:auto;display:block;}
-.playBadge{
-  position:absolute;inset:auto auto 12px 12px;padding:7px 10px;border-radius:999px;
-  background:rgba(255,255,255,.88);border:1px solid rgba(15,23,42,.14);
-  font-weight:1000;font-size:13px;color:#0f172a;
-}
-.videoMeta{padding:12px;}
-.videoTitle{font-weight:1000;font-size:15px;letter-spacing:-.2px;margin:0 0 6px;}
-.videoDesc{margin:0;font-size:12px;font-weight:1000;color:var(--muted);line-height:1.35;}
-.videoFrame{width:100%;aspect-ratio: 16 / 9;border:0;display:block;}
-.videoMoreWrap{grid-column:1/-1;margin-top:2px;}
-.videoMoreBtn{
+/* notice content */
+.noticeImg{
   width:100%;
-  padding:12px;
   border-radius:14px;
-  border:1px solid rgba(15,23,42,.14);
-  background:#111827;
-  color:#fff;
-  font-weight:1000;
-  font-size:14px;
-  cursor:pointer;
+  border:1px solid rgba(15,23,42,.10);
+  display:block;
+  margin:10px 0 8px;
 }
-.videoMoreBtn:active{transform:translateY(1px);}
+.noticeDesc{margin:0;font-size:13px;font-weight:1000;color:#0f172a;line-height:1.35;}
+.noticeDate{font-size:12px;font-weight:1000;color:var(--muted);margin:6px 0 0;}
 
 /* bottom dock */
 .bottomDock{
@@ -263,19 +214,145 @@ body{
 .dockBtn.sms{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.22);color:#083244;}
 .dockBtn.kakao{background:rgba(254,229,0,.35);border-color:rgba(254,229,0,.55);color:#3b2f00;}
 @media (prefers-reduced-motion: reduce){ .dockBtn{transition:none!important;} }
+
+/* =========================
+   Admin UI (공지작성 + data.csv 새로고침)
+   ========================= */
+.adminFab{
+  position:fixed; left:12px;
+  bottom: calc(78px + env(safe-area-inset-bottom));
+  z-index: 2001;
+  display:none;
+  gap:8px;
+}
+.adminFab button{
+  border:1px solid rgba(15,23,42,.14);
+  background:#111827;
+  color:#fff;
+  padding:12px 14px;
+  border-radius:14px;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(15,23,42,.18);
+}
+
+.modalMask{
+  position:fixed; inset:0;
+  background:rgba(15,23,42,.55);
+  backdrop-filter: blur(6px) saturate(140%);
+  z-index: 3000;
+  display:none;
+}
+.modal{
+  position:fixed;
+  left:12px; right:12px;
+  top: calc(12px + env(safe-area-inset-top));
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 3001;
+  display:none;
+}
+.modalCard{
+  height:100%;
+  background:#fff;
+  border-radius:18px;
+  border:1px solid rgba(15,23,42,.12);
+  box-shadow:0 18px 55px rgba(0,0,0,.25);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.modalHead{
+  padding:14px;
+  border-bottom:1px solid rgba(15,23,42,.10);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.modalTitle{font-size:16px;font-weight:1000;color:#0f172a;}
+.modalClose{
+  border:1px solid rgba(15,23,42,.14);
+  background:#fff;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+}
+.modalBody{
+  padding:14px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.fieldLabel{font-size:12px;font-weight:1000;color:var(--muted);margin:0;}
+.inp, .ta{
+  width:100%;
+  border:1px solid rgba(15,23,42,.14);
+  border-radius:14px;
+  padding:12px;
+  font-size:14px;
+  font-weight:1000;
+  outline:none;
+}
+.ta{min-height:140px; resize:vertical; line-height:1.35;}
+.dropZone{
+  border:2px dashed rgba(15,23,42,.18);
+  border-radius:16px;
+  background:linear-gradient(180deg, rgba(15,23,42,.03), rgba(15,23,42,.015));
+  padding:14px;
+  text-align:center;
+  font-weight:1000;
+  color:#0f172a;
+}
+.dropZone.drag{
+  border-color: rgba(34,197,94,.55);
+  box-shadow:0 0 0 3px rgba(34,197,94,.18);
+}
+.previewImg{
+  width:100%;
+  border-radius:16px;
+  border:1px solid rgba(15,23,42,.10);
+  display:block;
+  margin-top:10px;
+}
+.modalFoot{
+  padding:14px;
+  border-top:1px solid rgba(15,23,42,.10);
+  display:flex;
+  gap:10px;
+}
+.btn{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  font-weight:1000;
+  font-size:14px;
+  cursor:pointer;
+  border:1px solid rgba(15,23,42,.14);
+  background:#fff;
+}
+.btn.primary{
+  background:#111827;
+  color:#fff;
+  border-color:#111827;
+}
+.hint{font-size:12px;font-weight:1000;color:var(--muted);line-height:1.35;}
 </style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <!-- 액정필름 -->
+  <!-- LED 공지 -->
   <div class="hero" aria-label="공지">
     <div class="heroMarquee2">
       <div class="marqueeLine" style="border-color:rgba(0,255,180,.22); box-shadow: inset 0 12px 20px rgba(0,0,0,.34), 0 0 0 2px rgba(0,255,180,.10), 0 0 18px rgba(0,255,180,.18);">
         <div class="marqueeInner">
           <span style="text-shadow:0 0 12px rgba(0,255,180,.70), 0 0 26px rgba(0,255,180,.40), 0 2px 14px rgba(0,0,0,.85);">
-            액정필름 무료교체 (카톡주문)
+            시세표는 평일(월~금) 12시 전후 업데이트됩니다
           </span>
         </div>
       </div>
@@ -286,24 +363,17 @@ body{
   <div class="tabs" id="serviceTabs" aria-label="서비스 탭">
     <button class="tabBtn svc mvno" data-mode="MVNO">알뜰요금</button>
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
-   <button class="tabBtn svc video" data-mode="NOTICE">공지</button>
-
+    <button class="tabBtn svc notice" data-mode="NOTICE">공지</button>
   </div>
 
-  <!-- 휴대폰 탭 -->
+  <!-- 휴대폰 탭 (특가 제거: SK/KT/LG만) -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
     <button class="tabBtn lg" data-tab="LG">LG</button>
-    <button class="tabBtn deal" data-tab="DEAL">특가</button>
   </div>
 
   <div class="panel">
-    <div class="subTabs" id="dealTabs" aria-label="특가 서브탭">
-      <button class="subTabBtn pay" data-deal="PAY">페이백폰</button>
-      <button class="subTabBtn low" data-deal="LOW">저가요금폰</button>
-    </div>
-
     <div class="subTabs" id="mvnoTabs" aria-label="알뜰요금 망 서브탭">
       <button class="subTabBtn sk" data-mvno="SK">SK망</button>
       <button class="subTabBtn kt" data-mvno="KT">KT망</button>
@@ -317,6 +387,60 @@ body{
     </div>
 
     <div class="list" id="list"></div>
+  </div>
+</div>
+
+<!-- 관리자 전용 버튼 (고객 숨김) -->
+<div class="adminFab" id="adminFab">
+  <button type="button" id="btnCsvRefresh">data.csv 새로고침</button>
+  <button type="button" id="btnOpenNotice">공지 작성</button>
+</div>
+
+<!-- 관리자 전용: 공지 작성 모달 -->
+<div class="modalMask" id="noticeMask"></div>
+<div class="modal" id="noticeModal" role="dialog" aria-modal="true" aria-label="공지 작성">
+  <div class="modalCard">
+    <div class="modalHead">
+      <div class="modalTitle">공지 작성 (드래그/붙여넣기 가능)</div>
+      <button class="modalClose" type="button" id="btnCloseNotice">닫기</button>
+    </div>
+
+    <div class="modalBody">
+      <p class="fieldLabel">GitHub Token (Fine-grained PAT)</p>
+      <input class="inp" id="ghToken" placeholder="토큰을 붙여넣기 (관리자만)" />
+
+      <label class="hint" style="display:flex;gap:8px;align-items:center;margin-top:2px;">
+        <input type="checkbox" id="saveTokenChk" />
+        이 브라우저에 토큰 저장(관리자 PC에서만)
+      </label>
+
+      <hr style="border:0;border-top:1px solid rgba(15,23,42,.10);width:100%;">
+
+      <p class="fieldLabel">제목</p>
+      <input class="inp" id="nTitle" placeholder="예: 📌 오늘 시세표 업데이트" />
+
+      <p class="fieldLabel">내용</p>
+      <textarea class="ta" id="nDesc" placeholder="예: SK/KT/LG 변동 있음&#10;문의는 카톡 부탁드립니다"></textarea>
+
+      <p class="fieldLabel">이미지 (선택)</p>
+      <div class="dropZone" id="dropZone">
+        여기에 이미지를 드래그&드롭 하거나,<br>
+        캡처 후 Ctrl+V로 붙여넣기 하세요.<br><br>
+        <button type="button" class="btn" id="btnPickImg" style="display:inline-block;flex:0 0 auto;">파일 선택</button>
+        <input type="file" id="imgFile" accept="image/*" style="display:none;">
+        <img id="imgPreview" class="previewImg" alt="공지 이미지 미리보기" style="display:none;">
+      </div>
+
+      <div class="hint" id="imgHint" style="margin-top:8px;">이미지 없이도 저장 가능합니다.</div>
+      <div class="hint" style="margin-top:10px;">
+        저장하면 notice.json + notice-images/에 자동 업로드됩니다.
+      </div>
+    </div>
+
+    <div class="modalFoot">
+      <button class="btn" type="button" id="btnClearNotice">초기화</button>
+      <button class="btn primary" type="button" id="btnSaveNotice">저장</button>
+    </div>
   </div>
 </div>
 
@@ -352,28 +476,23 @@ body{
 const list = document.getElementById("list");
 const phoneTabsEl = document.getElementById("phoneTabs");
 const serviceTabsEl = document.getElementById("serviceTabs");
-const dealTabsEl = document.getElementById("dealTabs");
 const mvnoTabsEl = document.getElementById("mvnoTabs");
 const internetTabsEl = document.getElementById("internetTabs");
-
-const CSV_VER = "2025-12-23";
-const VIDEO_VER = "2025-12-23";
 
 const SITE_BASE = "https://a2272a.github.io";
 const KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
 
+/* ✅ 관리자 감지 (?admin=1) */
+const isAdmin = new URLSearchParams(location.search).get("admin") === "1";
+
+/* ✅ 버전(캐시 깨기용) */
+let CSV_VER = "2025-12-23";
+let NOTICE_VER = "2025-12-23";
+
 let mode = "PHONE";
 let lastPhoneTab = "SK";
-let dealSub = "LOW";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
-
-let VIDEO_ITEMS = [
-  { title:"영상 1", desc:"필요한 영상/공지/안내를 올리세요", url:"https://youtube.com/shorts/oUcwdF3x8BA?si=Ntj-NiF19O0GHilT" }
-];
-
-let VIDEO_VISIBLE = 12;
-const VIDEO_STEP = 12;
 
 /* ✅ 부가서비스 (KT카드 삭제 완료) */
 const ADDON = {
@@ -413,25 +532,14 @@ const fixedInfoLine = (c) => {
   if (c === "KT") return "KT 110요금 6개월 / 부가필수 문의";
   return "LG 115요금 6개월 / 부가필수 문의";
 };
-const infoLineWithPlan = (c, x) => {
-  const p = asNum(x[`${c}_요금제`]);
-  return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
-};
-const payScore = (it) => {
-  const a = asNum(it.mv);
-  const b = asNum(it.ch);
-  const cand = [];
-  if (a !== null && a < 0) cand.push(a);
-  if (b !== null && b < 0) cand.push(b);
-  if (!cand.length) return 0;
-  return Math.min(...cand);
-};
+const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
 
 function clearList(){ list.innerHTML = ""; }
 function showLoading(msg="불러오는 중…"){
   clearList();
   list.insertAdjacentHTML("beforeend", `<div class="loading">${msg}</div>`);
 }
+
 function setServiceActive(next){
   serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
   if (!next) return;
@@ -439,34 +547,18 @@ function setServiceActive(next){
   if (el) el.classList.add("active");
 }
 function hideAllSubTabs(){
-  dealTabsEl.classList.remove("show");
   mvnoTabsEl.classList.remove("show");
   internetTabsEl.classList.remove("show");
 }
-function showDealTabs(show){
-  if (show){
-    dealTabsEl.classList.add("show");
-  }else{
-    dealTabsEl.classList.remove("show");
-    dealTabsEl.querySelectorAll(".subTabBtn").forEach(b=>b.classList.remove("active"));
-  }
-}
-function activateDealSub(sub){
-  dealSub = sub;
-  dealTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
-    b.classList.toggle("active", b.dataset.deal === sub);
-  });
-}
+function showMvnoTabs(show){ show ? mvnoTabsEl.classList.add("show") : mvnoTabsEl.classList.remove("show"); }
+function showInternetTabs(show){ show ? internetTabsEl.classList.add("show") : internetTabsEl.classList.remove("show"); }
+
 function activatePhoneTab(tab){
   phoneTabsEl.querySelectorAll(".tabBtn").forEach(b=>{
     b.classList.toggle("active", b.dataset.tab === tab);
   });
   lastPhoneTab = tab;
 }
-
-function showMvnoTabs(show){ show ? mvnoTabsEl.classList.add("show") : mvnoTabsEl.classList.remove("show"); }
-function showInternetTabs(show){ show ? internetTabsEl.classList.add("show") : internetTabsEl.classList.remove("show"); }
-
 function activateMvnoNet(net){
   mvnoNet = net;
   mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
@@ -519,13 +611,8 @@ function addAddonCard(carrier){
     btn.textContent = open ? "접기" : "펼치기";
   };
 
-  head.addEventListener("click", (e)=>{
-    if (e.target === btn) return;
-    toggle();
-  });
-  head.addEventListener("keydown", (e)=>{
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
-  });
+  head.addEventListener("click", (e)=>{ if (e.target === btn) return; toggle(); });
+  head.addEventListener("keydown", (e)=>{ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
   btn.addEventListener("click", (e)=>{ e.preventDefault(); toggle(); });
 }
 
@@ -533,7 +620,6 @@ function addAddonCard(carrier){
 function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, discount}){
   const mvNum = asNum(move);
   const chNum = asNum(change);
-
   const hasMove = (move !== "");
   const hasChange = (change !== "");
   const rowClass = (hasMove && hasChange) ? "" : "one";
@@ -582,6 +668,7 @@ function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1
     </div>
   `);
 }
+
 function addCompactNoticeCard(){
   list.insertAdjacentHTML("beforeend", `
     <div class="card noticeCard">
@@ -595,7 +682,7 @@ function addCompactNoticeCard(){
     </div>
   `);
 }
-function addInternetNoticeCard(carrier){
+function addInternetNoticeCard(){
   list.insertAdjacentHTML("beforeend", `
     <div class="card noticeCard">
       <div class="row">
@@ -668,7 +755,7 @@ const MVNO_PLANS = [
   {net:"SK", talk:"무제한",  sms:"무제한",  data:"11GB+일2GB+3Mbps무제한", fee:"36,140"},
 ];
 
-/* CSV */
+/* CSV 로드 */
 async function fetchCSV(){
   const r = await fetch(`data.csv?v=${encodeURIComponent(CSV_VER)}`, { cache: "no-store" });
   if (!r.ok) throw new Error("data.csv 로드 실패");
@@ -684,172 +771,62 @@ async function fetchCSV(){
   });
 }
 
-/* deal buckets */
-function buildDealBuckets(items){
-  const payCandidates = [];
-  const lowCandidates = [];
-
-  items.forEach(x=>{
-    const model = String(x["기종"]||"").trim();
-    if (!model) return;
-
-    ["SK","KT","LG"].forEach(c=>{
-      const plan = asNum(x[`${c}_요금제`]);
-      const rawMv = x[`${c}_이동`] ?? "";
-      const rawCh = x[`${c}_기변`] ?? "";
-      const mvNum = asNum(rawMv);
-      const chNum = asNum(rawCh);
-
-      const mvTxt = showVal(rawMv);
-      const chTxt = showVal(rawCh);
-
-      const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
-      if (isPay){
-        const mv = (mvNum !== null && mvNum < 0) ? mvTxt : "";
-        const ch = (chNum !== null && chNum < 0) ? chTxt : "";
-        if (mv !== "" || ch !== ""){
-          payCandidates.push({
-            type:"PAY", c, model, plan: (plan !== null && plan > 0) ? plan : 9999,
-            mv, ch,
-            badgeText: `페이백 ${c}`,
-            badgeClass: "hot",
-            infoText: infoLineWithPlan(c, x),
-            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
-          });
-        }
-        return;
-      }
-
-      const lim = limOf(c);
-      const isLowPlan = (plan !== null && plan > 0 && plan < lim);
-      const hasZeroOrPositive = (mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0);
-
-      if (isLowPlan && hasZeroOrPositive){
-        const mv = (mvNum !== null && mvNum >= 0) ? mvTxt : "";
-        const ch = (chNum !== null && chNum >= 0) ? chTxt : "";
-        if (mv !== "" || ch !== ""){
-          lowCandidates.push({
-            type:"LOW", c, model, plan,
-            mv, ch,
-            badgeText: `저가 ${c} (${plan})`,
-            badgeClass: "low",
-            infoText: `${c} ${plan}요금 6개월 / 부가필수 문의`,
-            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
-          });
-        }
-      }
-    });
-  });
-
-  const keepLowestPlanOnly = (arr) => {
-    const map = new Map();
-    arr.forEach(it=>{
-      const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`;
-      const prev = map.get(key);
-      if (!prev || (it.plan ?? 9999) < (prev.plan ?? 9999)) map.set(key, it);
-    });
-    return Array.from(map.values());
-  };
-
-  let low = keepLowestPlanOnly(lowCandidates);
-  let pay = keepLowestPlanOnly(payCandidates);
-
-  const payKeySet = new Set(pay.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
-  low = low.filter(it => !payKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
-
-  const cOrder = {SK:0, KT:1, LG:2};
-  low.sort((a,b)=>{
-    const pa = a.plan ?? 9999, pb = b.plan ?? 9999;
-    if (pa !== pb) return pa - pb;
-    const m = a.model.localeCompare(b.model, "ko");
-    if (m !== 0) return m;
-    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
-  });
-  pay.sort((a,b)=>{
-    const sa = payScore(a), sb = payScore(b);
-    if (sa !== sb) return sa - sb;
-    const m = a.model.localeCompare(b.model, "ko");
-    if (m !== 0) return m;
-    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
-  });
-
-  return { LOW: low, PAY: pay };
-}
-
-/* youtube id */
-function extractYouTubeId(url){
+/* =========================
+   NOTICE (공지 보기)
+   notice.json = [{id,title,desc,image,date}, ...]
+   image는 "notice-images/xxx.jpg" 형태 저장
+   ========================= */
+async function loadNotices(){
   try{
-    const u = new URL(url);
-    if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/shorts/")[1].split("/")[0];
-    if (u.hostname.includes("youtu.be")) return u.pathname.replace("/","").split("/")[0];
-    const v = u.searchParams.get("v");
-    if (v) return v;
-    const m = u.pathname.match(/\/embed\/([^\/]+)/);
-    if (m && m[1]) return m[1];
-    return "";
+    const r = await fetch(`notice.json?v=${encodeURIComponent(NOTICE_VER)}`, { cache:"no-store" });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return Array.isArray(data) ? data : [];
   }catch(e){
-    const s = String(url||"").trim();
-    return /^[a-zA-Z0-9_-]{6,}$/.test(s) ? s : "";
+    return [];
   }
 }
+function renderNoticeList(items){
+  clearList();
+  if (!items || !items.length){
+    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 공지가 없습니다.</div>`);
+    return;
+  }
+  items.forEach(n=>{
+    const title = String(n.title||"공지").trim();
+    const desc = String(n.desc||"").trim();
+    const date = String(n.date||"").trim();
+    const image = String(n.image||"").trim();
+    const imgUrl = image ? `${SITE_BASE}/${image}` : "";
 
-/* videos.json */
-async function loadVideosFromJSON(){
-  try{
-    const r = await fetch(`${SITE_BASE}/videos.json?v=${encodeURIComponent(VIDEO_VER)}`, { cache:"no-store" });
-    if (!r.ok) return;
-    const data = await r.json();
-    if (!Array.isArray(data)) return;
-
-    const cleaned = data.map(v => ({
-      title: String(v.title ?? "").trim(),
-      desc: String(v.desc ?? "").trim(),
-      url: String(v.url ?? "").trim(),
-    })).filter(v => v.title && v.url);
-
-    if (cleaned.length) VIDEO_ITEMS = cleaned;
-  }catch(e){}
-}
-
-/* stop videos */
-function stopAllVideos(){
-  const grid = document.getElementById("videoGrid");
-  if (!grid) return;
-  grid.querySelectorAll("iframe.videoFrame").forEach(frame=>{
-    const card = frame.closest(".videoCard");
-    if (!card) return;
-
-    const idx = Number(card.dataset.idx);
-    const it = VIDEO_ITEMS[idx] || { title:"영상", desc:"", url:"" };
-    const vid = card.dataset.vid || "";
-    const thumb = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : "";
-
-    const btn = document.createElement("button");
-    btn.className = "videoThumbBtn";
-    btn.type = "button";
-    btn.setAttribute("aria-label", (it.title || "영상") + " 재생");
-    btn.innerHTML = `
-      ${thumb ? `<img src="${thumb}" alt="${it.title || "영상"} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
-      <span class="playBadge">재생</span>
-    `;
-    btn.addEventListener("click", ()=>{
-      stopAllVideos();
-      const iframe = document.createElement("iframe");
-      iframe.className = "videoFrame";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`;
-      btn.replaceWith(iframe);
-    });
-    frame.replaceWith(btn);
+    list.insertAdjacentHTML("beforeend", `
+      <div class="card">
+        <div class="titleRow">
+          <div class="model">${title}</div>
+          <div class="badge hot">공지</div>
+        </div>
+        ${imgUrl ? `<img class="noticeImg" src="${imgUrl}" alt="공지 이미지" loading="lazy">` : ``}
+        ${desc ? `<p class="noticeDesc">${desc.replace(/\n/g,"<br>")}</p>` : ``}
+        ${date ? `<p class="noticeDate">${date}</p>` : ``}
+      </div>
+    `);
   });
 }
+async function renderNotice(){
+  mode = "NOTICE";
+  setServiceActive("NOTICE");
+  hideAllSubTabs();
+  showLoading("공지 불러오는 중…");
+  const items = await loadNotices();
+  renderNoticeList(items);
+}
 
-/* render phone */
+/* =========================
+   PHONE (SK/KT/LG만)
+   ========================= */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
-  stopAllVideos();
   hideAllSubTabs();
   showLoading("가격 불러오는 중…");
 
@@ -861,76 +838,48 @@ async function renderPhone(tab){
     list.insertAdjacentHTML("beforeend", `<p class="infoLine">CSV 파일을 읽지 못했습니다. (data.csv 파일명/위치 확인)</p>`);
     return;
   }
+
   clearList();
   if (!items.length){
     list.insertAdjacentHTML("beforeend", `<p class="infoLine">표시할 항목이 없습니다.</p>`);
     return;
   }
 
-  const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
+  addAddonCard(tab);
+  const lim = limOf(tab);
 
-  if (["SK","KT","LG"].includes(tab)){
-    addAddonCard(tab);
+  items.forEach(x=>{
+    const plan = asNum(x[`${tab}_요금제`]);
+    if (plan !== null && plan > 0 && plan !== lim) return;
 
-    const lim = limOf(tab);
-    items.forEach(x=>{
-      const plan = asNum(x[`${tab}_요금제`]);
-      if (plan !== null && plan > 0 && plan !== lim) return;
-      const mv = showVal(x[`${tab}_이동`]);
-      const ch = showVal(x[`${tab}_기변`]);
-      if (mv === "" && ch === "") return;
+    const mv = showVal(x[`${tab}_이동`]);
+    const ch = showVal(x[`${tab}_기변`]);
+    if (mv === "" && ch === "") return;
 
-      addPhoneCard({
-        badgeText: tab,
-        badgeClass: tab.toLowerCase(),
-        model: x["기종"],
-        move: mv || "문의",
-        change: ch || "문의",
-        infoText: fixedInfoLine(tab),
-        discount: discountOf(x)
-      });
+    addPhoneCard({
+      badgeText: tab,
+      badgeClass: tab.toLowerCase(),
+      model: x["기종"],
+      move: mv || "문의",
+      change: ch || "문의",
+      infoText: fixedInfoLine(tab),
+      discount: discountOf(x)
     });
-    return;
-  }
-
-  if (tab === "DEAL"){
-    showDealTabs(true);
-    activateDealSub(dealSub);
-
-    const buckets = buildDealBuckets(items);
-    const data = buckets[dealSub] || [];
-
-    if (!data.length){
-      const msg = (dealSub === "PAY") ? "현재 페이백폰 항목이 없습니다." : "현재 저가요금폰 항목이 없습니다.";
-      list.insertAdjacentHTML("beforeend", `<p class="infoLine" style="grid-column:1/-1;margin:6px 2px 0;">${msg}</p>`);
-      return;
-    }
-
-    data.forEach(it=>{
-      addPhoneCard({
-        badgeText: it.badgeText,
-        badgeClass: it.badgeClass,
-        model: it.model,
-        move: it.mv,
-        change: it.ch,
-        infoText: it.infoText,
-        discount: it.discount
-      });
-    });
-  }
+  });
 }
 
-/* internet */
+/* =========================
+   INTERNET / MVNO
+   ========================= */
 function renderInternet(carrier = inetCarrier){
   mode = "INTERNET";
   setServiceActive("INTERNET");
-  stopAllVideos();
   hideAllSubTabs();
   showInternetTabs(true);
   activateInetCarrier(carrier);
   clearList();
 
-  addInternetNoticeCard(carrier);
+  addInternetNoticeCard();
 
   const filtered = INTERNET_TV.filter(x => x.carrier === carrier);
   const sorted = filtered.slice().sort((a,b)=> (asNum(a.monthly)||0) - (asNum(b.monthly)||0));
@@ -950,11 +899,9 @@ function renderInternet(carrier = inetCarrier){
   });
 }
 
-/* mvno */
 function renderMVNO(net = mvnoNet){
   mode = "MVNO";
   setServiceActive("MVNO");
-  stopAllVideos();
   hideAllSubTabs();
   showMvnoTabs(true);
   activateMvnoNet(net);
@@ -985,101 +932,248 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* video render */
-function renderVideoCards(){
-  const grid = document.getElementById("videoGrid");
-  if (!grid) return;
-
-  const slice = VIDEO_ITEMS.slice(0, VIDEO_VISIBLE);
-  const cards = slice.map((it, idx)=>{
-    const id = extractYouTubeId(it.url);
-    const thumb = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "";
-    return `
-      <div class="videoCard" data-idx="${idx}" data-vid="${id}">
-        <button class="videoThumbBtn" type="button" aria-label="${it.title} 재생">
-          ${thumb ? `<img src="${thumb}" alt="${it.title} 썸네일" loading="lazy">` : `<div style="padding:34px;color:#fff;font-weight:1000;">썸네일 없음</div>`}
-          <span class="playBadge">재생</span>
-        </button>
-        <div class="videoMeta">
-          <p class="videoTitle">${it.title}</p>
-          ${it.desc ? `<p class="videoDesc">${it.desc}</p>` : ``}
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  const moreNeeded = VIDEO_ITEMS.length > VIDEO_VISIBLE;
-  const moreHtml = moreNeeded ? `
-    <div class="videoMoreWrap">
-      <button id="videoMoreBtn" class="videoMoreBtn" type="button">영상 더보기</button>
-    </div>
-  ` : ``;
-
-  grid.innerHTML = cards + moreHtml;
-
-  grid.querySelectorAll(".videoThumbBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const card = btn.closest(".videoCard");
-      const vid = card?.dataset?.vid || "";
-      if (!vid) return;
-
-      stopAllVideos();
-      const iframe = document.createElement("iframe");
-      iframe.className = "videoFrame";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`;
-      btn.replaceWith(iframe);
-    });
-  });
-
-  const moreBtn = document.getElementById("videoMoreBtn");
-  if (moreBtn){
-    moreBtn.addEventListener("click", ()=>{
-      stopAllVideos();
-      VIDEO_VISIBLE = Math.min(VIDEO_VISIBLE + VIDEO_STEP, VIDEO_ITEMS.length);
-      renderVideoCards();
-    });
-  }
+/* =========================
+   Admin: 공지 작성 (B: 드래그/드롭 + 붙여넣기 + 파일선택)
+   + data.csv 새로고침
+   ========================= */
+function openNoticeModal(){
+  document.getElementById("noticeMask").style.display = "block";
+  document.getElementById("noticeModal").style.display = "block";
 }
-
-async function renderVideo(){
-  mode = "VIDEO";
-  setServiceActive("VIDEO");
-  stopAllVideos();
-  hideAllSubTabs();
-  clearList();
-
-  showLoading("영상 불러오는 중…");
-  await loadVideosFromJSON();
-
-  VIDEO_VISIBLE = 12;
-  clearList();
-
-  if (!VIDEO_ITEMS.length){
-    list.insertAdjacentHTML("beforeend", `<div class="loading">등록된 영상이 없습니다.</div>`);
+function closeNoticeModal(){
+  document.getElementById("noticeMask").style.display = "none";
+  document.getElementById("noticeModal").style.display = "none";
+}
+let pickedImageFile = null;
+function setPreview(file){
+  pickedImageFile = file;
+  const imgEl = document.getElementById("imgPreview");
+  const hint = document.getElementById("imgHint");
+  if (!file){
+    imgEl.style.display = "none";
+    imgEl.src = "";
+    hint.textContent = "이미지 없이도 저장 가능합니다.";
     return;
   }
-
-  list.insertAdjacentHTML("beforeend", `<div class="videoGrid" id="videoGrid"></div>`);
-  renderVideoCards();
+  imgEl.style.display = "block";
+  imgEl.src = URL.createObjectURL(file);
+  hint.textContent = "이미지 선택됨";
 }
 
-/* events */
+async function ghReq(url, token, opt={}){
+  const headers = { "Accept":"application/vnd.github+json", ...(opt.headers||{}) };
+  headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(url, { ...opt, headers });
+  const txt = await res.text();
+  let json=null; try{ json = txt ? JSON.parse(txt) : null; }catch(e){}
+  if (!res.ok) throw new Error((json && json.message) ? json.message : `${res.status} ${res.statusText}`);
+  return json;
+}
+function nowKST(){
+  const d = new Date();
+  const kst = new Date(d.getTime() + (9*60*60*1000) - (d.getTimezoneOffset()*60*1000));
+  const y = kst.getUTCFullYear();
+  const m = String(kst.getUTCMonth()+1).padStart(2,"0");
+  const day = String(kst.getUTCDate()).padStart(2,"0");
+  const hh = String(kst.getUTCHours()).padStart(2,"0");
+  const mm = String(kst.getUTCMinutes()).padStart(2,"0");
+  return `${y}-${m}-${day} ${hh}:${mm}`;
+}
+function makeId(){
+  return nowKST().replace(/[-:\s]/g,"") + "_" + Math.random().toString(16).slice(2,6);
+}
+function utf8ToB64(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+async function fileToJpegBase64(file){
+  const img = await new Promise((resolve, reject)=>{
+    const i = new Image();
+    i.onload = ()=> resolve(i);
+    i.onerror = reject;
+    i.src = URL.createObjectURL(file);
+  });
+  const maxW = 1400;
+  const scale = Math.min(1, maxW / img.width);
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(img, 0, 0, w, h);
+  const dataUrl = c.toDataURL("image/jpeg", 0.86);
+  URL.revokeObjectURL(img.src);
+  return dataUrl.split(",")[1] || "";
+}
+
+function initAdmin(){
+  if (!isAdmin) return;
+
+  // 관리자 버튼 보이기
+  document.getElementById("adminFab").style.display = "flex";
+
+  // 토큰 저장 로드
+  const tokenEl = document.getElementById("ghToken");
+  const saveChk = document.getElementById("saveTokenChk");
+  const saved = localStorage.getItem("GH_TOKEN") || "";
+  if (saved){ tokenEl.value = saved; saveChk.checked = true; }
+
+  // 공지 모달 열기/닫기
+  document.getElementById("btnOpenNotice").addEventListener("click", openNoticeModal);
+  document.getElementById("btnCloseNotice").addEventListener("click", closeNoticeModal);
+  document.getElementById("noticeMask").addEventListener("click", closeNoticeModal);
+
+  // data.csv 새로고침(관리자용)
+  document.getElementById("btnCsvRefresh").addEventListener("click", ()=>{
+    CSV_VER = String(Date.now());
+    // 현재 화면 유지하면서 재렌더
+    if (mode === "PHONE") renderPhone(lastPhoneTab);
+    else if (mode === "MVNO") renderMVNO(mvnoNet);
+    else if (mode === "INTERNET") renderInternet(inetCarrier);
+    else if (mode === "NOTICE") renderNotice();
+    alert("data.csv 새로고침 완료(캐시 갱신).");
+  });
+
+  // 파일 선택
+  const fileInp = document.getElementById("imgFile");
+  document.getElementById("btnPickImg").addEventListener("click", ()=> fileInp.click());
+  fileInp.addEventListener("change", ()=>{
+    const f = fileInp.files && fileInp.files[0];
+    if (f && f.type.startsWith("image/")) setPreview(f);
+  });
+
+  // 드래그&드롭
+  const dz = document.getElementById("dropZone");
+  ["dragenter","dragover"].forEach(ev=>{
+    dz.addEventListener(ev, (e)=>{ e.preventDefault(); dz.classList.add("drag"); });
+  });
+  ["dragleave","drop"].forEach(ev=>{
+    dz.addEventListener(ev, (e)=>{ e.preventDefault(); dz.classList.remove("drag"); });
+  });
+  dz.addEventListener("drop", (e)=>{
+    const f = e.dataTransfer?.files?.[0];
+    if (f && f.type.startsWith("image/")) setPreview(f);
+  });
+
+  // 붙여넣기(Ctrl+V)
+  window.addEventListener("paste", (e)=>{
+    if (document.getElementById("noticeModal").style.display !== "block") return;
+    const items = e.clipboardData?.items || [];
+    for (const it of items){
+      if (it.type && it.type.startsWith("image/")){
+        const f = it.getAsFile();
+        if (f) { setPreview(f); break; }
+      }
+    }
+  });
+
+  // 초기화
+  document.getElementById("btnClearNotice").addEventListener("click", ()=>{
+    document.getElementById("nTitle").value = "";
+    document.getElementById("nDesc").value = "";
+    setPreview(null);
+  });
+
+  // 저장
+  document.getElementById("btnSaveNotice").addEventListener("click", async ()=>{
+    const btn = document.getElementById("btnSaveNotice");
+    const old = btn.textContent;
+    btn.disabled = true; btn.textContent = "저장중…";
+
+    try{
+      const token = tokenEl.value.trim();
+      if (!token) throw new Error("토큰을 붙여넣어야 저장됩니다.");
+
+      if (saveChk.checked) localStorage.setItem("GH_TOKEN", token);
+      else localStorage.removeItem("GH_TOKEN");
+
+      const title = document.getElementById("nTitle").value.trim();
+      const desc  = document.getElementById("nDesc").value.trim();
+      if (!title && !desc && !pickedImageFile) throw new Error("제목/내용/이미지 중 1개는 필요합니다.");
+
+      const owner = "a2272a";
+      const repo  = "a2272a.github.io";
+      const branch= "main";
+
+      const id = makeId();
+      const date = nowKST();
+
+      // notice.json 읽기
+      let noticeSha = null;
+      let existing = [];
+      try{
+        const cur = await ghReq(`https://api.github.com/repos/${owner}/${repo}/contents/notice.json?ref=${branch}`, token);
+        noticeSha = cur.sha;
+        const raw = atob((cur.content||"").replace(/\n/g,""));
+        existing = JSON.parse(raw);
+        if (!Array.isArray(existing)) existing = [];
+      }catch(e){
+        existing = [];
+        noticeSha = null;
+      }
+
+      // 이미지 업로드
+      let imagePath = "";
+      if (pickedImageFile){
+        const imgB64 = await fileToJpegBase64(pickedImageFile);
+        imagePath = `notice-images/notice_${id}.jpg`;
+        await ghReq(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(imagePath)}`, token, {
+          method:"PUT",
+          body: JSON.stringify({
+            message: `notice: upload image ${id}`,
+            content: imgB64,
+            branch
+          })
+        });
+      }
+
+      // notice.json 갱신 (최대 80개)
+      const next = [{ id, title, desc, image:imagePath, date }, ...existing].slice(0,80);
+      const jsonStr = JSON.stringify(next, null, 2);
+
+      await ghReq(`https://api.github.com/repos/${owner}/${repo}/contents/notice.json`, token, {
+        method:"PUT",
+        body: JSON.stringify({
+          message: `notice: add ${id}`,
+          content: utf8ToB64(jsonStr),
+          branch,
+          ...(noticeSha ? { sha: noticeSha } : {})
+        })
+      });
+
+      NOTICE_VER = String(Date.now());
+      closeNoticeModal();
+      await renderNotice();
+      alert("공지 저장 완료!");
+
+      document.getElementById("nTitle").value = "";
+      document.getElementById("nDesc").value = "";
+      setPreview(null);
+
+    }catch(err){
+      alert("저장 실패: " + (err?.message || String(err)));
+    }finally{
+      btn.disabled = false; btn.textContent = old;
+    }
+  });
+}
+
+/* =========================
+   EVENTS
+   ========================= */
 phoneTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const tab = btn.dataset.tab;
-    stopAllVideos();
     activatePhoneTab(tab);
     serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
     renderPhone(tab);
   });
 });
+
+/* ✅ 여기가 '공지 탭 터치 안됨'을 고친 핵심: NOTICE로 연결 */
 serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const next = btn.dataset.mode;
-    if (mode === "VIDEO" && next !== "VIDEO") stopAllVideos();
 
+    // 같은 탭 다시 누르면 휴대폰으로 복귀
     if (mode === next){
       serviceTabsEl.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
       activatePhoneTab(lastPhoneTab);
@@ -1089,37 +1183,27 @@ serviceTabsEl.querySelectorAll(".tabBtn").forEach(btn=>{
 
     if (next === "MVNO") renderMVNO(mvnoNet);
     if (next === "INTERNET") renderInternet(inetCarrier);
-    if (next === "VIDEO") renderVideo();
+    if (next === "NOTICE") renderNotice();
   });
 });
-dealTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    const sub = btn.dataset.deal;
-    stopAllVideos();
-    activateDealSub(sub);
-    activatePhoneTab("DEAL");
-    renderPhone("DEAL");
-  });
-});
+
 mvnoTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const net = btn.dataset.mvno;
-    stopAllVideos();
     renderMVNO(net);
   });
 });
 internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     const c = btn.dataset.inet;
-    stopAllVideos();
     renderInternet(c);
   });
 });
 
 /* init */
+initAdmin();
 activatePhoneTab("SK");
 renderPhone("SK");
 </script>
 </body>
 </html>
-
