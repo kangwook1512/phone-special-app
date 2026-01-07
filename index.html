@@ -34,8 +34,7 @@
   --call:#22c55e; --sms:#38bdf8; --kakao:#fee500;
 
   --ledBg:#070b12; --ledBg2:#0b1220; --ledBorder:rgba(255,255,255,.14);
-  --ledGlow1:rgba(0,255,180,.35); --ledGlow2:rgba(255,60,60,.25);
-  --ledText:#f8fffc; --ledText2:#b6ffcf;
+  --ledText:#f8fffc;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -54,7 +53,7 @@ body{
     radial-gradient(900px 160px at 50% 0%, rgba(0,255,180,.10), transparent 60%),
     linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.22) 100%),
     linear-gradient(90deg, var(--ledBg) 0%, var(--ledBg2) 50%, var(--ledBg) 100%);
-  border:1px solid var(--ledBorder);
+  border:1px solid rgba(255,255,255,.14);
   box-shadow:0 14px 34px rgba(0,0,0,.18), 0 0 0 2px rgba(255,255,255,.10);
 }
 .heroMarquee2{min-height:52px;display:flex;align-items:center;padding:10px 12px;position:relative;}
@@ -71,7 +70,7 @@ body{
 .marqueeInner{display:flex;width:100%;justify-content:center;white-space:nowrap;align-items:center;}
 .marqueeInner span{
   font-size:20px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
-  text-shadow:0 0 10px rgba(0,255,180,.55), 0 0 18px rgba(0,255,180,.32), 0 2px 14px rgba(0,0,0,.85);
+  text-shadow:0 0 12px rgba(0,255,180,.70), 0 0 26px rgba(0,255,180,.40), 0 2px 14px rgba(0,0,0,.85);
 }
 
 /* tabs */
@@ -208,21 +207,6 @@ body{
   color:var(--muted);
 }
 
-/* 섹션 헤더 */
-.sectionHeader{
-  grid-column:1/-1;
-  padding:10px 12px;
-  border-radius:14px;
-  background:#0f172a;
-  color:#fff;
-  border:1px solid rgba(15,23,42,.12);
-}
-.sectionHeader .t{
-  font-weight:1000;
-  font-size:14px;
-  letter-spacing:-.2px;
-}
-
 /* bottom dock */
 .bottomDock{
   position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
@@ -256,9 +240,7 @@ body{
     <div class="heroMarquee2">
       <div class="marqueeLine" style="border-color:rgba(0,255,180,.22); box-shadow: inset 0 12px 20px rgba(0,0,0,.34), 0 0 0 2px rgba(0,255,180,.10), 0 0 18px rgba(0,255,180,.18);">
         <div class="marqueeInner">
-          <span style="text-shadow:0 0 12px rgba(0,255,180,.70), 0 0 26px rgba(0,255,180,.40), 0 2px 14px rgba(0,0,0,.85);">
-            시세표는 평일(월~금) 12시 전후 업데이트됩니다
-          </span>
+          <span>시세표는 평일(월~금) 12시 전후 업데이트됩니다</span>
         </div>
       </div>
     </div>
@@ -270,7 +252,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- 휴대폰 탭 (특가 제거: SK/KT/LG만) -->
+  <!-- 휴대폰 탭: SK/KT/LG만 -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -330,7 +312,6 @@ const mvnoTabsEl = document.getElementById("mvnoTabs");
 const internetTabsEl = document.getElementById("internetTabs");
 
 const CSV_VER = "2025-12-23";
-const SITE_BASE = "https://a2272a.github.io";
 const KAKAO_URL = "https://open.kakao.com/o/s729bI5h";
 
 let mode = "PHONE";
@@ -338,7 +319,7 @@ let lastPhoneTab = "SK";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
 
-/* ✅ 부가서비스 (KT카드 삭제 완료) */
+/* ✅ 부가서비스 */
 const ADDON = {
   SK: [
     { t:"우주패스+플러스(무료)", d:"6개월 유지 / 미 가입시 +3" },
@@ -380,15 +361,6 @@ const infoLineWithPlan = (c, x) => {
   const p = asNum(x[`${c}_요금제`]);
   return (p && p > 0) ? `${c} ${p}요금 6개월 / 부가필수 문의` : fixedInfoLine(c);
 };
-const payScore = (it) => {
-  const a = asNum(it.mv);
-  const b = asNum(it.ch);
-  const cand = [];
-  if (a !== null && a < 0) cand.push(a);
-  if (b !== null && b < 0) cand.push(b);
-  if (!cand.length) return 0;
-  return Math.min(...cand);
-};
 
 function clearList(){ list.innerHTML = ""; }
 function showLoading(msg="불러오는 중…"){
@@ -426,15 +398,6 @@ function activateInetCarrier(c){
   internetTabsEl.querySelectorAll(".subTabBtn").forEach(b=>{
     b.classList.toggle("active", b.dataset.inet === c);
   });
-}
-
-/* 섹션 헤더 */
-function addSectionHeader(title){
-  list.insertAdjacentHTML("beforeend", `
-    <div class="card sectionHeader">
-      <div class="t">${title}</div>
-    </div>
-  `);
 }
 
 /* 부가서비스 카드 */
@@ -539,6 +502,7 @@ function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1
     </div>
   `);
 }
+
 function addCompactNoticeCard(){
   list.insertAdjacentHTML("beforeend", `
     <div class="card noticeCard">
@@ -641,96 +605,72 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ 저가/페이백 버킷(기존 로직 유지) */
-function buildDealBuckets(items){
-  const payCandidates = [];
-  const lowCandidates = [];
+/* ✅ 탭 없이 “배지로만” 페이백/저가 표시하기: 해당 통신사 리스트로 합치기 */
+function buildCarrierMerged(items, carrier){
+  const lim = limOf(carrier);
+  const merged = [];
 
   items.forEach(x=>{
     const model = String(x["기종"]||"").trim();
     if (!model) return;
 
-    ["SK","KT","LG"].forEach(c=>{
-      const plan = asNum(x[`${c}_요금제`]);
-      const rawMv = x[`${c}_이동`] ?? "";
-      const rawCh = x[`${c}_기변`] ?? "";
-      const mvNum = asNum(rawMv);
-      const chNum = asNum(rawCh);
+    const plan = asNum(x[`${carrier}_요금제`]);
+    const rawMv = x[`${carrier}_이동`] ?? "";
+    const rawCh = x[`${carrier}_기변`] ?? "";
+    const mvNum = asNum(rawMv);
+    const chNum = asNum(rawCh);
+    const mv = showVal(rawMv);
+    const ch = showVal(rawCh);
 
-      const mvTxt = showVal(rawMv);
-      const chTxt = showVal(rawCh);
+    if (mv === "" && ch === "") return;
 
-      const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
-      if (isPay){
-        const mv = (mvNum !== null && mvNum < 0) ? mvTxt : "";
-        const ch = (chNum !== null && chNum < 0) ? chTxt : "";
-        if (mv !== "" || ch !== ""){
-          payCandidates.push({
-            type:"PAY", c, model, plan: (plan !== null && plan > 0) ? plan : 9999,
-            mv, ch,
-            badgeText: `페이백`,
-            badgeClass: "hot",
-            infoText: infoLineWithPlan(c, x),
-            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
-          });
-        }
-        return;
-      }
+    const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
+    const isLow = (plan !== null && plan > 0 && plan < lim) && ((mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0));
+    const isBase = (plan !== null && plan > 0 && plan === lim);
 
-      const lim = limOf(c);
-      const isLowPlan = (plan !== null && plan > 0 && plan < lim);
-      const hasZeroOrPositive = (mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0);
+    // lim/저가/페이백만 표시 (원래 정책 유지)
+    if (!isPay && !isLow && !isBase) return;
 
-      if (isLowPlan && hasZeroOrPositive){
-        const mv = (mvNum !== null && mvNum >= 0) ? mvTxt : "";
-        const ch = (chNum !== null && chNum >= 0) ? chTxt : "";
-        if (mv !== "" || ch !== ""){
-          lowCandidates.push({
-            type:"LOW", c, model, plan,
-            mv, ch,
-            badgeText: `저가(${plan})`,
-            badgeClass: "low",
-            infoText: `${c} ${plan}요금 6개월 / 부가필수 문의`,
-            discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
-          });
-        }
-      }
+    let badgeText = carrier;
+    let badgeClass = carrier.toLowerCase();
+    let infoText = fixedInfoLine(carrier);
+
+    if (isPay){
+      badgeText = "페이백";
+      badgeClass = "hot";
+      infoText = infoLineWithPlan(carrier, x);
+    }else if (isLow){
+      badgeText = `저가(${plan})`;
+      badgeClass = "low";
+      infoText = `${carrier} ${plan}요금 6개월 / 부가필수 문의`;
+    }
+
+    merged.push({
+      carrier, model,
+      mv: (isPay ? (mvNum !== null && mvNum < 0 ? mv : "") : mv),
+      ch: (isPay ? (chNum !== null && chNum < 0 ? ch : "") : ch),
+      badgeText, badgeClass,
+      infoText,
+      discount: String(x["요금할인"]||"").trim().toUpperCase()==="O",
+      sortKey: isPay ? 0 : (isLow ? 1 : 2),
+      payScore: isPay ? Math.min(mvNum ?? 0, chNum ?? 0) : 0,
+      plan: plan ?? 9999
     });
   });
 
-  const keepLowestPlanOnly = (arr) => {
-    const map = new Map();
-    arr.forEach(it=>{
-      const key = `${it.model}__${it.c}__${it.mv}__${it.ch}`;
-      const prev = map.get(key);
-      if (!prev || (it.plan ?? 9999) < (prev.plan ?? 9999)) map.set(key, it);
-    });
-    return Array.from(map.values());
-  };
-
-  let low = keepLowestPlanOnly(lowCandidates);
-  let pay = keepLowestPlanOnly(payCandidates);
-
-  const payKeySet = new Set(pay.map(it => `${it.model}__${it.c}__${it.mv}__${it.ch}`));
-  low = low.filter(it => !payKeySet.has(`${it.model}__${it.c}__${it.mv}__${it.ch}`));
-
-  const cOrder = {SK:0, KT:1, LG:2};
-  low.sort((a,b)=>{
-    const pa = a.plan ?? 9999, pb = b.plan ?? 9999;
-    if (pa !== pb) return pa - pb;
-    const m = a.model.localeCompare(b.model, "ko");
-    if (m !== 0) return m;
-    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
-  });
-  pay.sort((a,b)=>{
-    const sa = payScore(a), sb = payScore(b);
-    if (sa !== sb) return sa - sb;
-    const m = a.model.localeCompare(b.model, "ko");
-    if (m !== 0) return m;
-    return (cOrder[a.c] ?? 9) - (cOrder[b.c] ?? 9);
+  // 정렬: 페이백(가장 마이너스 큰 것 먼저) → 저가(요금 낮은 순) → 기본(기종명)
+  merged.sort((a,b)=>{
+    if (a.sortKey !== b.sortKey) return a.sortKey - b.sortKey;
+    if (a.sortKey === 0){ // pay
+      if (a.payScore !== b.payScore) return a.payScore - b.payScore;
+    }
+    if (a.sortKey === 1){ // low
+      if (a.plan !== b.plan) return a.plan - b.plan;
+    }
+    return a.model.localeCompare(b.model, "ko");
   });
 
-  return { LOW: low, PAY: pay };
+  return merged;
 }
 
 /* internet */
@@ -796,7 +736,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* render phone (SK/KT/LG 안에 페이백/저가 흡수) */
+/* render phone: SK/KT/LG만, 내부는 “배지로만” 페이백/저가 표시 */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
@@ -817,68 +757,28 @@ async function renderPhone(tab){
     return;
   }
 
-  const discountOf = (x) => String(x["요금할인"] || "").trim().toUpperCase() === "O";
-
   if (!["SK","KT","LG"].includes(tab)) tab = "SK";
 
   // 1) 부가서비스
   addAddonCard(tab);
 
-  // 2) 페이백/저가 버킷 생성 후 해당 통신사만
-  const buckets = buildDealBuckets(items);
-  const payList = (buckets.PAY || []).filter(it => it.c === tab);
-  const lowList = (buckets.LOW || []).filter(it => it.c === tab);
+  // 2) 한 리스트로 합쳐서 출력
+  const merged = buildCarrierMerged(items, tab);
 
-  if (payList.length){
-    addSectionHeader(`페이백폰 · ${tab}`);
-    payList.forEach(it=>{
-      addPhoneCard({
-        badgeText: "페이백",
-        badgeClass: "hot",
-        model: it.model,
-        move: it.mv,
-        change: it.ch,
-        infoText: it.infoText,
-        discount: it.discount
-      });
-    });
+  if (!merged.length){
+    list.insertAdjacentHTML("beforeend", `<div class="loading">표시할 항목이 없습니다.</div>`);
+    return;
   }
 
-  if (lowList.length){
-    addSectionHeader(`저가요금폰 · ${tab}`);
-    lowList.forEach(it=>{
-      addPhoneCard({
-        badgeText: `저가(${it.plan})`,
-        badgeClass: "low",
-        model: it.model,
-        move: it.mv,
-        change: it.ch,
-        infoText: it.infoText,
-        discount: it.discount
-      });
-    });
-  }
-
-  // 3) 기본 시세표(각 통신사 lim 요금만)
-  const lim = limOf(tab);
-  addSectionHeader(`${tab} 기본시세표 · ${lim}요금`);
-
-  items.forEach(x=>{
-    const plan = asNum(x[`${tab}_요금제`]);
-    if (plan !== null && plan > 0 && plan !== lim) return;
-
-    const mv = showVal(x[`${tab}_이동`]);
-    const ch = showVal(x[`${tab}_기변`]);
-    if (mv === "" && ch === "") return;
-
+  merged.forEach(it=>{
     addPhoneCard({
-      badgeText: tab,
-      badgeClass: tab.toLowerCase(),
-      model: x["기종"],
-      move: mv || "문의",
-      change: ch || "문의",
-      infoText: fixedInfoLine(tab),
-      discount: discountOf(x)
+      badgeText: it.badgeText,
+      badgeClass: it.badgeClass,
+      model: it.model,
+      move: it.mv || "문의",
+      change: it.ch || "문의",
+      infoText: it.infoText,
+      discount: it.discount
     });
   });
 }
