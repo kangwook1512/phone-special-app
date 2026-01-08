@@ -338,17 +338,21 @@ const ADDON = {
   ],
 };
 
+/* ✅ 숫자 판단(색상/정렬용)만 숫자로, 표시는 원문 그대로 */
 const asNum = (x) => {
-  const s = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
-  if (s === "") return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
+  const raw = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
+  if (!raw) return null;
+  const m = raw.match(/-?\d+(\.\d+)?/);
+  if (!m) return null;
+  let n = Number(m[0]);
+  if (!Number.isFinite(n)) return null;
+  if (raw.includes("만원") || raw.includes("만")) n = n * 10000;
+  return n;
 };
 const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
 const showVal = (raw) => {
-  const n = asNum(raw);
-  if (n === null) return "";
-  return String(raw).trim();
+  const s = String(raw ?? "").replace(/\u2212/g, "-").trim();
+  return s === "" ? "" : s;     // ✅ 비어있으면 빈칸 유지
 };
 const limOf = (c) => (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
 
@@ -471,7 +475,8 @@ function addPhoneCard({badgeText, badgeClass, model, move, change, infoText, dis
           <div class="pill">
             <div class="k">이동</div>
             <div class="v ${vClass(mvNum)}">${move}</div>
-          </div>` : ``}
+          </div>` :z
+          : ``}
         ${hasChange ? `
           <div class="pill">
             <div class="k">기변</div>
@@ -605,7 +610,7 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ 탭 없이 “배지로만” 페이백/저가 표시하기: 해당 통신사 리스트로 합치기 */
+/* ✅ 탭 없이 “배지로만” 페이백/저가 표시: 해당 통신사 리스트로 합치기 */
 function buildCarrierMerged(items, carrier){
   const lim = limOf(carrier);
   const merged = [];
@@ -628,7 +633,6 @@ function buildCarrierMerged(items, carrier){
     const isLow = (plan !== null && plan > 0 && plan < lim) && ((mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0));
     const isBase = (plan !== null && plan > 0 && plan === lim);
 
-    // lim/저가/페이백만 표시 (원래 정책 유지)
     if (!isPay && !isLow && !isBase) return;
 
     let badgeText = carrier;
@@ -658,13 +662,12 @@ function buildCarrierMerged(items, carrier){
     });
   });
 
-  // 정렬: 페이백(가장 마이너스 큰 것 먼저) → 저가(요금 낮은 순) → 기본(기종명)
   merged.sort((a,b)=>{
     if (a.sortKey !== b.sortKey) return a.sortKey - b.sortKey;
-    if (a.sortKey === 0){ // pay
+    if (a.sortKey === 0){
       if (a.payScore !== b.payScore) return a.payScore - b.payScore;
     }
-    if (a.sortKey === 1){ // low
+    if (a.sortKey === 1){
       if (a.plan !== b.plan) return a.plan - b.plan;
     }
     return a.model.localeCompare(b.model, "ko");
@@ -736,7 +739,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* render phone: SK/KT/LG만, 내부는 “배지로만” 페이백/저가 표시 */
+/* render phone */
 async function renderPhone(tab){
   mode = "PHONE";
   setServiceActive(null);
@@ -759,10 +762,8 @@ async function renderPhone(tab){
 
   if (!["SK","KT","LG"].includes(tab)) tab = "SK";
 
-  // 1) 부가서비스
   addAddonCard(tab);
 
-  // 2) 한 리스트로 합쳐서 출력
   const merged = buildCarrierMerged(items, tab);
 
   if (!merged.length){
@@ -775,8 +776,8 @@ async function renderPhone(tab){
       badgeText: it.badgeText,
       badgeClass: it.badgeClass,
       model: it.model,
-      move: it.mv || "문의",
-      change: it.ch || "문의",
+      move: it.mv,       // ✅ 비어있으면 비어있는대로
+      change: it.ch,     // ✅ 비어있으면 비어있는대로
       infoText: it.infoText,
       discount: it.discount
     });
