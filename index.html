@@ -15,6 +15,7 @@
 <meta property="og:url" content="https://a2272a.github.io/" />
 <meta name="twitter:card" content="summary" />
 
+<!-- (선택) PWA 쓰면 두세요. 없어도 사이트는 정상 동작 -->
 <link rel="manifest" href="./manifest.json" />
 
 <script type="application/ld+json">
@@ -215,7 +216,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- 휴대폰 탭 -->
+  <!-- 휴대폰 탭 (SK/KT/LG만 유지) -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -798,14 +799,14 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
 activatePhoneTab("SK");
 renderPhone("SK");
 
-/* ✅ 업데이트 후 “즉시 반영 + 자동 새로고침” (서비스워커) */
+/* ✅ “업데이트 즉시 반영/자동 새로고침” 준비 코드
+   - 지금 sw.js가 없어도 try/catch로 사이트는 정상 동작
+   - 다음 단계에서 sw.js 올리면 여기 코드가 바로 활성화됨 */
 (async function(){
   if(!('serviceWorker' in navigator)) return;
-
   try{
     const reg = await navigator.serviceWorker.register('./sw.js');
 
-    // 새 SW 감지 → 설치 완료 시 skipWaiting 요청
     reg.addEventListener('updatefound', () => {
       const sw = reg.installing;
       if(!sw) return;
@@ -816,7 +817,6 @@ renderPhone("SK");
       });
     });
 
-    // 새 SW가 컨트롤 잡는 순간 1회 자동 새로고침
     let reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if(reloaded) return;
@@ -824,7 +824,7 @@ renderPhone("SK");
       location.reload();
     });
   }catch(e){
-    // 등록 실패해도 사이트는 정상동작
+    // sw.js 없거나 등록 실패해도 사이트는 정상 동작
   }
 })();
 </script>
