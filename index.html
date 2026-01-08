@@ -15,6 +15,8 @@
 <meta property="og:url" content="https://a2272a.github.io/" />
 <meta name="twitter:card" content="summary" />
 
+<link rel="manifest" href="./manifest.json" />
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -684,8 +686,8 @@ async function renderPhone(tab){
       badgeText: it.badgeText,
       badgeClass: it.badgeClass,
       model: it.model,
-      move: it.mv,     // ✅ 빈칸은 빈칸 그대로
-      change: it.ch,   // ✅ 빈칸은 빈칸 그대로
+      move: it.mv,
+      change: it.ch,
       infoText: it.infoText,
       discount: it.discount
     });
@@ -795,6 +797,36 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
 /* init */
 activatePhoneTab("SK");
 renderPhone("SK");
+
+/* ✅ 업데이트 후 “즉시 반영 + 자동 새로고침” (서비스워커) */
+(async function(){
+  if(!('serviceWorker' in navigator)) return;
+
+  try{
+    const reg = await navigator.serviceWorker.register('./sw.js');
+
+    // 새 SW 감지 → 설치 완료 시 skipWaiting 요청
+    reg.addEventListener('updatefound', () => {
+      const sw = reg.installing;
+      if(!sw) return;
+      sw.addEventListener('statechange', () => {
+        if(sw.state === 'installed' && navigator.serviceWorker.controller){
+          sw.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    });
+
+    // 새 SW가 컨트롤 잡는 순간 1회 자동 새로고침
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if(reloaded) return;
+      reloaded = true;
+      location.reload();
+    });
+  }catch(e){
+    // 등록 실패해도 사이트는 정상동작
+  }
+})();
 </script>
 </body>
 </html>
