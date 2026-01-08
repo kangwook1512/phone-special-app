@@ -65,15 +65,36 @@ body{
   background-size: 8px 8px;opacity:.22;pointer-events:none;
 }
 .marqueeLine{
-  width:100%;height:36px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  width:100%;height:36px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;
   padding:0 10px;border-radius:14px;background: rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.10);box-shadow: inset 0 12px 20px rgba(0,0,0,.34);
+  gap:10px;
 }
-.marqueeInner{display:flex;width:100%;justify-content:center;white-space:nowrap;align-items:center;}
+.marqueeInner{
+  display:flex;white-space:nowrap;align-items:center;min-width:0;flex:1;
+}
 .marqueeInner span{
-  font-size:20px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
+  font-size:18px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
   text-shadow:0 0 12px rgba(0,255,180,.70), 0 0 26px rgba(0,255,180,.40), 0 2px 14px rgba(0,0,0,.85);
+  overflow:hidden;text-overflow:ellipsis;
 }
+
+/* ✅ 관리자용 새로고침 버튼(기본 숨김) */
+.heroRefreshBtn{
+  flex:0 0 auto;
+  height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(0,255,180,.35);
+  background:rgba(0,255,180,.10);
+  color:var(--ledText);
+  font-weight:1000;
+  font-size:12px;
+  cursor:pointer;
+  text-shadow:0 0 10px rgba(0,255,180,.55);
+  display:none; /* 기본 숨김 */
+}
+.heroRefreshBtn:active{transform:translateY(1px);filter:brightness(.98);}
 
 /* tabs */
 .tabs{display:flex;gap:8px;margin-top:12px;}
@@ -198,13 +219,15 @@ body{
 <body>
 <div class="wrap">
 
-  <!-- 공지 -->
+  <!-- 공지(업데이트 시간) + 관리자 숨김 새로고침 -->
   <div class="hero" aria-label="공지">
     <div class="heroMarquee2">
       <div class="marqueeLine" style="border-color:rgba(0,255,180,.22); box-shadow: inset 0 12px 20px rgba(0,0,0,.34), 0 0 0 2px rgba(0,255,180,.10), 0 0 18px rgba(0,255,180,.18);">
         <div class="marqueeInner">
-          <span>시세표는 평일(월~금) 12시 전후 업데이트됩니다</span>
+          <span>시세표 업데이트 <span id="updateStamp">—</span></span>
         </div>
+        <!-- ✅ 관리자 전용(기본 숨김). 공지바 5번 탭하면 나타남 -->
+        <button class="heroRefreshBtn" id="refreshBtn" type="button" aria-label="새로고침">새로고침</button>
       </div>
     </div>
   </div>
@@ -282,6 +305,69 @@ let lastPhoneTab = "SK";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
 
+/* ✅ 업데이트 날짜/시간 자동 표시 (페이지 로드 시 1회) */
+function setUpdateStamp(){
+  try{
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).formatToParts(now);
+
+    const get = (t) => (parts.find(p => p.type === t)?.value || "");
+    const y = get("year");
+    const m = get("month");
+    const d = get("day");
+    const hh = get("hour");
+    const mm = get("minute");
+
+    const stamp = `${y}.${m}.${d} ${hh}:${mm}`; // 예시 형식 고정
+    const el = document.getElementById("updateStamp");
+    if (el) el.textContent = stamp;
+  }catch(e){}
+}
+
+/* ✅ 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
+(function adminRefreshToggle(){
+  const hero = document.querySelector(".hero");
+  const btn = document.getElementById("refreshBtn");
+  if(!hero || !btn) return;
+
+  let taps = 0;
+  let timer = null;
+
+  const reset = () => {
+    taps = 0;
+    if(timer){ clearTimeout(timer); timer = null; }
+  };
+
+  hero.addEventListener("click", () => {
+    taps += 1;
+
+    // 2초 안에 5번 클릭하면 토글
+    if(!timer){
+      timer = setTimeout(() => reset(), 2000);
+    }
+
+    if(taps >= 5){
+      const isHidden = (btn.style.display === "none");
+      btn.style.display = isHidden ? "inline-flex" : "none";
+      reset();
+    }
+  }, { passive:true });
+
+  // 버튼 자체는 실제 새로고침
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    location.reload();
+  });
+})();
+
 /* 부가서비스 */
 const ADDON = {
   SK: [
@@ -317,7 +403,6 @@ const showVal = (raw) => {
   return s === "" ? "" : s;
 };
 const vClass = (n) => (n === null) ? "" : (n < 0 ? "neg" : (n === 0 ? "zero" : "pos"));
-const limOf = (c) => (c==="SK") ? 109 : (c==="KT" ? 110 : 115);
 
 const fixedInfoLine = (c) => {
   if (c === "SK") return "SK 109요금 6개월 / 부가필수 문의";
@@ -576,10 +661,7 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ 페이백/저가/기본 분류 전부 제거
-   ✅ SK/KT/LG “통신사 탭만”으로 표시
-   - 이동/기변 값은 CSV 원문 그대로 보여줌(음수여도 그대로)
-*/
+/* ✅ SK/KT/LG “통신사 탭만”으로 표시 */
 function buildCarrierSimple(items, carrier){
   const out = [];
   items.forEach(x=>{
@@ -641,8 +723,8 @@ async function renderPhone(tab){
 
   rows.forEach(it=>{
     addPhoneCard({
-      badgeText: tab,          // ✅ 항상 SK/KT/LG
-      badgeClass: badgeClass,  // ✅ 항상 통신사 색
+      badgeText: tab,
+      badgeClass: badgeClass,
       model: it.model,
       move: it.mv,
       change: it.ch,
@@ -753,6 +835,7 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
 });
 
 /* init */
+setUpdateStamp();
 activatePhoneTab("SK");
 renderPhone("SK");
 
