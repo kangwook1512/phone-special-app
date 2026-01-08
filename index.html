@@ -65,18 +65,48 @@ body{
   background-size: 8px 8px;opacity:.22;pointer-events:none;
 }
 .marqueeLine{
-  width:100%;height:36px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;
-  padding:0 10px;border-radius:14px;background: rgba(255,255,255,.04);
+  width:100%;
+  height:auto; /* ✅ 2줄 표시 위해 auto */
+  display:flex;align-items:center;justify-content:space-between;overflow:hidden;
+  padding:6px 10px;border-radius:14px;background: rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.10);box-shadow: inset 0 12px 20px rgba(0,0,0,.34);
   gap:10px;
 }
 .marqueeInner{
-  display:flex;white-space:nowrap;align-items:center;min-width:0;flex:1;
+  display:flex;align-items:center;min-width:0;flex:1;
 }
-.marqueeInner span{
-  font-size:18px;font-weight:1000;letter-spacing:-.6px;color:var(--ledText);
+
+/* ✅ 업데이트 문구(2줄) */
+.updateWrap{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+  width:100%;
+}
+.updateWrap .line1,
+.updateWrap .line2{
+  font-size:18px;
+  font-weight:1000;
+  letter-spacing:-.6px;
+  color:var(--ledText);
   text-shadow:0 0 12px rgba(0,255,180,.70), 0 0 26px rgba(0,255,180,.40), 0 2px 14px rgba(0,0,0,.85);
-  overflow:hidden;text-overflow:ellipsis;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  min-width:0;
+}
+@media (max-width:480px){
+  .updateWrap{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+  }
+  .updateWrap .line1,
+  .updateWrap .line2{
+    font-size:16px;
+    white-space:normal; /* ✅ 모바일에서 2줄 자연스럽게 */
+  }
 }
 
 /* ✅ 관리자용 새로고침 버튼(기본 숨김) */
@@ -224,7 +254,10 @@ body{
     <div class="heroMarquee2">
       <div class="marqueeLine" style="border-color:rgba(0,255,180,.22); box-shadow: inset 0 12px 20px rgba(0,0,0,.34), 0 0 0 2px rgba(0,255,180,.10), 0 0 18px rgba(0,255,180,.18);">
         <div class="marqueeInner">
-          <span>시세표 업데이트 <span id="updateStamp">—</span></span>
+          <div class="updateWrap">
+            <div class="line1">시세표 업데이트 <span id="updateStamp">—</span></div>
+            <div class="line2">새로고침 · 폰은 당겨서 · PC는 Ctrl+F5</div>
+          </div>
         </div>
         <!-- ✅ 관리자 전용(기본 숨김). 공지바 5번 탭하면 나타남 -->
         <button class="heroRefreshBtn" id="refreshBtn" type="button" aria-label="새로고침">새로고침</button>
@@ -305,10 +338,20 @@ let lastPhoneTab = "SK";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
 
-/* ✅ 업데이트 날짜/시간 자동 표시 (페이지 로드 시 1회) */
-function setUpdateStamp(){
+/* ✅ 업데이트 날짜/시간 자동 표시 (선택 A: data.csv Last-Modified) */
+async function setUpdateStamp(){
+  const el = document.getElementById("updateStamp");
+  if(!el) return;
+
   try{
-    const now = new Date();
+    const res = await fetch(`data.csv?v=${encodeURIComponent(CSV_VER)}`, {
+      method: "HEAD",
+      cache: "no-store"
+    });
+    const lm = res.headers.get("last-modified");
+    if(!lm) return;
+
+    const d = new Date(lm);
     const parts = new Intl.DateTimeFormat("ko-KR", {
       timeZone: "Asia/Seoul",
       year: "numeric",
@@ -317,19 +360,14 @@ function setUpdateStamp(){
       hour: "2-digit",
       minute: "2-digit",
       hour12: false
-    }).formatToParts(now);
+    }).formatToParts(d);
 
     const get = (t) => (parts.find(p => p.type === t)?.value || "");
-    const y = get("year");
-    const m = get("month");
-    const d = get("day");
-    const hh = get("hour");
-    const mm = get("minute");
-
-    const stamp = `${y}.${m}.${d} ${hh}:${mm}`; // 예시 형식 고정
-    const el = document.getElementById("updateStamp");
-    if (el) el.textContent = stamp;
-  }catch(e){}
+    const stamp = `${get("year")}.${get("month")}.${get("day")} ${get("hour")}:${get("minute")}`;
+    el.textContent = stamp;
+  }catch(e){
+    // 실패 시 아무 것도 하지 않음(현재시간 fallback 없음)
+  }
 }
 
 /* ✅ 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
@@ -355,8 +393,8 @@ function setUpdateStamp(){
     }
 
     if(taps >= 5){
-      const isHidden = (btn.style.display === "none");
-      btn.style.display = isHidden ? "inline-flex" : "none";
+      const hidden = (getComputedStyle(btn).display === "none"); // ✅ CSS 숨김도 정확히 판정
+      btn.style.display = hidden ? "inline-flex" : "none";
       reset();
     }
   }, { passive:true });
