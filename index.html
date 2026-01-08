@@ -15,7 +15,6 @@
 <meta property="og:url" content="https://a2272a.github.io/" />
 <meta name="twitter:card" content="summary" />
 
-<!-- (선택) PWA 쓰면 두세요. 없어도 사이트는 정상 동작 -->
 <link rel="manifest" href="./manifest.json" />
 
 <script type="application/ld+json">
@@ -216,7 +215,7 @@ body{
     <button class="tabBtn svc internet" data-mode="INTERNET">인터넷TV</button>
   </div>
 
-  <!-- 휴대폰 탭 (SK/KT/LG만 유지) -->
+  <!-- 휴대폰 탭 (SK/KT/LG만) -->
   <div class="tabs" id="phoneTabs" aria-label="휴대폰 탭">
     <button class="tabBtn sk active" data-tab="SK">SK</button>
     <button class="tabBtn kt" data-tab="KT">KT</button>
@@ -302,7 +301,7 @@ const ADDON = {
   ],
 };
 
-/* 숫자 판단(색상용) + 표시는 원문 그대로(빈칸은 빈칸) */
+/* 숫자 판단(색상용) */
 const asNum = (x) => {
   const raw = String(x ?? "").replace(/\u2212/g, "-").replace(/,/g, "").trim();
   if (!raw) return null;
@@ -561,7 +560,7 @@ const MVNO_PLANS = [
   {net:"SK", talk:"무제한",  sms:"무제한",  data:"11GB+일2GB+3Mbps무제한", fee:"36,140"},
 ];
 
-/* CSV loader (기존 방식 유지) */
+/* CSV loader */
 async function fetchCSV(){
   const r = await fetch(`data.csv?v=${encodeURIComponent(CSV_VER)}`, { cache: "no-store" });
   if (!r.ok) throw new Error("data.csv 로드 실패");
@@ -577,76 +576,32 @@ async function fetchCSV(){
   });
 }
 
-/* SK/KT/LG 탭 안에: 기본(정상요금) + 저가 + 페이백을 "배지"로만 표시 */
-function buildCarrierMerged(items, carrier){
-  const lim = limOf(carrier);
-  const merged = [];
-
+/* ✅ 페이백/저가/기본 분류 전부 제거
+   ✅ SK/KT/LG “통신사 탭만”으로 표시
+   - 이동/기변 값은 CSV 원문 그대로 보여줌(음수여도 그대로)
+*/
+function buildCarrierSimple(items, carrier){
+  const out = [];
   items.forEach(x=>{
     const model = String(x["기종"]||"").trim();
     if (!model) return;
 
-    const plan = asNum(x[`${carrier}_요금제`]);
-    const rawMv = x[`${carrier}_이동`] ?? "";
-    const rawCh = x[`${carrier}_기변`] ?? "";
-    const mvNum = asNum(rawMv);
-    const chNum = asNum(rawCh);
-    const mv = showVal(rawMv);
-    const ch = showVal(rawCh);
+    const mv = showVal(x[`${carrier}_이동`]);
+    const ch = showVal(x[`${carrier}_기변`]);
 
     if (mv === "" && ch === "") return;
 
-    const isPay = (mvNum !== null && mvNum < 0) || (chNum !== null && chNum < 0);
-    const isLow = (plan !== null && plan > 0 && plan < lim) && ((mvNum !== null && mvNum >= 0) || (chNum !== null && chNum >= 0));
-    const isBase = (plan !== null && plan > 0 && plan === lim);
-
-    if (!isPay && !isLow && !isBase) return;
-
-    let badgeText = carrier;
-    let badgeClass = carrier.toLowerCase();
-    let infoText = fixedInfoLine(carrier);
-    let sortKey = 2;
-    let payScore = 0;
-
-    if (isPay){
-      badgeText = "페이백";
-      badgeClass = "hot";
-      infoText = infoLineWithPlan(carrier, x);
-      sortKey = 0;
-      const cand = [];
-      if (mvNum !== null && mvNum < 0) cand.push(mvNum);
-      if (chNum !== null && chNum < 0) cand.push(chNum);
-      payScore = cand.length ? Math.min(...cand) : 0;
-    }else if (isLow){
-      badgeText = `저가(${plan})`;
-      badgeClass = "low";
-      infoText = `${carrier} ${plan}요금 6개월 / 부가필수 문의`;
-      sortKey = 1;
-    }
-
-    merged.push({
+    out.push({
       model,
-      mv: (isPay ? (mvNum !== null && mvNum < 0 ? mv : "") : mv),
-      ch: (isPay ? (chNum !== null && chNum < 0 ? ch : "") : ch),
-      badgeText, badgeClass, infoText,
-      discount: String(x["요금할인"]||"").trim().toUpperCase()==="O",
-      sortKey, payScore,
-      plan: plan ?? 9999
+      mv,
+      ch,
+      infoText: infoLineWithPlan(carrier, x),
+      discount: String(x["요금할인"]||"").trim().toUpperCase()==="O"
     });
   });
 
-  merged.sort((a,b)=>{
-    if (a.sortKey !== b.sortKey) return a.sortKey - b.sortKey;
-    if (a.sortKey === 0){
-      if (a.payScore !== b.payScore) return a.payScore - b.payScore;
-    }
-    if (a.sortKey === 1){
-      if (a.plan !== b.plan) return a.plan - b.plan;
-    }
-    return a.model.localeCompare(b.model, "ko");
-  });
-
-  return merged;
+  out.sort((a,b)=> a.model.localeCompare(b.model, "ko"));
+  return out;
 }
 
 /* render phone */
@@ -676,16 +631,18 @@ async function renderPhone(tab){
 
   addAddonCard(tab);
 
-  const merged = buildCarrierMerged(items, tab);
-  if (!merged.length){
+  const rows = buildCarrierSimple(items, tab);
+  if (!rows.length){
     list.insertAdjacentHTML("beforeend", `<div class="loading">표시할 항목이 없습니다.</div>`);
     return;
   }
 
-  merged.forEach(it=>{
+  const badgeClass = tab.toLowerCase();
+
+  rows.forEach(it=>{
     addPhoneCard({
-      badgeText: it.badgeText,
-      badgeClass: it.badgeClass,
+      badgeText: tab,          // ✅ 항상 SK/KT/LG
+      badgeClass: badgeClass,  // ✅ 항상 통신사 색
       model: it.model,
       move: it.mv,
       change: it.ch,
@@ -799,9 +756,7 @@ internetTabsEl.querySelectorAll(".subTabBtn").forEach(btn=>{
 activatePhoneTab("SK");
 renderPhone("SK");
 
-/* ✅ “업데이트 즉시 반영/자동 새로고침” 준비 코드
-   - 지금 sw.js가 없어도 try/catch로 사이트는 정상 동작
-   - 다음 단계에서 sw.js 올리면 여기 코드가 바로 활성화됨 */
+/* (옵션) SW 자동 새로고침 준비: sw.js 올리면 바로 활성화됨 */
 (async function(){
   if(!('serviceWorker' in navigator)) return;
   try{
@@ -823,9 +778,7 @@ renderPhone("SK");
       reloaded = true;
       location.reload();
     });
-  }catch(e){
-    // sw.js 없거나 등록 실패해도 사이트는 정상 동작
-  }
+  }catch(e){}
 })();
 </script>
 </body>
