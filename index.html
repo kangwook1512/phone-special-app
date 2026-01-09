@@ -627,6 +627,24 @@ let lastPhoneTab = "SK";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
 
+/* =========================
+   ✅ 팝업 2시간 간격(열린시간 기준)
+   ========================= */
+const POPUP_INTERVAL_MS = 2 * 60 * 60 * 1000; // 2시간
+const POPUP_LAST_KEY = "TODAY_POPUP_LAST_OPEN_MS";
+
+function dueByInterval(){
+  try{
+    const last = Number(localStorage.getItem(POPUP_LAST_KEY) || 0);
+    return (Date.now() - last) >= POPUP_INTERVAL_MS;
+  }catch(e){
+    return true;
+  }
+}
+function markOpenedNow(){
+  try{ localStorage.setItem(POPUP_LAST_KEY, String(Date.now())); }catch(e){}
+}
+
 /* 업데이트 날짜/시간 자동 표시 (data.csv Last-Modified) */
 async function setUpdateStamp(){
   const el = document.getElementById("updateStamp");
@@ -1150,7 +1168,8 @@ function renderMVNO(net = mvnoNet){
    - CSV의 TODAY=1(또는 Y/O) 행 1개를 찾아 표시
    - 여러 개면 "가장 싼 조건" 행 1개 선택
    - 그 행 안에서 SK/KT/LG 중 "가장 싼 조건" 통신사 자동 선택
-   - 세션 1회 + 오늘 하루 숨김(현재 카드 시그니처 기준)
+   - ✅ 2시간 간격(열린 시간 기준)
+   - ✅ 오늘 하루 숨김(자정 지나면 자동 해제)
    ========================= */
 function isTodayRow(x){
   const v = String(x["TODAY"] ?? "").trim().toUpperCase();
@@ -1249,6 +1268,9 @@ async function openTodayPickPopupFromCSV(){
   const kakaoBtn = document.getElementById("adKakaoBtn");
   if(!modal || !backdrop || !card || !kakaoBtn) return;
 
+  // 팝업이 이미 열려 있으면 중복 오픈 금지
+  if(modal.classList.contains("show")) return;
+
   // 카카오 링크 동기화
   kakaoBtn.href = KAKAO_URL;
 
@@ -1265,16 +1287,14 @@ async function openTodayPickPopupFromCSV(){
 
   const sig = pickSignature(pick);
 
-  // 세션 1회 (동일 세션에서 여러 번 안 뜸)
-  try{
-    if(sessionStorage.getItem("TODAY_POPUP_SEEN_SESSION") === sig) return;
-  }catch(e){}
-
-  // 오늘 하루 다시보지 않기 (현재 카드 sig와 같으면 숨김)
+  // ✅ (1) 오늘 하루 다시보지 않기 (현재 카드 sig와 같으면 오늘은 숨김)
   try{
     const hiddenSig = localStorage.getItem(getTodayKey()) || "";
     if(hiddenSig === sig) return;
   }catch(e){}
+
+  // ✅ (2) 2시간 간격(열린 시간 기준)
+  if(!dueByInterval()) return;
 
   const carrierClass = (pick.carrier === "SK") ? "sk" : (pick.carrier === "KT" ? "kt" : "lg");
   const mv = String(pick.move ?? "");
@@ -1315,7 +1335,9 @@ async function openTodayPickPopupFromCSV(){
     backdrop.setAttribute("aria-hidden","false");
     modal.setAttribute("aria-hidden","false");
     document.body.style.overflow = "hidden";
-    try{ sessionStorage.setItem("TODAY_POPUP_SEEN_SESSION", sig); }catch(e){}
+
+    // ✅ 열린 시간 기준으로 2시간 타이머 리셋
+    markOpenedNow();
   };
 
   const close = () => {
@@ -1387,8 +1409,22 @@ setUpdateStamp();
 activatePhoneTab("SK");
 renderPhone("SK");
 
-/* A안 팝업: TODAY=1 있으면 자동 노출 */
-openTodayPickPopupFromCSV();
+/* ✅ 최초 진입 1회 시도(탭 이동에서는 안 뜸) */
+setTimeout(() => {
+  openTodayPickPopupFromCSV();
+}, 700);
+
+/* ✅ 켜둔 상태에서도 2시간마다(1분마다 체크) */
+setInterval(() => {
+  const modal = document.getElementById("adModal");
+  if(!modal) return;
+  if(modal.classList.contains("show")) return; // 이미 열려있으면 재오픈 금지
+
+  // 2시간 경과했으면 다시 시도 (TODAY/오늘숨김 조건은 함수 안에서 처리)
+  if(dueByInterval()){
+    openTodayPickPopupFromCSV();
+  }
+}, 60 * 1000);
 
 /* (옵션) SW 자동 새로고침 준비: sw.js 올리면 바로 활성화됨 */
 (async function(){
