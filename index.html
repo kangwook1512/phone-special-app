@@ -234,7 +234,7 @@ body{
 .dockBtn.sms{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.22);color:#083244;}
 .dockBtn.kakao{background:rgba(254,229,0,.35);border-color:rgba(254,229,0,.55);color:#3b2f00;}
 
-/* ✅ 관리자모드: 오늘의 카드 선택 버튼 */
+/* 관리자모드: 오늘의 카드 선택 버튼 */
 .pickBtn{
   margin-top:10px;
   width:100%;
@@ -249,7 +249,7 @@ body{
 }
 .pickBtn:active{ transform:translateY(1px); filter:brightness(.98); }
 
-/* ✅ 광고 모달(오늘의 카드) */
+/* 광고 모달(오늘의 카드) */
 .adModal{ position:fixed; inset:0; z-index:3000; display:none; }
 .adModal.show{ display:block; }
 .adBackdrop{
@@ -299,8 +299,6 @@ body{
   padding:14px;
   box-shadow:0 14px 34px rgba(249,115,22,.14);
 }
-.adLoading{ font-weight:1000; color:#64748b; text-align:center; padding:18px 0; }
-
 .adTop{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   margin-bottom:10px;
@@ -328,9 +326,32 @@ body{
   gap:10px;
 }
 .adPrices.one{ grid-template-columns:1fr; }
-.adPill{ border:1px solid rgba(15,23,42,.12); border-radius:14px; padding:12px; background:rgba(255,255,255,.7); text-align:center; }
+.adPill{
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:14px;
+  padding:12px;
+  background:rgba(255,255,255,.7);
+  text-align:center;
+}
 .adPill .k{ font-size:12px; font-weight:1000; color:#64748b; }
 .adPill .v{ margin-top:6px; font-size:30px; font-weight:1000; letter-spacing:-.6px; }
+
+.adNoShowRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.adNoShowRow label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:1000;
+  color:#334155;
+  font-size:13px;
+  user-select:none;
+}
+.adNoShowRow input{ width:16px; height:16px; }
 
 .adActions{ display:flex; gap:10px; }
 .adBtn{
@@ -410,7 +431,7 @@ body{
 <div class="bottomDock" role="navigation" aria-label="빠른 연락">
   <a class="dockBtn call" href="tel:042-821-2272" aria-label="전화">
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.6 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.12a2 2 0 0 1 2.11-.45c.83.28 1.7.48 2.6.6A2 2 0 0 1 22 16.92z"/>
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.6 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16.0 0 0 0 6 6l1.48-1.12a2 2 0 0 1 2.11-.45c.83.28 1.7.48 2.6.6A2 2 0 0 1 22 16.92z"/>
     </svg>
     <span>전화</span>
   </a>
@@ -435,7 +456,7 @@ body{
   </a>
 </div>
 
-<!-- ✅ 광고 모달(오늘의 카드) -->
+<!-- 광고 모달(오늘의 카드) -->
 <div class="adModal" id="adModal" aria-hidden="true">
   <div class="adBackdrop" id="adBackdrop"></div>
 
@@ -447,7 +468,15 @@ body{
 
     <div class="adBody">
       <div class="adCard" id="adCard">
-        <div class="adLoading">불러오는 중…</div>
+        <div style="font-weight:1000;color:#64748b;text-align:center;padding:18px 0;">불러오는 중…</div>
+      </div>
+
+      <!-- ✅ 닫기만 하면 "이번 접속(세션)" 숨김 / 체크하면 "오늘" 숨김 -->
+      <div class="adNoShowRow">
+        <label>
+          <input type="checkbox" id="noShowToday" />
+          오늘 하루 다시보지 않기
+        </label>
       </div>
 
       <div class="adActions">
@@ -473,7 +502,7 @@ let lastPhoneTab = "SK";
 let mvnoNet = "LG";
 let inetCarrier = "SK";
 
-/* ✅ 오늘의 카드(저장 키) + 관리자 모드 상태 */
+/* 오늘의 카드(저장 키) + 관리자 모드 상태 */
 const TODAY_PICK_KEY = "TODAY_PICK_V1";
 let adminMode = false;
 
@@ -487,7 +516,28 @@ const getTodayPick = () => {
   }catch(e){ return null; }
 };
 
-/* ✅ 업데이트 날짜/시간 자동 표시 (data.csv Last-Modified) */
+/* ✅ 날짜별 "오늘 숨김" 키 */
+function getTodayKey(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,"0");
+  const d = String(now.getDate()).padStart(2,"0");
+  return `TODAY_POPUP_HIDE_${y}${m}${d}`;
+}
+/* ✅ 카드 변경 감지용 서명 */
+function pickSignature(pick){
+  if(!pick) return "";
+  return [
+    pick.carrier||"",
+    pick.model||"",
+    pick.move||"",
+    pick.change||"",
+    pick.infoText||"",
+    pick.discount ? "1":"0"
+  ].join("|");
+}
+
+/* 업데이트 날짜/시간 자동 표시 (data.csv Last-Modified) */
 async function setUpdateStamp(){
   const el = document.getElementById("updateStamp");
   if(!el) return;
@@ -517,7 +567,7 @@ async function setUpdateStamp(){
   }catch(e){}
 }
 
-/* ✅ 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
+/* 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
 (function adminRefreshToggle(){
   const hero = document.querySelector(".hero");
   const btn = document.getElementById("refreshBtn");
@@ -542,14 +592,13 @@ async function setUpdateStamp(){
       const hidden = (getComputedStyle(btn).display === "none");
       btn.style.display = hidden ? "inline-flex" : "none";
 
-      adminMode = (btn.style.display !== "none"); // ✅ 관리자모드 on/off
-      if(mode === "PHONE") renderPhone(lastPhoneTab); // ✅ 버튼 노출 반영
+      adminMode = (btn.style.display !== "none");
+      if(mode === "PHONE") renderPhone(lastPhoneTab);
 
       reset();
     }
   }, { passive:true });
 
-  // 버튼 자체는 실제 새로고침 (hero 탭 카운트에 포함되지 않게 stopPropagation)
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -864,7 +913,7 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ SK/KT/LG “통신사 탭만”으로 표시 */
+/* SK/KT/LG “통신사 탭만”으로 표시 */
 function buildCarrierSimple(items, carrier){
   const out = [];
   items.forEach(x=>{
@@ -1051,6 +1100,11 @@ list.addEventListener("click", (e)=>{
     discount: (btn.dataset.discount === "1")
   };
   setTodayPick(pick);
+
+  // ✅ 카드 바꾸면 오늘이라도 다시 뜨게: (오늘숨김 + 세션숨김) 해제
+  try{ localStorage.removeItem(getTodayKey()); }catch(e){}
+  try{ sessionStorage.removeItem("TODAY_POPUP_SEEN_SESSION"); }catch(e){}
+
   alert("오늘의 카드로 저장됨 (이제 접속하면 팝업으로 노출)");
 });
 
@@ -1084,17 +1138,35 @@ renderPhone("SK");
   }catch(e){}
 })();
 
-/* ✅ 광고 모달: 접속 시 오늘의 카드 자동 팝업 (저장된 카드가 있을 때만) */
+/* ✅ 광고 모달: 접속 시 오늘의 카드 자동 팝업
+   - 닫기만 하면: 이번 접속(세션)에서는 다시 안 뜸
+   - 체크 후 닫기: 오늘은 안 뜸
+   - 카드가 바뀌면(sig 변경): 오늘이라도 다시 뜸 (관리자 저장 시 hide 키 삭제) */
 (function adModalTodayPick(){
   const modal = document.getElementById("adModal");
   const backdrop = document.getElementById("adBackdrop");
   const closeBtn = document.getElementById("adCloseBtn");
   const okBtn = document.getElementById("adOkBtn");
+  const noShowToday = document.getElementById("noShowToday");
   const box = document.getElementById("adCard");
   if(!modal || !box) return;
 
   const pick = getTodayPick();
-  if(!pick) return; // 저장된 오늘의 카드 없으면 팝업 안뜸
+  if(!pick) return;
+
+  const todayKey = getTodayKey();
+  const sig = pickSignature(pick);
+
+  // ✅ 1) 이번 접속(세션)에서 이미 팝업 봤으면 종료(현재 카드(sig) 기준)
+  try{
+    if(sessionStorage.getItem("TODAY_POPUP_SEEN_SESSION") === sig) return;
+  }catch(e){}
+
+  // ✅ 2) 오늘 하루 숨김이 "현재 카드(sig)"와 같을 때만 종료
+  try{
+    const hiddenSig = localStorage.getItem(todayKey) || "";
+    if(hiddenSig === sig) return;
+  }catch(e){}
 
   const safe = (s)=> String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
@@ -1135,13 +1207,24 @@ renderPhone("SK");
     modal.classList.add("show");
     modal.setAttribute("aria-hidden","false");
     document.body.style.overflow = "hidden";
+
+    // ✅ 열리면 "이번 세션에서 본 카드(sig)" 저장
+    try{ sessionStorage.setItem("TODAY_POPUP_SEEN_SESSION", sig); }catch(e){}
   };
   const close = () => {
+    // ✅ 체크되어 있으면 "오늘 하루 다시보지 않기" 저장(현재 카드 sig)
+    try{
+      if(noShowToday && noShowToday.checked){
+        localStorage.setItem(todayKey, sig);
+      }
+    }catch(e){}
+
     modal.classList.remove("show");
     modal.setAttribute("aria-hidden","true");
     document.body.style.overflow = "";
   };
 
+  // ✅ 살짝 딜레이 후 오픈(UX)
   setTimeout(open, 300);
 
   backdrop?.addEventListener("click", close);
