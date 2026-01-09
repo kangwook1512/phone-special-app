@@ -95,8 +95,16 @@ body{
   min-width:0;
 }
 @media (max-width:480px){
-  .updateWrap{flex-direction:column;align-items:flex-start;gap:2px;}
-  .updateWrap .line1,.updateWrap .line2{font-size:16px;white-space:normal;}
+  .updateWrap{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+  }
+  .updateWrap .line1,
+  .updateWrap .line2{
+    font-size:16px;
+    white-space:normal;
+  }
 }
 
 /* ✅ 관리자용 새로고침 버튼(기본 숨김) */
@@ -451,12 +459,12 @@ body{
   </a>
 </div>
 
-<!-- ✅ 오늘의 카드 광고 팝업 (하루 1번 + 관리자 즉시 미리보기) -->
+<!-- ✅ 오늘의 카드 광고 팝업 (하루 1번) -->
 <div class="adModal" id="adModal" aria-hidden="true" role="dialog" aria-label="오늘의 카드">
   <div class="adBackdrop" id="adBackdrop"></div>
   <div class="adSheet" role="document">
     <div class="adHead">
-      <div class="ttl" id="adTitle">오늘의 카드</div>
+      <div class="ttl">오늘의 카드</div>
       <button class="adClose" id="adCloseBtn" type="button" aria-label="닫기">X</button>
     </div>
     <div class="adBody">
@@ -527,81 +535,13 @@ const getTodayPick = () => {
 };
 const setTodayPick = (obj) => {
   try{ localStorage.setItem(TODAY_PICK_KEY, JSON.stringify(obj)); }catch(e){}
-  // 선택 직후 테스트/미리보기 편의
+  // 오늘 이미 본 기록도 지워서 "선택 직후 테스트"가 가능하게
   try{ localStorage.removeItem(TODAY_PICK_SHOWN_KEY); }catch(e){}
 };
 const clearTodayPick = () => {
   try{ localStorage.removeItem(TODAY_PICK_KEY); }catch(e){}
   try{ localStorage.removeItem(TODAY_PICK_SHOWN_KEY); }catch(e){}
 };
-
-/* ✅ 공통: 광고 모달 렌더/오픈/클로즈 */
-const AdModal = (function(){
-  const modal = document.getElementById("adModal");
-  const backdrop = document.getElementById("adBackdrop");
-  const closeBtn = document.getElementById("adCloseBtn");
-  const okBtn = document.getElementById("adOkBtn");
-  const box = document.getElementById("adCard");
-  const titleEl = document.getElementById("adTitle");
-  const kakaoBtn = document.getElementById("adKakaoBtn");
-
-  if(kakaoBtn) kakaoBtn.href = KAKAO_URL;
-
-  const open = () => {
-    if(!modal) return;
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden","false");
-    document.body.style.overflow = "hidden";
-  };
-  const close = () => {
-    if(!modal) return;
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden","true");
-    document.body.style.overflow = "";
-  };
-
-  const render = (pick, {preview=false}={}) => {
-    if(!box) return;
-    const mv = String(pick?.move ?? "");
-    const ch = String(pick?.change ?? "");
-    const hasMove = mv !== "";
-    const hasChange = ch !== "";
-    const rowClass = (hasMove && hasChange) ? "" : "one";
-
-    if(titleEl) titleEl.textContent = preview ? "관리자 미리보기" : "오늘의 카드";
-
-    box.innerHTML = `
-      <div class="adTop">
-        <div class="adTag">${preview ? "관리자 미리보기" : "오늘의 카드"}</div>
-        <div class="adCarrier">${pick?.carrier || ""}</div>
-      </div>
-      <div class="adModel">${pick?.model || "—"}</div>
-      ${pick?.infoText ? `<p class="adInfo">${pick.infoText}</p>` : ``}
-      ${pick?.discount ? `<p class="adDisc">요금할인 25% 가능</p>` : ``}
-      <div class="adPrices ${rowClass}">
-        ${hasMove ? `
-          <div class="adPill">
-            <div class="k">이동</div>
-            <div class="v">${mv}</div>
-          </div>` : ``}
-        ${hasChange ? `
-          <div class="adPill">
-            <div class="k">기변</div>
-            <div class="v">${ch}</div>
-          </div>` : ``}
-      </div>
-    `;
-  };
-
-  backdrop?.addEventListener("click", close);
-  closeBtn?.addEventListener("click", close);
-  okBtn?.addEventListener("click", close);
-  document.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape" && modal && modal.classList.contains("show")) close();
-  });
-
-  return { open, close, render };
-})();
 
 /* ✅ 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
 (function adminRefreshToggle(){
@@ -630,6 +570,7 @@ const AdModal = (function(){
       adminMode = hidden;
       reset();
 
+      // 관리자 모드 ON/OFF에 따라 카드에 버튼(오늘카드) 표시 갱신
       if(mode === "PHONE") renderPhone(lastPhoneTab);
     }
   }, { passive:true });
@@ -643,7 +584,12 @@ const AdModal = (function(){
     e.preventDefault();
     e.stopPropagation();
     clearTodayPick();
-    AdModal.close();
+
+    // 팝업 열려있으면 닫기
+    const modal = document.getElementById("adModal");
+    if(modal) modal.classList.remove("show");
+    document.body.style.overflow = "";
+
     alert("오늘의 카드 해제 완료");
     location.reload();
   });
@@ -1127,9 +1073,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* ✅ 관리자: 카드에서 "오늘의 카드로" 클릭 처리 (이벤트 위임)
-   ✅ 추가: 선택 즉시 "관리자 미리보기" 팝업 띄움 (하루 1회 노출 기록에는 영향 없음)
-*/
+/* ✅ 관리자: 카드에서 "오늘의 카드로" 클릭 처리 (이벤트 위임) */
 list.addEventListener("click", (e)=>{
   const btn = e.target?.closest?.('button[data-pick="1"]');
   if(!btn) return;
@@ -1142,14 +1086,9 @@ list.addEventListener("click", (e)=>{
   const infoText = decodeURIComponent(btn.dataset.info || "");
   const discount = (btn.dataset.discount === "1");
 
-  const pickObj = { carrier, model, move, change, infoText, discount };
-  setTodayPick(pickObj);
+  setTodayPick({ carrier, model, move, change, infoText, discount });
 
-  // 관리자 즉시 미리보기 (고객용 "하루 1번" 기록은 건드리지 않음)
-  AdModal.render(pickObj, { preview:true });
-  AdModal.open();
-
-  // 카드 UI 갱신(선택됨 표시)
+  alert("오늘의 카드로 설정 완료 (오늘 1회 팝업 노출)");
   renderPhone(lastPhoneTab);
 });
 
@@ -1195,9 +1134,30 @@ setUpdateStamp();
 activatePhoneTab("SK");
 renderPhone("SK");
 
-/* ✅ 오늘의 카드 팝업: 하루 1번만 (고객용 자동) */
+/* ✅ 오늘의 카드 팝업: 하루 1번만 */
 (function adModalTodayPickOnce(){
+  const modal = document.getElementById("adModal");
+  const backdrop = document.getElementById("adBackdrop");
+  const closeBtn = document.getElementById("adCloseBtn");
+  const okBtn = document.getElementById("adOkBtn");
+  const box = document.getElementById("adCard");
+  const kakaoBtn = document.getElementById("adKakaoBtn");
+  if(!modal || !box) return;
+
+  if(kakaoBtn) kakaoBtn.href = KAKAO_URL;
+
   const TODAY = new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Seoul" }).format(new Date());
+
+  const open = () => {
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  };
+  const close = () => {
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  };
 
   // 오늘 이미 보여줬으면 종료
   try{
@@ -1207,12 +1167,44 @@ renderPhone("SK");
   const pick = getTodayPick();
   if(!pick) return;
 
-  // 고객용 렌더 + 오픈
-  AdModal.render(pick, { preview:false });
-  setTimeout(()=> AdModal.open(), 280);
+  const mv = String(pick.move ?? "");
+  const ch = String(pick.change ?? "");
+  const hasMove = mv !== "";
+  const hasChange = ch !== "";
+  const rowClass = (hasMove && hasChange) ? "" : "one";
 
-  // 오늘 노출 기록
+  box.innerHTML = `
+    <div class="adTop">
+      <div class="adTag">오늘의 카드</div>
+      <div class="adCarrier">${pick.carrier || ""}</div>
+    </div>
+    <div class="adModel">${pick.model || "—"}</div>
+    ${pick.infoText ? `<p class="adInfo">${pick.infoText}</p>` : ``}
+    ${pick.discount ? `<p class="adDisc">요금할인 25% 가능</p>` : ``}
+    <div class="adPrices ${rowClass}">
+      ${hasMove ? `
+        <div class="adPill">
+          <div class="k">이동</div>
+          <div class="v">${mv}</div>
+        </div>` : ``}
+      ${hasChange ? `
+        <div class="adPill">
+          <div class="k">기변</div>
+          <div class="v">${ch}</div>
+        </div>` : ``}
+    </div>
+  `;
+
+  setTimeout(open, 280);
   try{ localStorage.setItem(TODAY_PICK_SHOWN_KEY, TODAY); }catch(e){}
+
+  backdrop?.addEventListener("click", close);
+  closeBtn?.addEventListener("click", close);
+  okBtn?.addEventListener("click", close);
+
+  document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape" && modal.classList.contains("show")) close();
+  });
 })();
 
 /* (옵션) SW 자동 새로고침 준비: sw.js 올리면 바로 활성화됨 */
