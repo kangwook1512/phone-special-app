@@ -75,6 +75,8 @@ body{
 .marqueeInner{
   display:flex;align-items:center;min-width:0;flex:1;
 }
+
+/* 업데이트 문구(2줄) */
 .updateWrap{
   display:flex;
   align-items:center;
@@ -95,11 +97,19 @@ body{
   min-width:0;
 }
 @media (max-width:480px){
-  .updateWrap{flex-direction:column;align-items:flex-start;gap:2px;}
-  .updateWrap .line1,.updateWrap .line2{font-size:16px;white-space:normal;}
+  .updateWrap{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+  }
+  .updateWrap .line1,
+  .updateWrap .line2{
+    font-size:16px;
+    white-space:normal;
+  }
 }
 
-/* ✅ 관리자용 새로고침 버튼(기본 숨김) */
+/* 관리자용 새로고침 버튼(기본 숨김) */
 .heroRefreshBtn{
   flex:0 0 auto;
   height:28px;
@@ -116,7 +126,7 @@ body{
 }
 .heroRefreshBtn:active{transform:translateY(1px);filter:brightness(.98);}
 
-/* ✅ 관리자용 오늘카드 해제 버튼(기본 숨김) */
+/* 관리자용 오늘카드 해제 버튼(기본 숨김) */
 .heroClearBtn{
   flex:0 0 auto;
   height:28px;
@@ -231,7 +241,7 @@ body{
 .addonList li{margin:10px 0;font-size:15px;font-weight:1000;color:#0f172a;line-height:1.25;}
 .addonList .sub{margin-top:4px;font-size:14px;font-weight:1000;color:var(--muted);}
 
-/* ✅ 관리자: 오늘의 카드 버튼 */
+/* 관리자: 오늘의 카드 버튼 */
 .pickRow{display:flex;justify-content:flex-end;margin-top:10px;}
 .pickBtn{
   display:inline-flex;align-items:center;justify-content:center;
@@ -270,7 +280,7 @@ body{
 .dockBtn.sms{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.22);color:#083244;}
 .dockBtn.kakao{background:rgba(254,229,0,.35);border-color:rgba(254,229,0,.55);color:#3b2f00;}
 
-/* ✅ 오늘의 카드 광고 팝업 */
+/* 오늘의 카드 광고 팝업 */
 .adModal{
   position:fixed; inset:0;
   display:none;
@@ -386,7 +396,6 @@ body{
             <div class="line2">새로고침 · 폰은 당겨서 · PC는 Ctrl+F5</div>
           </div>
         </div>
-        <!-- ✅ 관리자 전용(기본 숨김). 공지바 5번 탭하면 나타남 -->
         <button class="heroRefreshBtn" id="refreshBtn" type="button" aria-label="새로고침">새로고침</button>
         <button class="heroClearBtn" id="clearPickBtn" type="button" aria-label="오늘의 카드 해제">오늘카드 해제</button>
       </div>
@@ -451,7 +460,7 @@ body{
   </a>
 </div>
 
-<!-- ✅ 오늘의 카드 광고 팝업 (하루 1번 + 관리자 즉시 미리보기) -->
+<!-- 오늘의 카드 광고 팝업 -->
 <div class="adModal" id="adModal" aria-hidden="true" role="dialog" aria-label="오늘의 카드">
   <div class="adBackdrop" id="adBackdrop"></div>
   <div class="adSheet" role="document">
@@ -488,16 +497,13 @@ let mvnoNet = "LG";
 let inetCarrier = "SK";
 let adminMode = false;
 
-/* ✅ 업데이트 날짜/시간 자동 표시 (선택 A: data.csv Last-Modified) */
+/* 업데이트 날짜/시간 자동 표시 (data.csv Last-Modified) */
 async function setUpdateStamp(){
   const el = document.getElementById("updateStamp");
   if(!el) return;
 
   try{
-    const res = await fetch(`data.csv?v=${encodeURIComponent(CSV_VER)}`, {
-      method: "HEAD",
-      cache: "no-store"
-    });
+    const res = await fetch(`data.csv?v=${encodeURIComponent(CSV_VER)}`, { method:"HEAD", cache:"no-store" });
     const lm = res.headers.get("last-modified");
     if(!lm) return;
 
@@ -518,7 +524,7 @@ async function setUpdateStamp(){
   }catch(e){}
 }
 
-/* ✅ 오늘의 카드 저장/읽기/해제 */
+/* 오늘의 카드 저장/읽기/해제 (로컬 - 관리자 편의용) */
 const getTodayPick = () => {
   try{
     const raw = localStorage.getItem(TODAY_PICK_KEY);
@@ -527,7 +533,6 @@ const getTodayPick = () => {
 };
 const setTodayPick = (obj) => {
   try{ localStorage.setItem(TODAY_PICK_KEY, JSON.stringify(obj)); }catch(e){}
-  // 선택 직후 테스트/미리보기 편의
   try{ localStorage.removeItem(TODAY_PICK_SHOWN_KEY); }catch(e){}
 };
 const clearTodayPick = () => {
@@ -535,7 +540,7 @@ const clearTodayPick = () => {
   try{ localStorage.removeItem(TODAY_PICK_SHOWN_KEY); }catch(e){}
 };
 
-/* ✅ 공통: 광고 모달 렌더/오픈/클로즈 */
+/* 광고 모달 */
 const AdModal = (function(){
   const modal = document.getElementById("adModal");
   const backdrop = document.getElementById("adBackdrop");
@@ -544,7 +549,6 @@ const AdModal = (function(){
   const box = document.getElementById("adCard");
   const titleEl = document.getElementById("adTitle");
   const kakaoBtn = document.getElementById("adKakaoBtn");
-
   if(kakaoBtn) kakaoBtn.href = KAKAO_URL;
 
   const open = () => {
@@ -567,7 +571,6 @@ const AdModal = (function(){
     const hasMove = mv !== "";
     const hasChange = ch !== "";
     const rowClass = (hasMove && hasChange) ? "" : "one";
-
     if(titleEl) titleEl.textContent = preview ? "관리자 미리보기" : "오늘의 카드";
 
     box.innerHTML = `
@@ -603,7 +606,7 @@ const AdModal = (function(){
   return { open, close, render };
 })();
 
-/* ✅ 관리자 전용 새로고침: 공지(상단 바) 5번 탭하면 버튼 토글 */
+/* 관리자 전용 토글: 공지바 5번 탭하면 새로고침/오늘카드해제 버튼 노출 */
 (function adminRefreshToggle(){
   const hero = document.querySelector(".hero");
   const btn = document.getElementById("refreshBtn");
@@ -836,6 +839,7 @@ function addPhoneCard({carrier, badgeText, badgeClass, model, move, change, info
   `);
 }
 
+/* internet card */
 function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1, price2Label, price2}){
   list.insertAdjacentHTML("beforeend", `
     <div class="card">
@@ -856,6 +860,8 @@ function addSimpleCard({badgeText, badgeClass, line1, line2, price1Label, price1
     </div>
   `);
 }
+
+/* notice cards */
 function addCompactNoticeCard(){
   list.insertAdjacentHTML("beforeend", `
     <div class="card noticeCard">
@@ -883,7 +889,7 @@ function addInternetNoticeCard(){
   `);
 }
 
-/* internet data */
+/* 인터넷TV 데이터 */
 const INTERNET_TV = [
   {carrier:"SK", net:"100M", tv:"없음", monthly:"22,000", bundle:"17,600"},
   {carrier:"SK", net:"500M", tv:"없음", monthly:"33,000", bundle:"22,000"},
@@ -919,7 +925,7 @@ const INTERNET_TV = [
   {carrier:"LG", net:"1G",   tv:"프리미엄", monthly:"53,900", bundle:"40,700"},
 ];
 
-/* mvno data */
+/* 알뜰요금 데이터 */
 const MVNO_PLANS = [
   {net:"LG", talk:"무제한", sms:"무제한", data:"1GB+1Mbps무제한", fee:"9,900"},
   {net:"LG", talk:"무제한", sms:"무제한", data:"7GB+1Mbps무제한", fee:"15,900"},
@@ -963,7 +969,7 @@ async function fetchCSV(){
   });
 }
 
-/* ✅ SK/KT/LG “통신사 탭만”으로 표시 */
+/* 통신사 탭 표시 + "이동/기변 중 가장 싼 값" 기준 정렬 */
 function buildCarrierSimple(items, carrier){
   const out = [];
   items.forEach(x=>{
@@ -972,7 +978,6 @@ function buildCarrierSimple(items, carrier){
 
     const mv = showVal(x[`${carrier}_이동`]);
     const ch = showVal(x[`${carrier}_기변`]);
-
     if (mv === "" && ch === "") return;
 
     out.push({
@@ -985,28 +990,15 @@ function buildCarrierSimple(items, carrier){
     });
   });
 
-  // ✅ 이동/기변 중 "가장 싼 값" 기준 정렬
-  const norm = (raw) => {
-    const n = asNum(raw);
-    return (n === null) ? null : n;
-  };
-
   out.sort((a,b)=>{
-    const aMv = norm(a.mv);
-    const aCh = norm(a.ch);
-    const bMv = norm(b.mv);
-    const bCh = norm(b.ch);
+    const aMv = asNum(a.mv), aCh = asNum(a.ch);
+    const bMv = asNum(b.mv), bCh = asNum(b.ch);
 
-    const aBest = (aMv !== null && aCh !== null) ? Math.min(aMv, aCh)
-                 : (aMv !== null ? aMv
-                 : (aCh !== null ? aCh : null));
-    const bBest = (bMv !== null && bCh !== null) ? Math.min(bMv, bCh)
-                 : (bMv !== null ? bMv
-                 : (bCh !== null ? bCh : null));
+    const aBest = (aMv !== null && aCh !== null) ? Math.min(aMv, aCh) : (aMv !== null ? aMv : (aCh !== null ? aCh : null));
+    const bBest = (bMv !== null && bCh !== null) ? Math.min(bMv, bCh) : (bMv !== null ? bMv : (bCh !== null ? bCh : null));
 
     if (aBest === null && bBest !== null) return 1;
     if (aBest !== null && bBest === null) return -1;
-
     if (aBest !== null && bBest !== null && aBest !== bBest) return aBest - bBest;
 
     return a.model.localeCompare(b.model, "ko");
@@ -1039,7 +1031,6 @@ async function renderPhone(tab){
   }
 
   if (!["SK","KT","LG"].includes(tab)) tab = "SK";
-
   addAddonCard(tab);
 
   const rows = buildCarrierSimple(items, tab);
@@ -1049,12 +1040,11 @@ async function renderPhone(tab){
   }
 
   const badgeClass = tab.toLowerCase();
-
   rows.forEach(it=>{
     addPhoneCard({
       carrier: it.carrier,
       badgeText: tab,
-      badgeClass: badgeClass,
+      badgeClass,
       model: it.model,
       move: it.mv,
       change: it.ch,
@@ -1127,9 +1117,7 @@ function renderMVNO(net = mvnoNet){
   });
 }
 
-/* ✅ 관리자: 카드에서 "오늘의 카드로" 클릭 처리 (이벤트 위임)
-   ✅ 추가: 선택 즉시 "관리자 미리보기" 팝업 띄움 (하루 1회 노출 기록에는 영향 없음)
-*/
+/* 관리자: 오늘의 카드로 버튼 클릭 처리(이벤트 위임) + 즉시 미리보기 */
 list.addEventListener("click", (e)=>{
   const btn = e.target?.closest?.('button[data-pick="1"]');
   if(!btn) return;
@@ -1145,11 +1133,9 @@ list.addEventListener("click", (e)=>{
   const pickObj = { carrier, model, move, change, infoText, discount };
   setTodayPick(pickObj);
 
-  // 관리자 즉시 미리보기 (고객용 "하루 1번" 기록은 건드리지 않음)
   AdModal.render(pickObj, { preview:true });
   AdModal.open();
 
-  // 카드 UI 갱신(선택됨 표시)
   renderPhone(lastPhoneTab);
 });
 
@@ -1195,8 +1181,13 @@ setUpdateStamp();
 activatePhoneTab("SK");
 renderPhone("SK");
 
-/* ✅ 오늘의 카드 팝업: 하루 1번만 (고객용 자동) */
-(function adModalTodayPickOnce(){
+/* ✅ 오늘의 카드 팝업: (우선순위)
+   1) localStorage(관리자 기기에서 찍은 경우)
+   2) data.csv의 오늘카드(O) 표시 (모든 기기 공통)
+   + 하루 1번만 (고객용 자동)
+   ✅ 중요: data.csv 헤더에 "오늘카드" 컬럼을 추가하고, 원하는 줄에만 O 입력
+*/
+(async function adModalTodayPickOnce(){
   const TODAY = new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Seoul" }).format(new Date());
 
   // 오늘 이미 보여줬으면 종료
@@ -1204,14 +1195,51 @@ renderPhone("SK");
     if(localStorage.getItem(TODAY_PICK_SHOWN_KEY) === TODAY) return;
   }catch(e){}
 
-  const pick = getTodayPick();
+  // 1) localStorage 우선
+  let pick = getTodayPick();
+
+  // 2) 없으면 CSV에서 찾기(모든 기기 공통)
+  if(!pick){
+    try{
+      const items = await fetchCSV();
+      const row = items.find(x => String(x["오늘카드"]||"").trim().toUpperCase() === "O");
+      if(row){
+        const model = String(row["기종"]||"").trim();
+
+        const cand = [];
+        ["SK","KT","LG"].forEach(c=>{
+          const mv = showVal(row[`${c}_이동`]);
+          const ch = showVal(row[`${c}_기변`]);
+          if(mv !== "" || ch !== ""){
+            const mvN = asNum(mv);
+            const chN = asNum(ch);
+            const best = (mvN !== null && chN !== null) ? Math.min(mvN, chN)
+                       : (mvN !== null ? mvN : (chN !== null ? chN : null));
+            if(best !== null){
+              cand.push({
+                carrier:c,
+                model,
+                move: mv,
+                change: ch,
+                best,
+                infoText: infoLineWithPlan(c, row),
+                discount: String(row["요금할인"]||"").trim().toUpperCase()==="O"
+              });
+            }
+          }
+        });
+
+        cand.sort((a,b)=> a.best - b.best);
+        if(cand.length) pick = cand[0];
+      }
+    }catch(e){}
+  }
+
   if(!pick) return;
 
-  // 고객용 렌더 + 오픈
   AdModal.render(pick, { preview:false });
   setTimeout(()=> AdModal.open(), 280);
 
-  // 오늘 노출 기록
   try{ localStorage.setItem(TODAY_PICK_SHOWN_KEY, TODAY); }catch(e){}
 })();
 
